@@ -1,25 +1,25 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { COMPANY, CONTATO } from "../../data/site";
-import { ClipReveal } from "../../components/motion/ClipReveal";
 import { Reveal } from "../../components/motion/Reveal";
 import { TextRoll } from "../../components/motion/TextRoll";
 import { Container } from "../../components/layout/Container";
 import { SectionLabel } from "../../components/ui/SectionLabel";
 import { Symbol } from "../../components/ui/Symbol";
 import { pushEvent } from "../../lib/track";
-import { PalavrasReveladas } from "../shared/orcamento/revelar";
+import { H2 } from "../shared/historia/estilo";
 
 /*
- * Mapa de /contato/ (design-final §10.6). Nenhuma requisição de terceiro na carga: a fachada (noite-800, raio 28,
- * o símbolo como pino com carimbo) só troca pelo iframe do Google Maps quando o visitante clica em "Carregar mapa"
- * (pushEvent "map_load"). "Como chegar" abre as rotas em outra aba (map_directions_click).
+ * Mapa de /contato/ (design-final §10.6, com qa/AJUSTES-SOBRIEDADE.md por cima). Nenhuma requisição de terceiro na
+ * carga: a fachada (quadriculado discreto, o símbolo como pino e o endereço) só troca pelo iframe do Google Maps
+ * quando o visitante clica em "Carregar mapa" (pushEvent "map_load"). "Como chegar" abre as rotas em outra aba
+ * (map_directions_click).
+ * Fora da rodada 1: anel pulsando, carimbo do pino, cortina do iframe e a sombra vermelha do botão.
  */
 
 const GRADE: CSSProperties = {
-  backgroundImage:
-    "linear-gradient(rgba(37,52,71,.7) 1px, transparent 1px), linear-gradient(90deg, rgba(37,52,71,.7) 1px, transparent 1px), linear-gradient(rgba(37,52,71,.35) 1px, transparent 1px), linear-gradient(90deg, rgba(37,52,71,.35) 1px, transparent 1px)",
-  backgroundSize: "120px 120px, 120px 120px, 24px 24px, 24px 24px",
+  backgroundImage: "linear-gradient(rgba(37,52,71,.55) 1px, transparent 1px), linear-gradient(90deg, rgba(37,52,71,.55) 1px, transparent 1px)",
+  backgroundSize: "96px 96px",
   backgroundPosition: "center",
 };
 
@@ -39,23 +39,23 @@ export default function Mapa() {
   };
 
   return (
-    <section id="mapa" data-section="contato-mapa" className="relative bg-noite-950 py-24 text-papel-50 lg:py-36">
+    <section id="mapa" data-section="contato-mapa" className="relative bg-noite-950 py-16 text-papel-50 md:py-24 lg:py-28">
       <Container>
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <SectionLabel index="02" label={CONTATO.canais.endereco} />
-            <PalavrasReveladas text={e.rua} className="display-l mt-5 block text-papel-50 lg:mt-6" />
-            <Reveal delay={0.1}>
-              <p className="corpo-l mt-4 text-papel-300">{complemento}</p>
+            <Reveal y={20} delay={0.06}>
+              <h2 className={`${H2} mt-4 text-papel-50 lg:mt-5`}>{e.rua}</h2>
+              <p className="mt-3 text-[17px] leading-snug text-papel-300 lg:text-[18px]">{complemento}</p>
             </Reveal>
           </div>
-          <Reveal delay={0.15}>
+          <Reveal y={20} delay={0.12}>
             <a
               href={COMPANY.mapsDirections}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => pushEvent("map_directions_click")}
-              className="group relative inline-flex h-12 items-center gap-3 overflow-hidden rounded-full border border-papel-50/30 px-6 text-botao text-papel-50 transition-[transform,border-color] duration-[350ms] ease-out hover:border-papel-50/90 active:scale-[0.96] lg:h-[52px]"
+              className="group relative inline-flex h-12 items-center gap-3 overflow-hidden rounded-full border border-papel-50/30 px-6 text-botao text-papel-50 transition-[transform,border-color] duration-[350ms] ease-out hover:border-papel-50/90 active:scale-[0.96]"
             >
               <span aria-hidden className="cta-varredura absolute inset-0 origin-left scale-x-0 bg-papel-50/[0.06] transition-transform duration-[350ms] ease-out group-hover:scale-x-100" />
               <TextRoll text={CONTATO.comoChegar} className="relative" />
@@ -64,57 +64,40 @@ export default function Mapa() {
           </Reveal>
         </div>
 
-        <Reveal className="mt-10 lg:mt-14">
-          <div className="relative h-[440px] overflow-clip rounded-r-lg border border-noite-700 bg-noite-800 md:h-[460px] lg:h-[540px]">
+        <Reveal y={20} className="mt-8 lg:mt-12">
+          <div className="relative h-[360px] overflow-clip rounded-2xl border border-noite-700 bg-noite-900 md:h-[400px] lg:h-[440px]">
             {carregado ? (
-              <ClipReveal from="left" radius={28} scaleFrom={1} className="absolute inset-0">
-                <iframe
-                  ref={iframe}
-                  src={COMPANY.mapsEmbed}
-                  title={CONTATO.mapa.titulo}
-                  loading="lazy"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  className="block h-full w-full border-0"
-                />
-              </ClipReveal>
+              <iframe
+                ref={iframe}
+                src={COMPANY.mapsEmbed}
+                title={CONTATO.mapa.titulo}
+                loading="lazy"
+                referrerPolicy="strict-origin-when-cross-origin"
+                className="absolute inset-0 block h-full w-full border-0"
+              />
             ) : (
-              <div className="absolute inset-0">
-                <div aria-hidden className="absolute inset-0" style={GRADE} />
-                <div aria-hidden className="absolute inset-0 bg-[radial-gradient(60%_70%_at_50%_40%,rgba(15,26,40,0)_0%,rgba(15,26,40,0.5)_60%,#0F1A28_100%)]" />
-
-                {/* pino: o símbolo carimbado no ponto da sede, com anel que pulsa 3 vezes */}
-                <div className="absolute left-1/2 top-[34%] -translate-x-1/2 -translate-y-1/2 lg:top-[36%]">
-                  <span aria-hidden className="anel-3 absolute -inset-5 rounded-full border border-brasa-400/60" />
-                  <Reveal preset="carimbo" className="relative">
-                    <Symbol size={64} tone="escuro" />
-                  </Reveal>
-                  <span aria-hidden className="absolute -bottom-6 left-1/2 h-2 w-16 -translate-x-1/2 rounded-[50%] bg-noite-950/80 blur-[3px]" />
-                  <div className="absolute left-1/2 top-full mt-10 -translate-x-1/2 whitespace-nowrap">
-                    <Reveal delay={0.2}>
-                      <p className="rotulo rounded-full border border-noite-600 bg-noite-950/80 px-3 py-1.5 text-papel-300">
-                        {e.rua}
-                        <span className="hidden md:inline">
-                          {" · "}
-                          {e.cidade} - {e.uf}
-                        </span>
-                      </p>
-                    </Reveal>
-                  </div>
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 px-6 text-center">
+                <div aria-hidden className="absolute inset-0 opacity-70" style={GRADE} />
+                <div aria-hidden className="absolute inset-0 bg-[radial-gradient(60%_70%_at_50%_45%,rgba(9,17,28,0)_0%,rgba(9,17,28,0.6)_65%,#09111C_100%)]" />
+                <div className="relative flex flex-col items-center gap-4">
+                  <Symbol size={48} tone="escuro" />
+                  <p className="rounded-full border border-noite-600 bg-noite-950/80 px-4 py-2 text-[15px] font-medium text-papel-300">
+                    {e.rua}
+                    <span className="hidden md:inline">
+                      {" · "}
+                      {e.cidade} - {e.uf}
+                    </span>
+                  </p>
                 </div>
-
-                <div className="absolute inset-x-0 bottom-0 flex justify-center p-8 md:p-10 lg:bottom-[8%]">
-                  <Reveal delay={0.25}>
-                    <button
-                      type="button"
-                      onClick={carregar}
-                      className="group relative inline-flex h-12 items-center gap-3 overflow-hidden rounded-full bg-brasa-500 px-6 text-botao text-white shadow-[0_18px_40px_-18px_rgba(190,30,41,0.8)] transition-transform duration-[350ms] ease-out active:scale-[0.96] lg:h-[52px]"
-                    >
-                      <span aria-hidden className="cta-varredura absolute inset-0 origin-left scale-x-0 bg-brasa-600 transition-transform duration-[350ms] ease-out group-hover:scale-x-100" />
-                      <MapPin aria-hidden size={18} strokeWidth={1.75} className="relative" />
-                      <TextRoll text={CONTATO.mapa.carregar} className="relative" />
-                    </button>
-                  </Reveal>
-                </div>
+                <button
+                  type="button"
+                  onClick={carregar}
+                  className="group relative inline-flex h-12 items-center gap-3 overflow-hidden rounded-full bg-brasa-500 px-6 text-botao text-white transition-transform duration-[350ms] ease-out active:scale-[0.96]"
+                >
+                  <span aria-hidden className="cta-varredura absolute inset-0 origin-left scale-x-0 bg-brasa-600 transition-transform duration-[350ms] ease-out group-hover:scale-x-100" />
+                  <MapPin aria-hidden size={18} strokeWidth={1.75} className="relative" />
+                  <TextRoll text={CONTATO.mapa.carregar} className="relative" />
+                </button>
               </div>
             )}
           </div>

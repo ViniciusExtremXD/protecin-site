@@ -92,11 +92,13 @@ html:not(.intro) {
     text-transform: uppercase;
     --od-w: 0.43em;
   }
+  /* rodada de sobriedade: H2 com teto de 64 px no desktop e 36 px no celular (era até 128 px). O display-xxl fica
+     para o H1 do hero da home (inalterado) e para os números grandes, que as seções dimensionam. */
   .display-xl {
-    font-size: clamp(2.75rem, min(7vw, 12svh), 8rem);
+    font-size: clamp(2.25rem, 4.4vw, 4rem);
     font-stretch: 66%;
     font-weight: 800;
-    line-height: 0.9;
+    line-height: 0.95;
     text-transform: uppercase;
     --od-w: 0.45em;
   }
@@ -128,7 +130,7 @@ html:not(.intro) {
     }
   }
   .rotulo {
-    font-family: "JetBrains Mono Variable", ui-monospace, Consolas, monospace;
+    font-family: "JetBrains Mono Variable", "JetBrains Mono Fallback", ui-monospace, Consolas, monospace;
     font-size: 13px;
     font-weight: 500;
     line-height: 1.35;
@@ -235,18 +237,20 @@ html:not(.intro) {
 }
 
 /* ==========================================================================
-   Entradas acima da dobra em CSS (§5.3). Só animam sob html.motion-full; sem JS ou no reduzido,
-   aparecem paradas. Keyframes com valores literais.
+   Entradas acima da dobra em CSS (§5.3). Só animam sob html.motion-full (que o <head> sempre põe); sem JS
+   aparecem paradas. Keyframes com valores literais. Rodada de sobriedade: subida de 16 a 24 px, sem rotação
+   em título e sem escala acima de 1,06 em texto.
    ========================================================================== */
 @keyframes e-sobe {
   from {
     opacity: 0;
-    transform: translate3d(0, 28px, 0);
+    transform: translate3d(0, 20px, 0);
   }
 }
 @keyframes e-linha {
   from {
-    transform: translate3d(0, 110%, 0) rotate(3deg);
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
   }
 }
 @keyframes e-fade {
@@ -256,7 +260,7 @@ html:not(.intro) {
 }
 @keyframes e-zoom {
   from {
-    transform: scale(1.08);
+    transform: scale(1.04);
   }
 }
 @keyframes e-nav {
@@ -272,30 +276,30 @@ html:not(.intro) {
 @keyframes e-cant-tl {
   from {
     opacity: 0;
-    transform: translate3d(-24px, -24px, 0);
+    transform: translate3d(-16px, -16px, 0);
   }
 }
 @keyframes e-cant-tr {
   from {
     opacity: 0;
-    transform: translate3d(24px, -24px, 0);
+    transform: translate3d(16px, -16px, 0);
   }
 }
 @keyframes e-cant-bl {
   from {
     opacity: 0;
-    transform: translate3d(-24px, 24px, 0);
+    transform: translate3d(-16px, 16px, 0);
   }
 }
 @keyframes e-cant-br {
   from {
     opacity: 0;
-    transform: translate3d(24px, 24px, 0);
+    transform: translate3d(16px, 16px, 0);
   }
 }
 
 html.motion-full .e-sobe {
-  animation: e-sobe var(--dur, 600ms) cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: e-sobe var(--dur, 700ms) cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: calc(var(--t0) + var(--d, 0ms));
 }
 html.motion-full .e-fade {
@@ -303,11 +307,11 @@ html.motion-full .e-fade {
   animation-delay: calc(var(--t0) + var(--d, 0ms));
 }
 html.motion-full .e-zoom {
-  animation: e-zoom var(--dur, 900ms) cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: e-zoom var(--dur, 800ms) cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: calc(var(--t0) + var(--d, 0ms));
 }
 html.motion-full .e-linha-i {
-  animation: e-linha var(--dur, 800ms) cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: e-linha var(--dur, 700ms) cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: calc(var(--t0) + var(--d, 0ms));
 }
 html.motion-full .e-nav {
@@ -317,10 +321,10 @@ html.motion-full .e-nav {
 html.motion-full .e-gota {
   transform-box: fill-box;
   transform-origin: center;
-  animation: e-gota var(--dur, 600ms) cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: e-gota var(--dur, 600ms) cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: calc(var(--t0) + var(--d, 0ms));
 }
-/* cantoneiras do PageHero: fecham de 24 px para fora até o lugar (600 ms a partir de --t0 + 200 ms) */
+/* cantoneiras do PageHero: fecham de 16 px para fora até o lugar (600 ms a partir de --t0 + 200 ms) */
 html.motion-full .e-cant-tl {
   animation: e-cant-tl 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: calc(var(--t0) + 200ms);
@@ -528,7 +532,7 @@ html.intro.motion-full .pt-preloader.is-pulando {
   aspect-ratio: 1;
   border: 0 solid var(--fb-c);
   transition:
-    transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 400ms cubic-bezier(0.16, 1, 0.3, 1),
     opacity 250ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .fb > i:nth-child(1) {
@@ -584,35 +588,36 @@ html.intro.motion-full .pt-preloader.is-pulando {
   }
 }
 
-/* Pulsos que tocam no máximo 3 vezes (SectionLabel, botão flutuante) */
+/* Pulsos (rodada de sobriedade): tocam uma vez só, curtos e leves; nada pisca em loop (AJUSTES-SOBRIEDADE §5).
+   As classes mantêm o nome antigo (pulso-3, anel-3) para as seções que ainda as usam. */
 @keyframes pulso {
   0% {
     transform: scale(1);
-    opacity: 0.6;
+    opacity: 0.45;
   }
   100% {
-    transform: scale(2.6);
+    transform: scale(2);
     opacity: 0;
   }
 }
 @keyframes anel {
   0% {
     transform: scale(1);
-    opacity: 0.7;
+    opacity: 0.5;
   }
   100% {
-    transform: scale(1.5);
+    transform: scale(1.3);
     opacity: 0;
   }
 }
 html.motion-full .pulso-3 {
-  animation: pulso 1.8s cubic-bezier(0.2, 0.6, 0.3, 1) 3 both;
+  animation: pulso 1.4s cubic-bezier(0.2, 0.6, 0.3, 1) 1 both;
 }
 .pulso-3 {
   opacity: 0;
 }
 html.motion-full .anel-3 {
-  animation: anel 1.8s cubic-bezier(0.2, 0.6, 0.3, 1) 600ms 3 both;
+  animation: anel 1.4s cubic-bezier(0.2, 0.6, 0.3, 1) 600ms 1 both;
 }
 .anel-3 {
   opacity: 0;
@@ -621,7 +626,7 @@ html.motion-full .anel-3 {
 /* Gota do símbolo no hover (rodapé) */
 @keyframes gota-pulso {
   50% {
-    transform: scale(1.08);
+    transform: scale(1.05);
   }
 }
 @media (hover: hover) and (pointer: fine) {
@@ -641,54 +646,56 @@ video[data-lazy-video].is-playing {
   opacity: 1;
 }
 
-/* Parallax por CSS scroll-driven (no compositor). Sem suporte, o ParallaxMedia usa useScroll. */
+/* Parallax por CSS scroll-driven (no compositor). Sem suporte, o ParallaxMedia usa useScroll.
+   Rodada de sobriedade: os nomes 6/8/12 ficam (API do ParallaxMedia), mas o curso real é ±3/4/5% com escala
+   1,06/1,08/1,10 (a escala só cobre o curso: foto menos ampliada = mais nítida). */
 @supports (animation-timeline: view()) {
   @keyframes px-y-6 {
     from {
-      transform: translate3d(0, -6%, 0) scale(1.12);
+      transform: translate3d(0, -3%, 0) scale(1.06);
     }
     to {
-      transform: translate3d(0, 6%, 0) scale(1.12);
+      transform: translate3d(0, 3%, 0) scale(1.06);
     }
   }
   @keyframes px-y-8 {
     from {
-      transform: translate3d(0, -8%, 0) scale(1.16);
+      transform: translate3d(0, -4%, 0) scale(1.08);
     }
     to {
-      transform: translate3d(0, 8%, 0) scale(1.16);
+      transform: translate3d(0, 4%, 0) scale(1.08);
     }
   }
   @keyframes px-y-12 {
     from {
-      transform: translate3d(0, -12%, 0) scale(1.24);
+      transform: translate3d(0, -5%, 0) scale(1.1);
     }
     to {
-      transform: translate3d(0, 12%, 0) scale(1.24);
+      transform: translate3d(0, 5%, 0) scale(1.1);
     }
   }
   @keyframes px-x-6 {
     from {
-      transform: translate3d(-6%, 0, 0) scale(1.12);
+      transform: translate3d(-3%, 0, 0) scale(1.06);
     }
     to {
-      transform: translate3d(6%, 0, 0) scale(1.12);
+      transform: translate3d(3%, 0, 0) scale(1.06);
     }
   }
   @keyframes px-x-8 {
     from {
-      transform: translate3d(-8%, 0, 0) scale(1.16);
+      transform: translate3d(-4%, 0, 0) scale(1.08);
     }
     to {
-      transform: translate3d(8%, 0, 0) scale(1.16);
+      transform: translate3d(4%, 0, 0) scale(1.08);
     }
   }
   @keyframes px-x-12 {
     from {
-      transform: translate3d(-12%, 0, 0) scale(1.24);
+      transform: translate3d(-5%, 0, 0) scale(1.1);
     }
     to {
-      transform: translate3d(12%, 0, 0) scale(1.24);
+      transform: translate3d(5%, 0, 0) scale(1.1);
     }
   }
   html.motion-full .px-y-6 {
@@ -718,7 +725,7 @@ video[data-lazy-video].is-playing {
 }
 
 /* ==========================================================================
-   Cenas fixadas (PinStage): inativas (SSR, celular no modo "pin", reduzido, tela baixa) viram fluxo normal.
+   Cenas fixadas (PinStage): inativas (SSR, celular no modo "pin", tela baixa) viram fluxo normal.
    Cada seção define o seu layout estático pelo seletor [data-pin="off"].
    ========================================================================== */
 [data-pin-stage][data-pin="off"] {
@@ -731,18 +738,6 @@ video[data-lazy-video].is-playing {
 }
 [data-pin-stage][data-pin="off"] [data-pin-layer] {
   transform: none !important;
-}
-html.motion-reduced [data-pin-stage] {
-  height: auto !important;
-}
-html.motion-reduced [data-pin-stage] > .pin-palco {
-  position: relative;
-  height: auto;
-  overflow: visible;
-}
-html.motion-reduced [data-pin-stage] [data-pin-layer] {
-  transform: none !important;
-  opacity: 1 !important;
 }
 @media (max-height: 560px) {
   [data-pin-stage][data-pin-mode="sempre"] {
@@ -759,47 +754,10 @@ html.motion-reduced [data-pin-stage] [data-pin-layer] {
 }
 
 /* ==========================================================================
-   Movimento reduzido (§14): tudo visível e legível, sem movimento.
-   ========================================================================== */
-html.motion-reduced
-  .draw
-  :is(path, line, circle, rect, polyline, polygon, ellipse) {
-  stroke-dashoffset: 0 !important;
-  transition: none !important;
-}
-html.motion-reduced .roll > span {
-  transform: none !important;
-}
-html.motion-reduced .roll > span + span {
-  display: none;
-}
-html.motion-reduced .fb > i {
-  transform: none !important;
-  transition: opacity 200ms ease-out;
-}
-html.motion-reduced .odo-rolo {
-  transition: none !important;
-}
-/* CTAs no reduzido: hover só com cor e borda (a varredura vira troca de cor; a seta fica parada) */
-html.motion-reduced .cta-varredura {
-  transform: none !important;
-  opacity: 0;
-  transition: opacity 200ms ease-out;
-}
-html.motion-reduced .group:hover .cta-varredura {
-  opacity: 1;
-}
-html.motion-reduced .cta-seta svg {
-  transition: none !important;
-  transform: none !important;
-}
-html.motion-reduced .cta-seta svg + svg {
-  display: none;
-}
-
-/* ==========================================================================
-   Seguro anti-invisível (§7.1): se o motor não subir em 4 s, tudo aparece.
-   (O mesmo CSS vai no <noscript> do index.html.)
+   Seguro anti-invisível (§7.1): o <head> põe html.motion-failed só quando o JS falhou de fato (script do site
+   que não carregou, erro antes de hidratar, JS que não rodou até o DOMContentLoaded ou hidratação que não
+   terminou em 12 s depois do JS começar a rodar). Aí tudo aparece. (O mesmo CSS vai no <noscript> do index.html.)
+   Não existe mais modo reduzido para o visitante (AJUSTES-SOBRIEDADE §1).
    ========================================================================== */
 html.motion-failed .pt-preloader {
   display: none !important;

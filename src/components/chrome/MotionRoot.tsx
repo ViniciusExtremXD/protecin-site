@@ -3,10 +3,9 @@ import { MotionConfig } from "framer-motion";
 import { bindAnchorLinks, initSmoothScroll } from "../../lib/smooth-scroll";
 
 /**
- * Raiz do motion: avisa o seguro anti-invisível que o motor subiu (html.motion-up) e liga o Lenis (só no movimento
- * completo) e as âncoras internas. O MotionConfig fica em reducedMotion="never" nos dois modos: cada primitiva e
- * peça de chrome lê useMotionPref() e entrega o estado final no reduzido (com "always" o framer-motion emite um
- * aviso no console a cada carga em modo reduzido, e as variantes trocadas depois da hidratação ficavam deslocadas).
+ * Raiz do motion: avisa o seguro anti-invisível que o motor subiu (html.motion-up) e liga o Lenis e as âncoras
+ * internas. O movimento fica sempre ligado (AJUSTES-SOBRIEDADE §1): MotionConfig em reducedMotion="never", para o
+ * framer-motion animar mesmo com prefers-reduced-motion: reduce no sistema.
  */
 export function MotionRoot({ children }: { children: ReactNode }) {
   useEffect(() => {

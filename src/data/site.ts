@@ -342,7 +342,7 @@ export const SERVICOS: Servico[] = [
     resumo: "Comercialização de extintores, mangueiras, sinalizações, sistemas fixos de alta qualidade e demais equipamentos de combate a incêndio.",
     descricao: null,
     chips: ["Extintores", "Mangueiras", "Sinalizações", "Sistemas fixos"],
-    icone: "fire-extinguisher", imagem: "servico-venda", video: "extintor",
+    icone: "fire-extinguisher", imagem: "servico-venda",
   },
   {
     slug: "sinalizacao-de-seguranca", numero: "08", nome: "Sinalização de Segurança", nomeCurto: "Sinalização",
@@ -861,14 +861,15 @@ export const FORM = {
 
 // ---------------------------------------------------------------- faixa de CTA e rodapé (§7.8, §7.10; §2.1 Rodapé)
 export const FAIXA_CTA = {
-  letreiro: "SOLICITAR ORÇAMENTO · ",
+  titulo: "Precisa de uma proposta, agendar uma visita ou tirar dúvidas?",
   frase: "Fale com a Protecin: segunda a sexta, 8h às 17h30.",
 } as const;
 
 export const FOOTER = {
-  slogan: ["PROTEGEMOS SEU MAIOR", "PATRIMÔNIO: A VIDA."],
-  sloganCelular: ["PROTEGEMOS SEU", "MAIOR PATRIMÔNIO:", "A VIDA."],
-  sloganDestaque: ["A", "VIDA."],
+  // caixa normal, como o manifesto do hero (rodada de sobriedade)
+  slogan: ["Protegemos seu maior", "patrimônio: a vida."],
+  sloganCelular: ["Protegemos seu maior", "patrimônio: a vida."],
+  sloganDestaque: ["a", "vida."],
   texto:
     "Com 50 anos de atuação, a Protecin é reconhecida pela confiabilidade e excelência em soluções de prevenção e combate a incêndio. Oferecemos projetos, instalações, manutenções e uma plataforma tecnológica completa, garantindo segurança, conformidade e tranquilidade para empresas em todo o país.",
   secoes: [
@@ -904,9 +905,6 @@ export const RESERVADOS: Record<ReservadoId, { titulo: string; texto: string }> 
 // ---------------------------------------------------------------- créditos (§10.7, §12.2)
 const TITULO_VIDEO: Record<VideoId, string> = {
   hero: "Módulos de sistema fixo de supressão (abertura da página inicial)",
-  tablet: "Profissional com tablet em campo (plataforma)",
-  extintor: "Extintor em sala com fumaça (serviço de venda de equipamentos)",
-  fogo: "Chamas em close (orçamento)",
 };
 
 const NOTA_FOTOS = "Banco de imagens usado no site atual; licença a confirmar com a Protecin.";
@@ -933,14 +931,8 @@ export const CREDITOS: Credito[] = [
     .map((id) => ({ tipo: "foto" as const, titulo: IMAGENS[id].alt, fonte: "Banco de imagens", licenca: NOTA_FOTOS })),
 ];
 
-// ---------------------------------------------------------------- movimento e 404 (§7.7, §10.7)
-export const TOAST = {
-  texto: "Seu sistema pediu menos animação. Este site foi feito para ser visto em movimento.",
-  ativar: "Ativar movimento",
-  manter: "Manter reduzido",
-} as const;
-
-export const MOTION_TOGGLE = { rotulo: "Animações:", ligadas: "ligadas", reduzidas: "reduzidas" } as const;
+// ---------------------------------------------------------------- modo proposta e 404 (§7.7, §10.7)
+// (sem aviso nem botão de movimento: o site anima sempre, AJUSTES-SOBRIEDADE §1)
 export const PROPOSTA = { badge: "Modo proposta · sair" } as const;
 
 export const NOTFOUND = {

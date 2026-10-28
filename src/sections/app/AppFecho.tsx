@@ -1,34 +1,29 @@
 import { PLATAFORMA, WA } from "../../data/site";
-import { RevealGroup, RevealItem, ScrollLitText } from "../../components/motion";
+import { Reveal } from "../../components/motion";
 import { Container } from "../../components/layout/Container";
-import { OrcamentoCta, WhatsAppCta } from "../../components/ui/cta";
-import { Symbol } from "../../components/ui/Symbol";
+import { WhatsAppCta } from "../../components/ui/cta";
 
 /*
- * Fecho de /nosso-app/ (§10.5): a frase final em display-xl acende palavra por palavra com a rolagem e os dois
- * caminhos (orçamento e WhatsApp com a mensagem da plataforma) sobem em seguida. Antes da FaixaCta da página.
+ * Fecho de /nosso-app/ (§10.5), na rodada de sobriedade: a frase final em caixa normal (em caixa alta ela passava
+ * de 3 linhas no celular), com entrada de fade e subida curta, e um CTA só: o WhatsApp com a mensagem da
+ * plataforma. O orçamento fica com a FaixaCta logo abaixo (antes eram os mesmos dois botões duas vezes seguidas).
+ * Sem o símbolo gigante ao fundo e sem a frase acendendo palavra por palavra.
  */
-const FRASE = PLATAFORMA.fecho.replace("resultado,", "*resultado,*");
-
 export default function AppFecho() {
   return (
-    <section id="fecho-app" data-section="APP-FECHO" className="relative isolate overflow-clip bg-marinho-900 pb-32 pt-24 lg:pb-48 lg:pt-36">
-      <div aria-hidden className="absolute inset-0 -z-10 opacity-50">
+    <section id="fecho-app" data-section="APP-FECHO" className="relative isolate overflow-clip bg-marinho-900 py-16 lg:py-24">
+      <div aria-hidden className="absolute inset-0 -z-10 opacity-40">
         <div className="bg-blueprint h-full w-full" />
       </div>
-      <div aria-hidden className="pointer-events-none absolute -right-[12vw] top-1/2 -z-10 hidden -translate-y-1/2 opacity-[0.07] lg:block">
-        <Symbol size="46vw" tone="mono" mode="desenhar" />
-      </div>
       <Container>
-        <ScrollLitText as="h2" text={FRASE} offset={["start 85%", "end 55%"]} className="display-xl max-w-[22ch] text-papel-50" highlightClassName="text-brasa-400" />
-        <RevealGroup stagger={0.06} className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:mt-14">
-          <RevealItem>
-            <OrcamentoCta formLocation="pagina_app" />
-          </RevealItem>
-          <RevealItem>
-            <WhatsAppCta location="pagina_app" message={WA.plataforma} />
-          </RevealItem>
-        </RevealGroup>
+        <Reveal y={20}>
+          <h2 className="display-l max-w-[28ch] text-balance text-[clamp(2rem,3.6vw,3.5rem)] leading-[1.05] text-papel-50">{PLATAFORMA.fecho}</h2>
+        </Reveal>
+        <Reveal y={16} delay={0.1} className="mt-8 lg:mt-10">
+          <WhatsAppCta location="pagina_app" message={WA.plataforma}>
+            {PLATAFORMA.ctas.conhecerPlataforma}
+          </WhatsAppCta>
+        </Reveal>
       </Container>
     </section>
   );

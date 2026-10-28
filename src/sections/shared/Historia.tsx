@@ -1,26 +1,25 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { motion, useMotionValue, useMotionValueEvent, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { motion, useInView, useMotionValue, useMotionValueEvent, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { SECOES, TIMELINE, linhasTexto, type Marco } from "../../data/site";
-import { DUR, EASE_OUT, Odometer, PinStage, Reveal, SPRING, ease, usePin } from "../../components/motion";
+import { EASE_OUT, PinStage, Reveal, ease, usePin } from "../../components/motion";
 import { Container } from "../../components/layout/Container";
 import { OrcamentoCta, WhatsAppCta } from "../../components/ui/cta";
-import { Img } from "../../components/ui/Img";
 import { SectionLabel } from "../../components/ui/SectionLabel";
-import { Symbol } from "../../components/ui/Symbol";
-import { useMotionPref } from "../../lib/motion-pref";
 import { usePath } from "../../lib/router";
 import { resizeSmoothScroll, scrollToProgress } from "../../lib/smooth-scroll";
 import { pushEvent } from "../../lib/track";
-import { MARCOS, irParaAno } from "./historia/dados";
-import { Revela } from "./historia/Revela";
+import { MARCOS, irParaAno, tituloMarco } from "./historia/dados";
+import { H2 } from "./historia/estilo";
 
 /*
- * H7. 50 anos (design-final §9 H7; AJUSTES-DESIGN). Linha do tempo de 1976 a 2026.
- * - Desktop com movimento (PinStage "pin" ativo): os 10 painéis correm na horizontal sobre um trilho. Uma agulha
- *   fixa marca o presente: o que passou dela fica em brasa (linha, nó carimbado, ano preenchido) e o odômetro do
- *   canto mostra o ano. A rolagem presa fica em no máximo 2,4 alturas de tela (teto do QA: 2,5).
- * - Celular, tablet, tela baixa, movimento reduzido, SSR e sem JS: lista vertical com o trilho à esquerda, que
- *   enche com a rolagem; o nó e o ano acendem quando a linha vermelha chega neles.
+ * H7. 50 anos (design-final §9 H7, com qa/AJUSTES-SOBRIEDADE.md por cima). Linha do tempo de 1976 a 2026.
+ * - Desktop (PinStage "pin" ativo): os 10 marcos correm na horizontal sobre um eixo com um nó por ano. A linha
+ *   vermelha vai de 1976 a 2026 junto com a rolagem e acende cada nó que alcança. Rolagem presa de no máximo
+ *   1,2 tela (altura da seção ≤ 220vh).
+ * - Celular, tablet, tela baixa, SSR e sem JS: lista vertical compacta com o trilho à esquerda, que enche com a
+ *   rolagem; o nó acende quando a linha chega nele. Sem cena presa.
+ * Fora da rodada 1: odômetro do ano, mini-régua, carimbo e brilho dos nós, agulha com glow, anos em contorno,
+ * símbolo e celular nos painéis, rótulos mono por marco (viraram títulos curtos) e o sobretítulo.
  */
 
 type Variante = "home" | "completa";
@@ -28,21 +27,15 @@ export interface HistoriaProps {
   variant?: Variante;
 }
 
-const AGULHA = 0.38; // fração da largura do palco onde fica a agulha
-const ROLAGEM_MAX = 2.4; // alturas de tela de rolagem presa (≤ 2,5)
+const ROLAGEM_MAX = 1.2; // alturas de tela de rolagem presa
 const N = MARCOS.length;
 const CHAVE_SESSAO = "pt-timeline";
+const entrada = (delay = 0) => ({ duration: 0.6, ease: ease(EASE_OUT), delay });
 
 const cabecalho = (v: Variante) =>
   v === "completa"
-    ? { index: "01", label: TIMELINE.label, sobretitulo: null, h2: TIMELINE.h2Completa }
-    : { index: SECOES.historia.index, label: SECOES.historia.label, sobretitulo: TIMELINE.sobretitulo, h2: TIMELINE.h2 };
-
-/**
- * Contorno do ano. A cor do texto continua papel-50 (é o que o axe lê para o contraste); só o preenchimento fica
- * transparente. A espessura vem de --traco.
- */
-const CONTORNO = "text-papel-50 [-webkit-text-fill-color:transparent] [-webkit-text-stroke:var(--traco,1px)_rgba(243,239,233,0.42)]";
+    ? { index: "01", label: TIMELINE.label, h2: TIMELINE.h2Completa }
+    : { index: SECOES.historia.index, label: SECOES.historia.label, h2: TIMELINE.h2 };
 
 /** timeline_complete uma vez por sessão (§13). */
 let avisado = false;
@@ -60,66 +53,30 @@ function avisarFim() {
 
 // ---------------------------------------------------------------- peças comuns
 
-/** Ano em contorno com a cópia preenchida por cima (decorativa, aria-hidden). `aceso` liga o preenchimento. */
-function Ano({ ano, aceso, transicao = true }: { ano: number; aceso: boolean; transicao?: boolean }) {
+function Ctas({ variant, coluna }: { variant: Variante; coluna?: boolean }) {
   return (
-    <span className="relative block w-max">
-      <span className={`block ${CONTORNO}`}>{ano}</span>
-      <span
-        aria-hidden
-        className={`absolute inset-0 block text-brasa-400 ${transicao ? "transition-opacity duration-300 ease-out" : ""}`}
-        style={{ opacity: aceso ? 1 : 0 }}
-      >
-        {ano}
-      </span>
-    </span>
-  );
-}
-
-function Ctas({ variant }: { variant: Variante }) {
-  return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-      <OrcamentoCta formLocation="historia" />
-      <WhatsAppCta location="historia" detail={variant === "completa" ? "institucional" : undefined} />
+    <div className={`flex flex-col items-start gap-3 ${coluna ? "" : "sm:flex-row sm:flex-wrap"}`}>
+      <OrcamentoCta formLocation="historia" size="sm" />
+      <WhatsAppCta location="historia" size="sm" detail={variant === "completa" ? "institucional" : undefined} />
     </div>
   );
 }
 
-function Cabecalho({ variant, compacto, children }: { variant: Variante; compacto?: boolean; children?: ReactNode }) {
+function Cabecalho({ variant, palco }: { variant: Variante; palco?: boolean }) {
   const c = cabecalho(variant);
+  // no palco fixo o título também respeita a altura da tela (telas baixas)
+  const tam = palco ? "lg:text-[clamp(2rem,min(4.2vw,7.2svh),4rem)]" : "";
   return (
-    <div className="flex items-end justify-between gap-10">
-      <div className="min-w-0 max-w-[56rem]">
-        <SectionLabel index={c.index} label={c.label} />
-        {c.sobretitulo && (
-          <Reveal y={16} delay={0.08} className={compacto ? "[@media(max-height:820px)]:hidden" : undefined}>
-            <p className={`text-[17px] font-medium text-papel-300 ${compacto ? "mt-4" : "mt-5"}`}>{c.sobretitulo}</p>
-          </Reveal>
-        )}
-        <Revela
-          as="h2"
-          texto={c.h2.linhas}
-          className={
-            compacto
-              ? "stretch-66 mt-3 text-[clamp(1.75rem,min(3.1vw,5.4svh),3.25rem)] font-[800] uppercase leading-[0.92] text-papel-50"
-              : "display-xl mt-4 text-papel-50"
-          }
-        />
-      </div>
-      {children}
+    <div className="max-w-[48rem]">
+      <SectionLabel index={c.index} label={c.label} />
+      <Reveal y={20} delay={0.06}>
+        <h2 className={`${H2} ${tam} mt-4 text-papel-50 lg:mt-5`}>{c.h2.texto}</h2>
+      </Reveal>
     </div>
   );
 }
 
 // ---------------------------------------------------------------- versão horizontal (cena fixada)
-
-interface Geo {
-  vw: number; // largura do palco
-  cl: number; // borda esquerda do conteúdo (alinhada ao Container)
-  w: number; // largura do trilho
-  d: number; // distância horizontal total
-  lefts: number[];
-}
 
 function Horizontal({ variant, definirAltura }: { variant: Variante; definirAltura: (h: number | null) => void }) {
   const { progress } = usePin();
@@ -127,26 +84,25 @@ function Horizontal({ variant, definirAltura }: { variant: Variante; definirAltu
   const faixa = useRef<HTMLDivElement>(null);
   const trilho = useRef<HTMLOListElement>(null);
   const paineis = useRef<(HTMLLIElement | null)[]>([]);
-  const [geo, setGeo] = useState<Geo | null>(null);
-  const [estado, setEstado] = useState({ ativo: 0, revelado: 0 });
+  const geo = useRef({ fl: 0, d: 0, lefts: [] as number[] });
   const dist = useMotionValue(0);
   const x = useTransform([progress, dist], ([p, d]: number[]) => -p * d);
+  const visto = useInView(palco, { once: true, margin: "0px 0px -25% 0px" });
+  const [ativo, setAtivo] = useState(0);
+  const [revelado, setRevelado] = useState(-1);
+  const lote = useRef(-1); // quantos painéis entraram juntos quando a seção apareceu (cascata só nesses)
 
   // mede o trilho (fontes, redimensionamento) e define a altura da seção: 100vh + rolagem presa
   useEffect(() => {
     const medir = () => {
-      const p = palco.current;
       const f = faixa.current;
       const t = trilho.current;
-      if (!p || !f || !t) return;
-      const vw = p.clientWidth;
-      const cl = f.getBoundingClientRect().left - p.getBoundingClientRect().left;
-      const w = t.scrollWidth;
-      const d = Math.max(0, cl + w - vw);
-      const lefts = paineis.current.map((el) => el?.offsetLeft ?? 0);
+      if (!f || !t) return;
+      const d = Math.max(0, t.scrollWidth - f.clientWidth);
+      geo.current = { fl: f.getBoundingClientRect().left, d, lefts: paineis.current.map((el) => el?.offsetLeft ?? 0) };
       dist.set(d);
-      setGeo((g) => (g && g.vw === vw && g.cl === cl && g.w === w && g.lefts.every((v, i) => v === lefts[i]) ? g : { vw, cl, w, d, lefts }));
       definirAltura(Math.round(window.innerHeight + Math.min(d, ROLAGEM_MAX * window.innerHeight)));
+      calcular(progress.get());
     };
     medir();
     const ro = new ResizeObserver(medir);
@@ -160,104 +116,58 @@ function Horizontal({ variant, definirAltura }: { variant: Variante; definirAltu
       window.removeEventListener("resize", medir);
       definirAltura(null);
     };
-  }, [dist, definirAltura]);
+  }, [dist, definirAltura]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // o que passou da agulha está aceso; o texto sobe (uma vez) quando o painel entra na tela
-  const calcular = (p: number) => {
-    if (!geo) return;
-    let ativo = 0;
-    let revelado = 0;
-    for (let i = 0; i < N; i++) {
-      const s = geo.cl + geo.lefts[i] - p * geo.d; // borda esquerda do painel na tela
-      if (s <= AGULHA * geo.vw + 2) ativo = i;
-      if (s <= 0.9 * geo.vw) revelado = i;
-    }
-    setEstado((e) => {
-      const rev = Math.max(e.revelado, revelado);
-      return e.ativo === ativo && e.revelado === rev ? e : { ativo, revelado: rev };
+  // nó alcançado pela linha (que vai de 1976 a 2026 com a rolagem) e painéis que já entraram na tela
+  function calcular(p: number) {
+    const a = Math.max(0, Math.min(N - 1, Math.floor(p * (N - 1) + 0.02)));
+    setAtivo((v) => (v === a ? v : a));
+    const { fl, d, lefts } = geo.current;
+    let r = -1;
+    lefts.forEach((l, i) => {
+      if (fl + l - p * d < window.innerWidth * 0.92) r = i;
     });
-  };
+    setRevelado((v) => Math.max(v, r));
+  }
   useMotionValueEvent(progress, "change", calcular);
-  useEffect(() => calcular(progress.get()), [geo]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (estado.ativo === N - 1) avisarFim();
-  }, [estado.ativo]);
+    if (visto && lote.current < 0) lote.current = revelado + 1;
+  }, [visto, revelado]);
+  useEffect(() => {
+    if (ativo === N - 1) avisarFim();
+  }, [ativo]);
 
-  // linha vermelha: do início do trilho até a agulha (escala no eixo x do trilho)
-  const preenchido = useTransform([progress, dist], ([p, d]: number[]) =>
-    geo && geo.w > 0 ? Math.min(1, Math.max(0, (AGULHA * geo.vw - geo.cl + p * d) / geo.w)) : 0,
-  );
-
-  /** Rola até o ponto em que o painel i fica logo depois da agulha (nós e foco por teclado). */
+  /** Rola até o ponto em que a linha alcança o marco i (nós e foco por teclado). */
   const irPara = (i: number) => {
     const secao = palco.current?.closest<HTMLElement>("[data-pin-stage]");
-    if (!secao || !geo || geo.d <= 0) return;
-    const alvo = i === 0 ? 0 : (geo.cl + geo.lefts[i] - (AGULHA - 0.04) * geo.vw) / geo.d;
-    scrollToProgress(secao, Math.min(1, Math.max(0, alvo)));
+    if (secao) scrollToProgress(secao, i / (N - 1));
   };
 
-  const marco = MARCOS[estado.ativo];
-
   return (
+    // título e trilho centrados juntos na altura que sobra abaixo do menu ("safe": em tela baixa encosta no topo)
     <div
       ref={palco}
-      className="relative flex h-full flex-col [--base:15svh] [--traco:1.5px] [@media(max-height:820px)]:[--base:11svh] [@media(min-height:1000px)]:[--base:17svh]"
-      style={{ "--agulha": `${AGULHA * 100}%` } as CSSProperties}
+      className="relative flex h-full flex-col pb-[clamp(24px,5svh,56px)] pt-[clamp(80px,10svh,96px)] [--hist-ano:clamp(3.25rem,min(6.2vw,10.5svh),6.5rem)] [--hist-pt:clamp(24px,5.5svh,56px)] [justify-content:safe_center]"
     >
-      {/* luz estática da marca sob a agulha */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{ background: "radial-gradient(36% 44% at var(--agulha) calc(100% - var(--base)), rgba(190,30,41,0.2), rgba(190,30,41,0) 70%)" }}
-      />
-
-      <Container className="relative z-[2] shrink-0 pt-[clamp(88px,12.5svh,124px)]">
-        <Cabecalho variant={variant} compacto>
-          <Reveal y={16} delay={0.12} className="shrink-0 text-right">
-            <p className="rotulo text-papel-500">
-              <motion.span
-                key={marco.ano}
-                className="inline-block"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: DUR.curta, ease: ease(EASE_OUT) }}
-              >
-                {marco.rotulo}
-              </motion.span>
-            </p>
-            <p className="mt-2 font-mono text-[28px] font-medium leading-none text-papel-50 [--od-w:0.6em]">
-              <Odometer value={String(marco.ano)} trigger="value" />
-            </p>
-            <div aria-hidden className="rotulo mt-4 flex items-center justify-end gap-3 text-papel-500">
-              <span>{MARCOS[0].ano}</span>
-              <span className="relative block h-[2px] w-28 bg-noite-600">
-                <motion.span className="absolute inset-0 block origin-left bg-brasa-400" style={{ scaleX: progress }} />
-              </span>
-              <span>{MARCOS[N - 1].ano}</span>
-            </div>
-          </Reveal>
-        </Cabecalho>
+      <Container className="relative z-[1] shrink-0">
+        <Cabecalho variant={variant} palco />
       </Container>
 
-      <div className="relative z-[1] min-h-0 flex-1">
-        <Container className="absolute inset-0">
-          <div ref={faixa} className="relative h-full">
-            <motion.div data-pin-layer="" className="absolute inset-y-0 left-0 w-max" style={{ x }}>
-              {/* trilho de 2 px em todo o comprimento, com a linha vermelha até a agulha */}
-              <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-[var(--base)] h-[2px] translate-y-1/2 bg-noite-600">
-                <motion.span className="absolute inset-0 block origin-left bg-brasa-500" style={{ scaleX: preenchido }} />
-              </div>
-              <ol ref={trilho} className="relative flex h-full w-max pr-[20vw]">
+      <div className="relative shrink-0">
+        <Container>
+          <div ref={faixa} className="relative">
+            <motion.div data-pin-layer="" className="relative w-max" style={{ x }}>
+              <ol ref={trilho} className="flex w-max items-start pt-[var(--hist-pt)]">
                 {MARCOS.map((m, i) => (
                   <Painel
                     key={m.ano}
                     m={m}
                     i={i}
-                    geo={geo}
                     progress={progress}
-                    aceso={estado.ativo >= i}
-                    revelado={estado.revelado >= i}
+                    aceso={ativo >= i}
+                    visivel={visto && revelado >= i}
+                    atraso={i < lote.current ? i * 0.08 : 0}
                     variant={variant}
                     irPara={irPara}
                     registrar={(el) => {
@@ -270,12 +180,6 @@ function Horizontal({ variant, definirAltura }: { variant: Variante; definirAltu
           </div>
         </Container>
       </div>
-
-      {/* agulha: o presente da linha do tempo */}
-      <span aria-hidden className="pointer-events-none absolute bottom-[var(--base)] left-[var(--agulha)] z-[3] block" style={{ translate: "-50% 50%" }}>
-        <span className="absolute bottom-1/2 left-1/2 h-16 w-px -translate-x-1/2 bg-gradient-to-t from-brasa-400/80 to-brasa-400/0" />
-        <span className="block h-2.5 w-2.5 rounded-full bg-brasa-400 shadow-[0_0_0_6px_rgba(232,68,46,0.16),0_0_24px_rgba(232,68,46,0.55)]" />
-      </span>
     </div>
   );
 }
@@ -283,121 +187,94 @@ function Horizontal({ variant, definirAltura }: { variant: Variante; definirAltu
 function Painel({
   m,
   i,
-  geo,
   progress,
   aceso,
-  revelado,
+  visivel,
+  atraso,
   variant,
   irPara,
   registrar,
 }: {
   m: Marco;
   i: number;
-  geo: Geo | null;
   progress: MotionValue<number>;
   aceso: boolean;
-  revelado: boolean;
+  visivel: boolean;
+  atraso: number;
   variant: Variante;
   irPara: (i: number) => void;
   registrar: (el: HTMLLIElement | null) => void;
 }) {
-  // deslocamento do painel em relação à posição de repouso (alinhado ao Container): 0 no 1976 parado
-  const desloc = (p: number) => (geo ? p * geo.d - geo.lefts[i] : 0);
-  const xAno = useTransform(progress, (p) => 0.06 * desloc(p)); // o ano corre um pouco mais devagar que o trilho
-  const yCelular = useTransform(progress, (p) => -0.05 * desloc(p));
   const final = !!m.final;
-  const entrada = { duration: DUR.base, ease: ease(EASE_OUT) };
+  // trecho do eixo entre este nó e o próximo: enche conforme a linha passa por ele
+  const enche = useTransform(progress, (p) => Math.min(1, Math.max(0, p * (N - 1) - i)));
 
   return (
     <li
       ref={registrar}
-      className={`relative h-full shrink-0 ${final ? "w-[max(44vw,600px)]" : "w-[max(38vw,520px)]"}`}
+      className="relative w-[clamp(320px,24vw,380px)] shrink-0 pr-10"
       onFocusCapture={(e) => {
         if (e.target instanceof HTMLElement && e.target.matches(":focus-visible")) irPara(i);
       }}
     >
-      <div className="pr-[4vw] pt-[clamp(14px,3.6svh,52px)]">
-        <div className="flex items-end gap-6">
-          <h3 className="display-xxl text-[min(14vw,21svh)] [@media(max-height:820px)]:text-[min(14vw,18svh)]">
-            <motion.span className="block" style={{ x: xAno }}>
-              <Ano ano={m.ano} aceso={aceso} />
-            </motion.span>
-          </h3>
-          {(m.simbolo || final) && (
-            <span className="mb-[0.4vw] shrink-0">
-              <Symbol size={72} tone="escuro" mode="montar" />
-            </span>
-          )}
-        </div>
-        <motion.div
-          initial={false}
-          animate={revelado ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
-          transition={entrada}
-          data-motion="sobe"
-          className={final ? "max-w-[36rem]" : m.imagem ? "max-w-[34ch]" : "max-w-[38ch]"}
+      <motion.h3
+        className="stretch-62 tnum block text-[length:var(--hist-ano)] font-[850] uppercase leading-[0.82] text-papel-50"
+        initial={false}
+        animate={visivel ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        transition={entrada(atraso)}
+        data-motion="sobe"
+      >
+        {m.ano}
+      </motion.h3>
+
+      {/* eixo: trecho até o próximo nó + nó (botão que leva a rolagem até o ano) */}
+      <div className="relative my-2 h-11">
+        {!final && (
+          <span aria-hidden className="absolute left-0 right-0 top-1/2 block h-px bg-noite-600">
+            <motion.span className="absolute inset-0 block origin-left bg-brasa-500" style={{ scaleX: enche }} />
+          </span>
+        )}
+        <button
+          type="button"
+          aria-label={irParaAno(m.ano)}
+          onClick={() => irPara(i)}
+          className="absolute left-0 top-1/2 z-[1] grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full"
         >
-          <p className="rotulo mt-5 text-brasa-300">{m.rotulo}</p>
-          {final ? (
-            <>
-              <p className="titulo mt-3 max-w-[22ch] text-papel-50">{m.texto}</p>
-              <div className="mt-7">
-                <Ctas variant={variant} />
-              </div>
-            </>
-          ) : (
-            <p className="mt-3 text-[17px] leading-[1.6] text-papel-300">{m.texto}</p>
-          )}
-        </motion.div>
+          <span
+            aria-hidden
+            className={`block h-2.5 w-2.5 rounded-full border-2 transition-colors duration-300 ${aceso ? "border-brasa-500 bg-brasa-500" : "border-noite-500 bg-noite-900"}`}
+          />
+        </button>
       </div>
 
-      {m.imagem && (
-        <motion.div
-          initial={false}
-          animate={revelado ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
-          transition={{ ...entrada, delay: 0.1 }}
-          data-motion="sobe"
-          className="pointer-events-none absolute bottom-[calc(var(--base)+32px)] right-[2.5vw] w-[clamp(120px,10vw,160px)]"
-        >
-          <motion.div style={{ y: yCelular }}>
-            <Img id={m.imagem} alt="" sizes="160px" className="block" imgClassName="h-auto w-full drop-shadow-[0_28px_36px_rgba(0,0,0,0.6)]" />
-          </motion.div>
-        </motion.div>
-      )}
-
-      {/* nó: botão que leva a rolagem até o ano */}
-      <button
-        type="button"
-        aria-label={irParaAno(m.ano)}
-        onClick={() => irPara(i)}
-        className="absolute bottom-[var(--base)] left-0 z-[2] grid h-11 w-11 place-items-center rounded-full"
-        style={{ translate: "-50% 50%" }}
+      <motion.div
+        initial={false}
+        animate={visivel ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        transition={entrada(atraso + 0.08)}
+        data-motion="sobe"
       >
-        <span aria-hidden className="relative block h-3 w-3">
-          <span className="absolute -inset-2 rounded-full bg-brasa-400/35 blur-[6px] transition-opacity duration-300" style={{ opacity: aceso ? 1 : 0 }} />
-          <motion.span
-            key={aceso ? "on" : "off"}
-            className={`absolute inset-0 rounded-full border-2 ${aceso ? "border-brasa-400 bg-brasa-500" : "border-noite-500 bg-noite-900"}`}
-            initial={aceso ? { scale: 1.6, rotate: -8, opacity: 0.4 } : false}
-            animate={{ scale: 1, rotate: 0, opacity: 1 }}
-            transition={{ type: "spring", ...SPRING.encaixe }}
-          />
-        </span>
-      </button>
+        <p className="text-[19px] font-semibold leading-snug text-papel-50">{tituloMarco(m)}</p>
+        <p className="mt-2 text-[16px] leading-[1.6] text-papel-300 [@media(min-height:800px)]:text-[17px]">{m.texto}</p>
+        {final && (
+          <div className="mt-6">
+            <Ctas variant={variant} coluna />
+          </div>
+        )}
+      </motion.div>
     </li>
   );
 }
 
-// ---------------------------------------------------------------- versão vertical (estática)
+// ---------------------------------------------------------------- versão vertical (celular, SSR, sem JS)
 
 function Vertical({ variant }: { variant: Variante }) {
-  const reduced = useMotionPref() === "reduced";
   const [montado, setMontado] = useState(false);
   useEffect(() => setMontado(true), []);
   const lista = useRef<HTMLOListElement>(null);
   const itens = useRef<(HTMLLIElement | null)[]>([]);
   const fracoes = useRef<number[]>([]);
   const [aceso, setAceso] = useState(-1);
-  const { scrollYProgress } = useScroll({ target: lista, offset: ["start 65%", "end 65%"] });
+  const { scrollYProgress } = useScroll({ target: lista, offset: ["start 70%", "end 70%"] });
 
   const atualizar = (v: number) => {
     let k = -1;
@@ -414,7 +291,7 @@ function Vertical({ variant }: { variant: Variante }) {
     const medir = () => {
       const ol = lista.current;
       if (!ol || !ol.offsetHeight) return;
-      fracoes.current = itens.current.map((li) => ((li?.offsetTop ?? 0) + 30) / ol.offsetHeight);
+      fracoes.current = itens.current.map((li) => ((li?.offsetTop ?? 0) + 14) / ol.offsetHeight);
       atualizar(scrollYProgress.get());
     };
     medir();
@@ -423,23 +300,20 @@ function Vertical({ variant }: { variant: Variante }) {
     return () => ro.disconnect();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // SSR, sem JS e reduzido: tudo aceso
-  const todos = !montado || reduced;
-  const montaSimbolo = montado && !reduced;
-  const acende = (i: number) => todos || aceso >= i;
+  // SSR e sem JS: linha cheia e todos os nós acesos
+  const acende = (i: number) => !montado || aceso >= i;
 
   return (
-    <div className="relative py-24 lg:py-40">
+    <div className="relative py-16 md:py-24 lg:py-28">
       <Container>
         <Cabecalho variant={variant} />
 
-        <div className="relative mt-16 lg:mt-24">
-          <div aria-hidden className="pointer-events-none absolute bottom-3 left-[11px] top-3 w-[2px] bg-noite-600">
-            <motion.span className="absolute inset-0 block origin-top bg-brasa-500" style={{ scaleY: reduced ? 1 : scrollYProgress }} />
+        <div className="relative mt-10 md:mt-14">
+          <div aria-hidden className="pointer-events-none absolute bottom-2 left-[4px] top-3.5 w-px bg-noite-600">
+            <motion.span className="absolute inset-0 block origin-top bg-brasa-500" style={montado ? { scaleY: scrollYProgress } : undefined} />
           </div>
           <ol ref={lista} className="relative">
             {MARCOS.map((m, i) => {
-              const on = acende(i);
               const final = !!m.final;
               return (
                 <li
@@ -447,55 +321,24 @@ function Vertical({ variant }: { variant: Variante }) {
                   ref={(el) => {
                     itens.current[i] = el;
                   }}
-                  className="relative grid grid-cols-1 gap-y-4 pb-16 pl-12 last:pb-0 md:grid-cols-[15rem_minmax(0,1fr)] md:gap-x-10 md:pl-16 lg:grid-cols-[24rem_minmax(0,1fr)] lg:pb-24"
+                  className="relative pb-7 pl-7 last:pb-0 md:grid md:grid-cols-[9rem_minmax(0,1fr)] md:gap-x-8 md:pb-10 md:pl-10"
                 >
                   {/* nó */}
                   <span
                     aria-hidden
-                    className="absolute left-[12px] top-[27px] block h-3 w-3 md:top-[38px] lg:top-[calc(clamp(6.5rem,9vw,8.5rem)*0.43)]"
-                    style={{ translate: "-50% -50%" }}
-                  >
-                    <span className="absolute -inset-2 rounded-full bg-brasa-400/35 blur-[6px] transition-opacity duration-300" style={{ opacity: on ? 1 : 0 }} />
-                    <span
-                      className={`absolute inset-0 rounded-full border-2 transition-[background-color,border-color,transform] duration-300 ${
-                        on ? "scale-100 border-brasa-400 bg-brasa-500" : "scale-75 border-noite-500 bg-noite-900"
-                      }`}
-                    />
-                  </span>
-
-                  <div className="flex items-start gap-5">
-                    <h3 className="stretch-62 text-[64px] font-[850] uppercase leading-[0.86] md:text-[88px] lg:text-[clamp(6.5rem,9vw,8.5rem)]">
-                      <Ano ano={m.ano} aceso={on} transicao={montado} />
-                    </h3>
-                    {(m.simbolo || final) && (
-                      <span className="mt-1 md:mt-2">
-                        {/* SSR/sem JS: símbolo parado (o "montar" da base sai do servidor sem as cantoneiras) */}
-                        <Symbol
-                          key={montaSimbolo ? "montar" : "estatico"}
-                          size="100%"
-                          tone="escuro"
-                          mode={montaSimbolo ? "montar" : "estatico"}
-                          className="h-14 w-14 md:h-[72px] md:w-[72px]"
-                        />
-                      </span>
-                    )}
-                  </div>
-
-                  <Reveal className="md:pt-2 lg:pt-5">
-                    <p className="rotulo text-brasa-300">{m.rotulo}</p>
-                    {final ? (
-                      <>
-                        <p className="titulo mt-3 max-w-[24ch] text-papel-50">{m.texto}</p>
-                        <div className="mt-8">
-                          <Ctas variant={variant} />
-                        </div>
-                      </>
-                    ) : (
-                      <p className="corpo mt-3 max-w-[56ch] text-papel-300">{m.texto}</p>
-                    )}
-                    {m.imagem && (
-                      <div className="mt-8 w-[132px] md:w-[156px]">
-                        <Img id={m.imagem} alt="" sizes="156px" className="block" imgClassName="h-auto w-full drop-shadow-[0_24px_30px_rgba(0,0,0,0.55)]" />
+                    className={`absolute left-[4.5px] top-[14px] block h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-colors duration-300 md:top-[22px] ${
+                      acende(i) ? "border-brasa-500 bg-brasa-500" : "border-noite-500 bg-noite-900"
+                    }`}
+                  />
+                  <Reveal y={16} className="flex items-baseline gap-3 md:block">
+                    <h3 className="stretch-62 tnum text-[30px] font-[850] uppercase leading-none text-papel-50 md:text-[44px]">{m.ano}</h3>
+                    <p className="text-[15px] font-semibold leading-snug text-papel-50 md:mt-2 md:text-[16px] md:text-papel-300">{tituloMarco(m)}</p>
+                  </Reveal>
+                  <Reveal y={16} delay={0.06} className="mt-1.5 md:mt-0 md:pt-1">
+                    <p className="max-w-[62ch] text-[16px] leading-[1.55] text-papel-300 lg:text-[17px]">{m.texto}</p>
+                    {final && (
+                      <div className="mt-5">
+                        <Ctas variant={variant} />
                       </div>
                     )}
                   </Reveal>
@@ -543,7 +386,7 @@ export default function Historia({ variant }: HistoriaProps = {}) {
       >
         {TIMELINE.pular}
       </a>
-      <PinStage id="historia" mode="pin" heightClassName="h-[var(--hist-h,340vh)]" className="grain bg-noite-900" label={linhasTexto(h2.linhas)}>
+      <PinStage id="historia" mode="pin" heightClassName="h-[var(--hist-h,220vh)]" className="grain bg-noite-900" label={linhasTexto(h2.linhas)}>
         <Palco variant={v} definirAltura={setAltura} />
       </PinStage>
     </div>

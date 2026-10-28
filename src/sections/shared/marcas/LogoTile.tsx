@@ -1,34 +1,44 @@
-import { useRef, type CSSProperties } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { AUTORIZADAS, type Marca } from "../../../data/site";
+import { useId, type CSSProperties } from "react";
+import { AUTORIZADAS, GRUPOS_MARCAS, type Marca } from "../../../data/site";
 import { IMAGENS } from "../../../data/imagens.gen";
-import { FocusBrackets } from "../../../components/motion";
+import { RevealGroup, RevealItem } from "../../../components/motion";
 import { Img } from "../../../components/ui/Img";
-import { useMotionPref } from "../../../lib/motion-pref";
 
 /*
- * Logo de fabricante ou entidade (design-final §9 H2 e §10.3). Nunca de cliente: o grupo vai em data-marca
- * ("autorizada" | "marca" | "filiacao") para o verify conferir que "AUTORIZADA" só aparece junto das quatro autorizações.
+ * Logo de fabricante ou entidade (design-final §9 H2 e §10.3; sobriedade §3). Nunca de cliente: o grupo vai em
+ * data-marca ("autorizada" | "marca" | "filiacao") para o verify conferir que "Autorizada" só aparece junto das
+ * quatro autorizações.
  *
  * O tamanho do logo é normalizado pela área (largura = base × √proporção, altura = base ÷ √proporção), para logos
- * largos e logos quadrados pesarem igual na fita e no ladrilho.
- * Em repouso: grayscale(1) e opacidade 0,72. Hover ou foco no pai (.group): cor original e as cantoneiras de foco.
+ * largos e logos quadrados pesarem igual. Em repouso: tons de cinza; hover ou foco no pai (.group): cor original.
+ * Sem cantoneiras, sem nome que aparece no hover, sem rótulo repetido entre logos.
  */
 
 export interface LogoTileProps {
   marca?: Marca;
-  variante?: "ladrilho" | "fita"; // ladrilho 3:2 com fundo (grades) ou só o logo (fitas)
+  variante?: "ladrilho" | "fita"; // ladrilho 3:2 com borda fina (grades) ou só o logo numa célula (faixas)
   tom?: "claro" | "escuro";
-  parallax?: boolean; // logo com y 4% → -4% pela rolagem (ladrilhos grandes)
-  nome?: boolean; // nome mono sob o ladrilho no hover (ladrilho; padrão true)
   className?: string;
 }
 
-/** Proporção do arquivo → largura/altura relativas a uma base (CSS var --lb). */
-function medidas(marca: Marca): CSSProperties {
+// Base do logo (lado de um quadrado de mesma área), em px: faixa no celular e no desktop.
+const BASE = { fita: [40, 50], ladrilho: [44, 56] } as const;
+
+const raiz = (marca: Marca) => {
   const info = IMAGENS[marca.imagem];
-  const r = Math.sqrt(info.w / info.h);
+  return Math.sqrt(info.w / info.h);
+};
+
+/** Proporção do arquivo → largura/altura relativas à base (CSS var --lb). */
+function medidas(marca: Marca): CSSProperties {
+  const r = raiz(marca);
   return { width: `calc(var(--lb) * ${r.toFixed(3)})`, height: `calc(var(--lb) / ${r.toFixed(3)})` };
+}
+
+/** `sizes` pela largura exibida do logo (o Img já reforça a densidade nas telas de DPR baixo). */
+function sizesDe(marca: Marca, base: readonly [number, number]): string {
+  const r = raiz(marca);
+  return `(min-width: 1024px) ${Math.ceil(base[1] * r)}px, ${Math.ceil(base[0] * r)}px`;
 }
 
 function Logo({ marca, tom, sizes }: { marca: Marca; tom: "claro" | "escuro"; sizes: string }) {
@@ -40,61 +50,72 @@ function Logo({ marca, tom, sizes }: { marca: Marca; tom: "claro" | "escuro"; si
         alt={marca.nome}
         sizes={sizes}
         className="block h-full w-full"
-        imgClassName="h-full w-full object-contain opacity-[.72] grayscale transition-[filter,opacity] duration-300 ease-out group-hover:opacity-100 group-hover:grayscale-0 group-focus-within:opacity-100 group-focus-within:grayscale-0"
+        imgClassName="h-full w-full object-contain opacity-75 grayscale transition-[filter,opacity] duration-300 ease-out group-hover:opacity-100 group-hover:grayscale-0 group-focus-within:opacity-100 group-focus-within:grayscale-0"
       />
     </span>
   );
 }
 
-function LogoParallax({ marca, tom, sizes }: { marca: Marca; tom: "claro" | "escuro"; sizes: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduced = useMotionPref() === "reduced";
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["4%", "-4%"]);
-  return (
-    <motion.div ref={ref} data-motion="parallax" className="grid h-full w-full place-items-center" style={reduced ? { y: 0 } : { y }}>
-      <Logo marca={marca} tom={tom} sizes={sizes} />
-    </motion.div>
-  );
-}
-
-export function LogoTile({ marca = AUTORIZADAS[0], variante = "ladrilho", tom = "claro", parallax = false, nome = true, className }: LogoTileProps) {
+export function LogoTile({ marca = AUTORIZADAS[0], variante = "ladrilho", tom = "claro", className }: LogoTileProps) {
   const claro = tom === "claro";
 
   if (variante === "fita") {
     return (
-      <span data-marca={marca.grupo} className={`group relative grid shrink-0 place-items-center px-3 py-2 [--lb:52px] lg:[--lb:64px] ${className ?? ""}`}>
-        <Logo marca={marca} tom={tom} sizes="(min-width: 1024px) 240px, 160px" />
-        <FocusBrackets tone={tom} offset={6} size={12} />
+      <span
+        data-marca={marca.grupo}
+        className={`group flex h-[72px] items-center justify-center px-3 [--lb:40px] lg:h-[96px] lg:[--lb:50px] ${className ?? ""}`}
+      >
+        <Logo marca={marca} tom={tom} sizes={sizesDe(marca, BASE.fita)} />
       </span>
     );
   }
 
   return (
-    <div data-marca={marca.grupo} className={`group relative ${className ?? ""}`}>
-      <div
-        className={`relative grid aspect-[3/2] place-items-center overflow-visible rounded-r-md border transition-colors duration-300 [container-type:inline-size] ${
-          claro ? "border-noite-950/10 bg-papel-100 group-hover:border-noite-950/25" : "border-noite-700 bg-noite-900 group-hover:border-papel-50/25"
-        }`}
-      >
-        <div className="absolute inset-0 grid place-items-center overflow-clip rounded-r-md [--lb:28cqw]">
-          {parallax ? <LogoParallax marca={marca} tom={tom} sizes="(min-width: 1024px) 480px, 240px" /> : <Logo marca={marca} tom={tom} sizes="(min-width: 1024px) 240px, 160px" />}
-        </div>
-        <FocusBrackets tone={tom} offset={8} />
-      </div>
-      {nome && (
-        <p
-          aria-hidden
-          className={`rotulo mt-3 translate-y-1.5 opacity-0 transition-[opacity,transform] duration-200 ease-out group-hover:translate-y-0 group-hover:opacity-100 [@media(hover:none)]:translate-y-0 [@media(hover:none)]:opacity-100 ${
-            claro ? "text-grafite-600" : "text-papel-500"
-          }`}
-        >
-          {marca.nome}
-        </p>
-      )}
+    <div
+      data-marca={marca.grupo}
+      className={`group grid aspect-[3/2] place-items-center rounded-xl border transition-colors duration-300 [--lb:44px] lg:[--lb:56px] ${
+        claro ? "border-noite-950/10 bg-papel-50 hover:border-noite-950/25" : "border-papel-50/10 bg-noite-900 hover:border-papel-50/25"
+      } ${className ?? ""}`}
+    >
+      <Logo marca={marca} tom={tom} sizes={sizesDe(marca, BASE.ladrilho)} />
     </div>
   );
 }
 
-/** Uso isolado no sandbox (shared/marcas/LogoTile). As seções importam o LogoTile nomeado. */
+export interface FaixaMarcasProps {
+  grupo: "autorizada" | "marca" | "filiacao";
+  itens: Marca[];
+  tom?: "claro" | "escuro";
+  titulo?: "h3" | "p";
+}
+
+/**
+ * Uma linha da tabela de marcas: o nome do grupo à esquerda (no celular, em cima) e os logos em 4 células iguais
+ * (2 por linha no celular). As linhas se empilham separadas por régua fina; quem usa fecha a última com border-b.
+ * Parada: sem letreiro correndo, sem rótulo entre os logos (o nome do grupo já diz o que são).
+ */
+export function FaixaMarcas({ grupo, itens, tom = "claro", titulo: Titulo = "h3" }: FaixaMarcasProps) {
+  const id = useId();
+  const claro = tom === "claro";
+  return (
+    <div
+      role="group"
+      aria-labelledby={id}
+      className={`grid grid-cols-1 border-t py-5 lg:grid-cols-12 lg:items-center lg:gap-x-6 lg:py-0 ${claro ? "border-noite-950/10" : "border-papel-50/10"}`}
+    >
+      <Titulo id={id} className={`text-[16px] font-semibold leading-snug lg:col-span-3 ${claro ? "text-noite-950" : "text-papel-50"}`}>
+        {GRUPOS_MARCAS[grupo].titulo}
+      </Titulo>
+      <RevealGroup as="ul" stagger={0.05} className="mt-2 grid grid-cols-2 md:grid-cols-4 lg:col-span-9 lg:mt-0">
+        {itens.map((m, i) => (
+          <RevealItem key={m.id} as="li" index={i}>
+            <LogoTile marca={m} variante="fita" tom={tom} />
+          </RevealItem>
+        ))}
+      </RevealGroup>
+    </div>
+  );
+}
+
+/** Uso isolado no sandbox (shared/marcas/LogoTile). As seções importam o LogoTile e a FaixaMarcas nomeados. */
 export default LogoTile;

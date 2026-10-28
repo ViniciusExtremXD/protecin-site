@@ -1,14 +1,13 @@
 import { useEffect, useId, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { motion, useTransform, type MotionValue } from "framer-motion";
 import { DIAGRAMA } from "../../../data/site";
-import { useMotionPref } from "../../../lib/motion-pref";
-import { DrawPath, EASE_OUT, FocusBrackets, SPRING, ease } from "../../../components/motion";
+import { DrawPath, EASE_OUT, ease } from "../../../components/motion";
 import { BICOS, LAJES, PAREDES, PICTOS, TRACOS, VIEWBOX_CENA, VIEWBOX_COMPACTO, vb, type CorTraco, type Picto, type Traco } from "./iso";
 
 /*
  * Desenho do diagrama (design-final §10.2.1). Só recebe estado: quanto cada camada já desenhou (MotionValue 0–1,
  * ligado à rolagem na cena ou ao tempo no fluxo normal), quais pictogramas estão de pé, quais camadas apagam a 35%
- * e o transform da câmera. Hover num pictograma: rótulo mono com o nome do item e cantoneiras de foco.
+ * e o transform da câmera. Hover num pictograma: rótulo com o nome do item (sem cantoneiras, rodada de sobriedade).
  */
 const COR: Record<CorTraco, string> = {
   linha: "text-marinho-300",
@@ -52,14 +51,12 @@ interface Foco {
 }
 
 function Pictograma({ p, visivel, indice }: { p: Picto; visivel: boolean; indice: number }) {
-  const reduced = useMotionPref() === "reduced";
-  const entrada = reduced
-    ? { initial: false as const, animate: { scale: visivel ? 1 : 0, opacity: visivel ? 1 : 0 }, transition: { duration: 0 } }
-    : {
-        initial: { scale: 0, opacity: 0 },
-        animate: visivel ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 },
-        transition: visivel ? { type: "spring" as const, ...SPRING.encaixe, delay: indice * 0.04 } : { duration: 0.2 },
-      };
+  // entra por estado: scale 0,6 → 1 e opacidade (0,5 s), 40 ms entre pictogramas da mesma camada
+  const entrada = {
+    initial: { scale: 0.6, opacity: 0 },
+    animate: visivel ? { scale: 1, opacity: 1 } : { scale: 0.6, opacity: 0 },
+    transition: visivel ? { duration: 0.5, ease: ease(EASE_OUT), delay: indice * 0.04 } : { duration: 0.2 },
+  };
 
   let forma: JSX.Element;
   switch (p.tipo) {
@@ -142,7 +139,7 @@ function Pictograma({ p, visivel, indice }: { p: Picto; visivel: boolean; indice
     <g className="[scale:var(--kp,1)] [transform-box:fill-box] [transform-origin:center]">
       <motion.g {...entrada}>{forma}</motion.g>
       {/* 1 pulso por detector: o anel só existe com a camada acesa, então montar = acender */}
-      {p.tipo === "detector" && visivel && !reduced && (
+      {p.tipo === "detector" && visivel && (
         <motion.circle
           cx={p.x}
           cy={p.y}
@@ -268,9 +265,8 @@ export function IsoDiagram({ compacto = false, tracos, pictos, apagadas = [], ca
           className="pointer-events-none absolute z-[2]"
           style={{ left: foco.x - 6, top: foco.y - 6, width: foco.w + 12, height: foco.h + 12 }}
         >
-          <FocusBrackets mode="enter" size={20} offset={8} key={`${foco.nome}-${foco.x}-${foco.y}`} />
           <span
-            className="rotulo absolute bottom-full left-1/2 mb-3 whitespace-nowrap rounded-[6px] border border-marinho-300/30 bg-noite-950/90 px-2.5 py-1.5 text-papel-50"
+            className="absolute bottom-full left-1/2 mb-2 whitespace-nowrap rounded-[6px] border border-marinho-300/30 bg-noite-950/90 px-2.5 py-1.5 text-[13px] font-semibold leading-none text-papel-50"
             style={{ translate: "-50% 0" }}
           >
             {foco.nome}

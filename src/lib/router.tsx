@@ -1,13 +1,13 @@
 import { createContext, useContext, useEffect, useRef, useState, type AnchorHTMLAttributes, type MouseEvent, type ReactNode } from "react";
 import { COMPANY, NOT_FOUND, ROUTES, type Rota } from "../data/site";
 import { motionPrefAtual } from "./motion-pref";
-import { resizeSmoothScroll, scrollToHash, scrollToY } from "./smooth-scroll";
+import { quandoLivre, resizeSmoothScroll, scrollToHash, scrollToY } from "./smooth-scroll";
 import { definirCaminhoAtual, pushEvent } from "./track";
 import { routeUrl } from "./urls";
 
 /*
  * Roteador próprio, sem dependência (design-final §6). Rotas com barra no fim.
- * Troca de rota: cortina cobre (450 ms) → troca a rota por baixo → cortina sai (550 ms). Reduzido: fade de 200 ms.
+ * Troca de rota: cortina cobre (450 ms) → troca a rota por baixo → cortina sai (550 ms).
  */
 type Fase = "idle" | "cobrindo" | "saindo";
 interface Estado {
@@ -115,10 +115,10 @@ export function RouterProvider({ initialPath, children, memory = false }: { init
     controlador = (to, opts) => trocar(to, opts, true);
     const onPop = () => trocar(window.location.pathname + window.location.search + window.location.hash, {}, false);
     if (!memory) window.addEventListener("popstate", onPop);
-    // abrir direto em /servicos/#slug cai no capítulo certo
+    // abrir direto em /servicos/#slug cai no capítulo certo (na 1ª visita, depois que o preloader solta a rolagem)
     if (!memory && window.location.hash) {
       const h = window.location.hash;
-      timers.push(window.setTimeout(() => scrollToHash(h), 400));
+      timers.push(window.setTimeout(() => quandoLivre(() => scrollToHash(h)), 400));
     }
     return () => {
       controlador = null;

@@ -2,8 +2,10 @@ import Lenis from "lenis";
 
 /*
  * Rolagem suave (Lenis, padrão do Extin Seven). Instância única, lerp 0.11, RAF próprio.
- * Com movimento reduzido o Lenis não é criado e as âncoras saltam sem animação. Em aparelho só de toque também não
- * (a rolagem do dedo é nativa de qualquer forma): as âncoras usam o scroll suave do navegador.
+ * O movimento fica sempre ligado (AJUSTES-SOBRIEDADE §1): o Lenis suaviza a roda do mouse mesmo com
+ * prefers-reduced-motion: reduce no sistema (respectReducedMotion: false; sem isso o Lenis 1.3 força lerp 1 e torna
+ * as rolagens programadas instantâneas). Em aparelho só de toque ele não é criado (a rolagem do dedo é nativa de
+ * qualquer forma): as âncoras usam o scroll suave do navegador.
  */
 let lenis: Lenis | null = null;
 
@@ -13,13 +15,12 @@ function folgaNav(): number {
   return Number.isFinite(v) ? v : 0;
 }
 
-const reduzido = () => typeof document !== "undefined" && document.documentElement.classList.contains("motion-reduced");
 /** Aparelho de toque (sem mouse): o Lenis só suaviza a roda do mouse; no toque ele só gastaria um quadro por frame. */
 const soToque = () => typeof window !== "undefined" && !!window.matchMedia?.("(hover: none) and (pointer: coarse)").matches;
 
 export function initSmoothScroll(): () => void {
-  if (lenis || reduzido() || soToque()) return () => {};
-  lenis = new Lenis({ lerp: 0.11, smoothWheel: true, wheelMultiplier: 0.95 });
+  if (lenis || soToque()) return () => {};
+  lenis = new Lenis({ lerp: 0.11, smoothWheel: true, wheelMultiplier: 0.95, respectReducedMotion: false });
   // o preloader ou o menu podem ter travado a página antes do Lenis existir
   if (document.documentElement.style.overflow === "hidden") lenis.stop();
   let frame = 0;
@@ -53,7 +54,7 @@ export function scrollToHash(hash: string): void {
     return;
   }
   const top = target === 0 ? 0 : target.getBoundingClientRect().top + window.scrollY - folgaNav();
-  window.scrollTo({ top, behavior: reduzido() ? "auto" : "smooth" });
+  window.scrollTo({ top, behavior: "smooth" });
 }
 
 export function scrollToY(y: number, opts: { immediate?: boolean; duration?: number } = {}): void {
@@ -61,7 +62,7 @@ export function scrollToY(y: number, opts: { immediate?: boolean; duration?: num
     lenis.scrollTo(y, { immediate: opts.immediate, duration: opts.duration ?? 1.2, force: true });
     return;
   }
-  window.scrollTo({ top: y, behavior: opts.immediate || reduzido() ? "auto" : "smooth" });
+  window.scrollTo({ top: y, behavior: opts.immediate ? "auto" : "smooth" });
 }
 
 /** Rola até o ponto p (0 a 1) de uma cena fixada (seção alta com palco sticky). */
@@ -72,12 +73,31 @@ export function scrollToProgress(el: HTMLElement, p: number): void {
   scrollToY(topo + percurso * Math.min(1, Math.max(0, p)) + 1, { duration: 1.1 });
 }
 
+let travado = false;
+let pendentes: (() => void)[] = [];
+
 export function lockScroll(locked: boolean): void {
+  travado = locked;
   if (lenis) {
     if (locked) lenis.stop();
     else lenis.start();
   }
   if (typeof document !== "undefined") document.documentElement.style.overflow = locked ? "hidden" : "";
+  if (!locked && pendentes.length) {
+    const fila = pendentes;
+    pendentes = [];
+    // um quadro depois de soltar: o Lenis já voltou a aceitar scrollTo
+    requestAnimationFrame(() => fila.forEach((f) => f()));
+  }
+}
+
+/**
+ * Roda `f` agora, ou assim que a rolagem for destravada (preloader da 1ª visita, menu aberto). Com o Lenis parado,
+ * um scrollTo é ignorado: abrir /servicos/#slug direto na 1ª visita não rolava até a âncora.
+ */
+export function quandoLivre(f: () => void): void {
+  if (travado) pendentes.push(f);
+  else f();
 }
 
 /** Recalcula as dimensões do Lenis (troca de rota, conteúdo novo). */

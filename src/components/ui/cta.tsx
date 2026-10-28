@@ -71,11 +71,13 @@ export function EmailLink({ location, detail, extra, email = COMPANY.email, subj
 }
 
 // ---------------------------------------------------------------- botões (§5.4)
+// Rodada de sobriedade: sem sombra colorida (glow vermelho) nos botões, ímã com teto de 0,08 (Magnetic) e
+// clique que afunda só 2%.
 type Visual = { size?: "md" | "sm"; full?: boolean; tone?: "escuro" | "claro"; className?: string };
 
 const ALTURA = { md: "h-12 lg:h-[52px] px-6 text-botao", sm: "h-11 px-5 text-[15px] font-semibold" } as const;
 const BASE =
-  "group relative inline-flex select-none items-center justify-center gap-3 overflow-hidden whitespace-nowrap rounded-full transition-[transform,border-color,color] duration-[350ms] ease-out active:scale-[0.96]";
+  "group relative inline-flex select-none items-center justify-center gap-3 overflow-hidden whitespace-nowrap rounded-full transition-[transform,border-color,color] duration-[350ms] ease-out active:scale-[0.98]";
 
 function Seta() {
   return (
@@ -98,7 +100,7 @@ function Casca({
   onClick,
   className,
   full,
-  magnet = 0.25,
+  magnet = 0.08,
   children,
   extra,
 }: {
@@ -153,7 +155,7 @@ export function PrimaryCta({
       external={external}
       onClick={onClick}
       full={full}
-      className={`${BASE} ${ALTURA[size]} bg-brasa-500 text-white shadow-[0_18px_40px_-18px_rgba(190,30,41,0.8)] ${full ? "w-full" : ""} ${tone === "claro" ? focoClaro : ""} ${className ?? ""}`}
+      className={`${BASE} ${ALTURA[size]} bg-brasa-500 text-white ${full ? "w-full" : ""} ${tone === "claro" ? focoClaro : ""} ${className ?? ""}`}
     >
       <Varredura cor="bg-brasa-600" />
       <TextRoll text={children} className="relative" />
@@ -175,7 +177,7 @@ const varreduraFantasma = (tone: "escuro" | "claro") => (tone === "claro" ? "bg-
 
 export function GhostCta({ children, to, href, icon = "arrow", size = "md", full, tone = "escuro", className }: Visual & { children: string; to?: string; href?: string; icon?: "arrow" | "none" }) {
   return (
-    <Casca to={to} href={href} full={full} magnet={0.2} className={`${BASE} ${ALTURA[size]} ${fantasma(tone)} ${full ? "w-full" : ""} ${className ?? ""}`}>
+    <Casca to={to} href={href} full={full} magnet={0.06} className={`${BASE} ${ALTURA[size]} ${fantasma(tone)} ${full ? "w-full" : ""} ${className ?? ""}`}>
       <Varredura cor={varreduraFantasma(tone)} />
       <TextRoll text={children} className="relative" />
       {icon === "arrow" && (
@@ -189,7 +191,7 @@ export function GhostCta({ children, to, href, icon = "arrow", size = "md", full
 
 export function WhatsAppCta({ location, detail, extra, message, children = UI.falarWhatsapp, size = "md", full, tone = "escuro", className }: Visual & TrackProps & { message?: string; children?: string }) {
   return (
-    <Magnetic strength={0.2} className={full ? "block w-full" : ""}>
+    <Magnetic strength={0.06} className={full ? "block w-full" : ""}>
       <WhatsAppLink
         location={location}
         detail={detail}
@@ -207,10 +209,10 @@ export function WhatsAppCta({ location, detail, extra, message, children = UI.fa
 
 export function PhoneCta({ location, detail, extra, children = COMPANY.phoneDisplay, size = "md", full, tone = "escuro", className }: Visual & TrackProps & { children?: string }) {
   return (
-    <Magnetic strength={0.2} className={full ? "block w-full" : ""}>
+    <Magnetic strength={0.06} className={full ? "block w-full" : ""}>
       <PhoneLink location={location} detail={detail} extra={extra} className={`${BASE} ${ALTURA[size]} ${fantasma(tone)} ${full ? "w-full" : ""} ${className ?? ""}`}>
         <Varredura cor={varreduraFantasma(tone)} />
-        <Phone aria-hidden size={17} strokeWidth={1.75} className="relative transition-transform duration-[350ms] ease-out group-hover:rotate-12" />
+        <Phone aria-hidden size={17} strokeWidth={1.75} className="relative" />
         <TextRoll text={children} className="relative tnum" />
       </PhoneLink>
     </Magnetic>
@@ -246,7 +248,7 @@ export function OrcamentoCta({
       onClick={abrir}
       full={full}
       extra={{ "data-form-location": formLocation }}
-      className={`${BASE} ${ALTURA[size]} bg-brasa-500 text-white shadow-[0_18px_40px_-18px_rgba(190,30,41,0.8)] ${full ? "w-full" : ""} ${tone === "claro" ? focoClaro : ""} ${className ?? ""}`}
+      className={`${BASE} ${ALTURA[size]} bg-brasa-500 text-white ${full ? "w-full" : ""} ${tone === "claro" ? focoClaro : ""} ${className ?? ""}`}
     >
       <Varredura cor="bg-brasa-600" />
       <TextRoll text={children} className="relative" />

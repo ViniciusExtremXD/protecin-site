@@ -31,7 +31,7 @@ export function ChipToggle({ children, selected, onToggle, tone = "escuro" }: { 
       type="button"
       aria-pressed={selected}
       onClick={onToggle}
-      whileTap={reduced ? undefined : { scale: 0.94 }}
+      whileTap={reduced ? undefined : { scale: 0.97 }}
       className={`relative inline-flex min-h-11 items-center gap-2 overflow-hidden rounded-full border px-4 py-2 text-[15px] font-medium leading-tight transition-colors duration-200 ${borda} ${claro ? "[--foco:#BE1E29]" : ""}`}
     >
       {selected && <motion.span aria-hidden className="absolute inset-0 bg-brasa-500" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }} />}

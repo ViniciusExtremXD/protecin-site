@@ -1,7 +1,6 @@
 import { Fragment, useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { useMotionPref } from "../../lib/motion-pref";
-import { EASE_OUT, STAGGER, VIEWPORT, ease } from "./tokens";
+import { DESLOCAMENTO, DUR, EASE_OUT, STAGGER, VIEWPORT, ease } from "./tokens";
 
 export interface SplitWordsProps {
   text: string;
@@ -13,13 +12,17 @@ export interface SplitWordsProps {
   delay?: number;
   stagger?: number;
   immediate?: boolean;
+  /** @deprecated ignorado: título não gira (AJUSTES-SOBRIEDADE §1). Fica pela API. */
   rotate?: number;
   replayKey?: string | number; // re-dispara a entrada quando muda (troca de ponto/etapa)
 }
 
 const limpa = (w: string) => w.replace(/[.,:;!?…]/g, "");
 
-/** Título palavra a palavra (Seven): máscara por palavra, y 110% → 0 e rotate 4° → 0 (700 ms, stagger 40 ms). */
+/**
+ * Título palavra a palavra (rodada de sobriedade): cada palavra entra com opacidade 0 → 1 e subida de 20 px
+ * (700 ms, stagger 35 ms). Sem máscara recortando e sem giro.
+ */
 export function SplitWords({
   text,
   as: Tag = "span",
@@ -30,13 +33,11 @@ export function SplitWords({
   delay = 0,
   stagger = STAGGER.palavra,
   immediate = false,
-  rotate = 4,
   replayKey,
 }: SplitWordsProps) {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, VIEWPORT);
-  const reduced = useMotionPref() === "reduced";
-  const show = immediate || inView || reduced;
+  const show = immediate || inView;
   const alvo = new Set(highlight.map(limpa));
   const palavras = text.split(" ");
 
@@ -46,12 +47,12 @@ export function SplitWords({
       <span className="sr-only">{text}</span>
       <Fragment key={replayKey}>
         {palavras.map((w, i) => (
-          <span key={`${w}-${i}`} aria-hidden className="-mb-[0.08em] -mt-[0.2em] inline-block overflow-clip pb-[0.08em] pt-[0.2em] align-bottom">
+          <span key={`${w}-${i}`} aria-hidden className="-mb-[0.08em] -mt-[0.2em] inline-block pb-[0.08em] pt-[0.2em] align-bottom">
             <motion.span
-              className={`inline-block origin-bottom-left ${wordClassName ?? ""} ${alvo.has(limpa(w)) ? highlightClassName : ""}`}
-              initial={{ y: "110%", rotate }}
-              animate={show ? { y: "0%", rotate: 0 } : undefined}
-              transition={reduced ? { duration: 0 } : { duration: 0.7, ease: ease(EASE_OUT), delay: delay + i * stagger }}
+              className={`inline-block ${wordClassName ?? ""} ${alvo.has(limpa(w)) ? highlightClassName : ""}`}
+              initial={{ opacity: 0, y: DESLOCAMENTO.base }}
+              animate={show ? { opacity: 1, y: 0 } : undefined}
+              transition={{ duration: DUR.longa - 0.1, ease: ease(EASE_OUT), delay: delay + i * stagger }}
             >
               {w}
               {i < palavras.length - 1 ? " " : ""}

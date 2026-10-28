@@ -52,7 +52,8 @@ async function ehArquivo(p) {
 const TEXTO = /^(text\/|application\/(json|xml)|image\/svg)/;
 const gz = new Map();
 
-export function servir(porta = 4195, base = "/protecin-site", raizDist = path.resolve("dist")) {
+export function servir(porta = 4195, base = "/protecin-site", pasta = "dist") {
+  const raizDist = path.resolve(pasta); // normaliza barras e torna absoluto (o teste "dentro da pasta" compara texto)
   const BASE = base.replace(/\/$/, "");
   const servidor = createServer(async (req, res) => {
     const [cru, query = ""] = (req.url ?? "/").split("?");

@@ -3,23 +3,21 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
 import type { ImagemId } from "../../data/imagens.gen";
 import { useFinePointer } from "../../lib/media";
-import { useMotionPref } from "../../lib/motion-pref";
 import { Img } from "../ui/Img";
 import { EASE_OUT, SPRING, ease } from "./tokens";
 
 /**
  * Prévia de imagem que segue o ponteiro dentro de `containerRef` (fixed, por portal no body).
- * Só com ponteiro fino e movimento completo; no toque não renderiza.
+ * Só com ponteiro fino; no toque não renderiza. Abre com fade e escala 0,96 → 1 (sem giro).
  */
 export function CursorPreview({ image, containerRef, width = 318, height = 220 }: { image: ImagemId | null; containerRef: RefObject<HTMLElement>; width?: number; height?: number }) {
   const fino = useFinePointer();
-  const reduced = useMotionPref() === "reduced";
   const [dentro, setDentro] = useState(false);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const sx = useSpring(x, SPRING.previa);
   const sy = useSpring(y, SPRING.previa);
-  const ligado = fino && !reduced;
+  const ligado = fino;
 
   useEffect(() => {
     const el = containerRef.current;
@@ -57,7 +55,7 @@ export function CursorPreview({ image, containerRef, width = 318, height = 220 }
       className="pointer-events-none fixed left-0 top-0 z-[46] overflow-clip rounded-r-md bg-noite-800 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.6)]"
       style={{ x: sx, y: sy, width, height }}
       initial={false}
-      animate={{ opacity: aberto ? 1 : 0, scale: aberto ? 1 : 0.6, rotate: aberto ? 0 : -4 }}
+      animate={{ opacity: aberto ? 1 : 0, scale: aberto ? 1 : 0.96 }}
       transition={{ duration: 0.35, ease: ease(EASE_OUT) }}
     >
       <AnimatePresence initial={false}>

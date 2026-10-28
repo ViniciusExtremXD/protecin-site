@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Mail, Phone, X } from "lucide-react";
 import { COMPANY, MENU, UI } from "../../data/site";
-import { useMotionPref } from "../../lib/motion-pref";
 import { Link, usePath } from "../../lib/router";
 import { lockScroll } from "../../lib/smooth-scroll";
 import { pushEvent } from "../../lib/track";
@@ -12,18 +11,16 @@ import { EmailLink, PhoneLink, WhatsAppLink } from "../ui/cta";
 import { GlifoWhatsApp } from "../ui/glifos";
 import { Img } from "../ui/Img";
 import { Logo } from "../ui/Logo";
-import { MotionToggle } from "./MotionToggle";
 
 const CIRCULO = (r: string) => `circle(${r} at calc(100% - 44px) 32px)`;
 
 /**
- * Menu em tela cheia (§7.4): abre por clip-path circular a partir do botão, itens 01–07 em display-xl entrando
- * linha a linha, imagem em gota à direita (desktop) com crossfade no hover. Foco preso; fecha com X, Esc,
- * toque na área vazia ou clique num link; o foco volta ao botão.
+ * Menu em tela cheia (§7.4, rodada de sobriedade): abre por clip-path circular a partir do botão, itens 01–07 em
+ * caixa alta condensada (teto de 64 px) entrando com fade e subida curta, imagem em gota à direita (desktop) com
+ * crossfade no hover. Foco preso; fecha com X, Esc, toque na área vazia ou clique num link; o foco volta ao botão.
  */
 export function Menu({ open, onClose, returnFocusRef }: { open: boolean; onClose: () => void; returnFocusRef: RefObject<HTMLButtonElement> }) {
   const path = usePath();
-  const reduced = useMotionPref() === "reduced";
   const painel = useRef<HTMLDivElement>(null);
   const fechar = useRef<HTMLButtonElement>(null);
   const [topo, setTopo] = useState(MENU.findIndex((m) => m.to === path) < 0 ? 0 : MENU.findIndex((m) => m.to === path));
@@ -82,10 +79,10 @@ export function Menu({ open, onClose, returnFocusRef }: { open: boolean; onClose
           data-lenis-prevent=""
           data-motion="menu"
           className="fixed inset-0 z-menu overflow-y-auto overscroll-contain bg-noite-900"
-          initial={reduced ? { opacity: 0 } : { clipPath: CIRCULO("0%") }}
-          animate={reduced ? { opacity: 1 } : { clipPath: CIRCULO("150%") }}
-          exit={reduced ? { opacity: 0 } : { clipPath: CIRCULO("0%") }}
-          transition={reduced ? { duration: 0.2 } : { duration: 0.6, ease: ease(EASE_IN_OUT) }}
+          initial={{ clipPath: CIRCULO("0%") }}
+          animate={{ clipPath: CIRCULO("150%") }}
+          exit={{ clipPath: CIRCULO("0%") }}
+          transition={{ duration: 0.6, ease: ease(EASE_IN_OUT) }}
           onClick={(e) => {
             // área vazia: o próprio painel, o contêiner e as faixas de layout marcadas com data-menu-vazio
             const alvo = e.target as HTMLElement;
@@ -102,7 +99,7 @@ export function Menu({ open, onClose, returnFocusRef }: { open: boolean; onClose
                 aria-label={UI.menuFechar}
                 className="group grid h-11 w-11 place-items-center rounded-full border border-papel-50/25 text-papel-50 transition-colors duration-200 hover:border-papel-50/80"
               >
-                <X size={20} strokeWidth={1.5} className="transition-transform duration-[350ms] ease-out group-hover:rotate-90" />
+                <X size={20} strokeWidth={1.5} />
               </button>
             </div>
 
@@ -119,19 +116,17 @@ export function Menu({ open, onClose, returnFocusRef }: { open: boolean; onClose
                           onPointerEnter={() => destacar(i)}
                           onFocus={() => destacar(i)}
                           aria-current={ativo ? "page" : undefined}
-                          className="group flex min-h-11 items-baseline gap-4 py-2.5 lg:gap-6 lg:py-3"
+                          className="group flex min-h-11 items-baseline gap-4 py-2.5 lg:gap-6"
                         >
                           <span className={`w-7 shrink-0 font-mono text-[13px] font-medium tracking-[0.16em] ${ativo ? "text-brasa-300" : "text-papel-500"}`}>{m.numero}</span>
-                          <span className="-mt-[0.2em] block overflow-clip pb-[0.06em] pt-[0.2em]">
-                            <motion.span
-                              className={`display-xl block !text-[clamp(2.25rem,min(6vw,8.5svh),5.5rem)] transition-colors duration-200 ${ativo ? "text-brasa-400" : "text-papel-50 group-hover:text-brasa-400"}`}
-                              initial={reduced ? false : { y: "110%", rotate: 3 }}
-                              animate={{ y: "0%", rotate: 0 }}
-                              transition={{ duration: 0.8, ease: ease(EASE_OUT), delay: 0.2 + i * 0.06 }}
-                            >
-                              {m.label}
-                            </motion.span>
-                          </span>
+                          <motion.span
+                            className={`display-xl block !text-[clamp(2rem,min(4.4vw,7svh),4rem)] transition-colors duration-200 ${ativo ? "text-brasa-400" : "text-papel-50 group-hover:text-brasa-400"}`}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, ease: ease(EASE_OUT), delay: 0.2 + i * 0.05 }}
+                          >
+                            {m.label}
+                          </motion.span>
                         </Link>
                       </li>
                     );
@@ -143,9 +138,9 @@ export function Menu({ open, onClose, returnFocusRef }: { open: boolean; onClose
                 <motion.div
                   className="relative overflow-clip rounded-gota bg-noite-800"
                   style={{ width: "32vw", height: "32vw", maxWidth: 520, maxHeight: 520 }}
-                  initial={reduced ? { opacity: 0 } : { scale: 0.6, opacity: 0 }}
+                  initial={{ scale: 0.96, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.8, ease: ease(EASE_OUT), delay: 0.25 }}
+                  transition={{ duration: 0.7, ease: ease(EASE_OUT), delay: 0.25 }}
                 >
                   {base !== null && <Img id={MENU[base].imagem} alt="" sizes="32vw" eager className="absolute inset-0 block h-full w-full" imgClassName="h-full w-full object-cover" />}
                   <motion.div key={`${topo}-${n}`} className="absolute inset-0" initial={{ opacity: n === 0 ? 1 : 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
@@ -158,7 +153,7 @@ export function Menu({ open, onClose, returnFocusRef }: { open: boolean; onClose
             <motion.div
               data-menu-vazio=""
               className="flex shrink-0 flex-col gap-4 border-t border-noite-700 py-6 text-[15px] text-papel-300 md:flex-row md:flex-wrap md:items-center md:justify-between"
-              initial={reduced ? { opacity: 0 } : { opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: ease(EASE_OUT), delay: 0.55 }}
             >
@@ -177,10 +172,7 @@ export function Menu({ open, onClose, returnFocusRef }: { open: boolean; onClose
                   {COMPANY.email}
                 </EmailLink>
               </div>
-              <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-6">
-                <span>{COMPANY.horario}</span>
-                <MotionToggle />
-              </div>
+              <span>{COMPANY.horario}</span>
             </motion.div>
           </Container>
         </motion.div>

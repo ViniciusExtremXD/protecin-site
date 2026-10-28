@@ -1,52 +1,26 @@
 import { useEffect, useState } from "react";
-import { pushEvent } from "./track";
 
 /*
- * Preferência de movimento (design-final §7.1 e §14). O script síncrono do <head> já decidiu e marcou o <html>:
- * motion-full | motion-reduced (+ motion-reduced-sys quando foi o sistema que pediu) e proposta.
- * ?motion=full (ou 1) força o movimento para a apresentação e fica salvo em localStorage "pt-motion".
+ * Preferência de movimento (rodada de sobriedade, qa/AJUSTES-SOBRIEDADE.md §1): o site anima sempre, inclusive
+ * com prefers-reduced-motion: reduce no sistema. Não há mais modo reduzido para o visitante, nem ?motion=, nem
+ * preferência salva. O script do <head> marca o <html> com motion-full (sempre) e, com ?proposta=1, proposta.
+ * A API continua (as seções leem useMotionPref() e comparam com "reduced"), mas a resposta é sempre "full".
  */
 export type MotionPref = "full" | "reduced";
 
-const temClasse = (c: string) => typeof document !== "undefined" && document.documentElement.classList.contains(c);
-
-/** "full" no 1º render (casa com o SSR); depois lê html.motion-reduced. */
+/** Sempre "full" (no SSR e no cliente: sem divergência na hidratação). */
 export function useMotionPref(): MotionPref {
-  const [pref, setPref] = useState<MotionPref>("full");
-  useEffect(() => {
-    if (temClasse("motion-reduced")) setPref("reduced");
-  }, []);
-  return pref;
+  return "full";
 }
 
-/** Leitura direta (fora de componentes, ex.: roteador e smooth scroll). */
+/** Leitura direta (fora de componentes, ex.: roteador e smooth scroll). Sempre "full". */
 export function motionPrefAtual(): MotionPref {
-  return temClasse("motion-reduced") ? "reduced" : "full";
-}
-
-export function setMotionPref(p: MotionPref): void {
-  try {
-    localStorage.setItem("pt-motion", p);
-  } catch {
-    /* armazenamento bloqueado: vale só para esta carga */
-  }
-  pushEvent("motion_toggle", { mode: p });
-  // remove ?motion= da URL para a escolha salva valer na recarga
-  const url = new URL(window.location.href);
-  url.searchParams.delete("motion");
-  window.location.replace(url.toString());
-}
-
-/** O sistema pediu menos movimento e não há preferência salva. */
-export function useReducedBySystem(): boolean {
-  const [sys, setSys] = useState(false);
-  useEffect(() => setSys(temClasse("motion-reduced-sys")), []);
-  return sys;
+  return "full";
 }
 
 /** Modo proposta (?proposta=1): mostra os espaços reservados. false no 1º render. */
 export function useProposalMode(): boolean {
   const [on, setOn] = useState(false);
-  useEffect(() => setOn(temClasse("proposta")), []);
+  useEffect(() => setOn(document.documentElement.classList.contains("proposta")), []);
   return on;
 }

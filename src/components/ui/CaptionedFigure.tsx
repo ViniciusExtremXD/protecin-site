@@ -12,17 +12,29 @@ export interface CaptionedFigureProps {
   caption?: string;
   reveal?: "cortina" | "fade" | "none";
   parallax?: 0 | 6 | 8 | 12;
-  aspect?: string; // "16/10"
+  aspect?: string; // "16/10" (também vira o `frame` do Img: o sizes considera o recorte do object-cover)
   brackets?: boolean;
   creditPosition?: "abaixo" | "sobre";
-  radius?: number; // 28
+  radius?: number; // 16
   tone?: "escuro" | "claro";
   className?: string;
 }
 
+/** "16/10", "3 / 2", "1.5" → 1,6 / 1,5 / 1,5. */
+function proporcao(aspect: string): number | undefined {
+  const [a, b] = aspect.split("/").map((x) => parseFloat(x));
+  const r = b ? a / b : a;
+  return Number.isFinite(r) && r > 0 ? r : undefined;
+}
+
+/** Escala do parallax por intensidade (espelha ParallaxMedia/styles.css) e o zoom de hover de 1,04. */
+const ESCALA_PARALLAX = { 0: 1, 6: 1.06, 8: 1.08, 12: 1.1 } as const;
+
 /**
  * Figura com crédito obrigatório no tipo (enxerto D3): "FOTO DO ACERVO PROTECIN" para fotos reais e
  * "IMAGEM ILUSTRATIVA" para banco. "sobre" = canto inferior esquerdo com fundo noite-950/70.
+ * Rodada de sobriedade: raio padrão 16 px e sizes calculado (recorte do aspect × parallax × hover) — passe em
+ * img.sizes só a largura exibida do quadro.
  */
 export function CaptionedFigure({
   img,
@@ -33,12 +45,20 @@ export function CaptionedFigure({
   aspect = "16/10",
   brackets = false,
   creditPosition = "abaixo",
-  radius = 28,
+  radius = 16,
   tone = "escuro",
   className,
 }: CaptionedFigureProps) {
   const textoCredito = (credit === "acervo" ? UI.fotoAcervo : UI.imagemIlustrativa).toUpperCase();
-  const imagem = <Img {...img} className="block h-full w-full" imgClassName={`h-full w-full object-cover ${img.imgClassName ?? ""}`} />;
+  const imagem = (
+    <Img
+      {...img}
+      frame={img.frame ?? proporcao(aspect)}
+      zoom={img.zoom ?? ESCALA_PARALLAX[parallax] * 1.04}
+      className="block h-full w-full"
+      imgClassName={`h-full w-full object-cover ${img.imgClassName ?? ""}`}
+    />
+  );
   const midia = parallax ? <ParallaxMedia amount={parallax}>{imagem}</ParallaxMedia> : imagem;
   const janela = (conteudo: ReactNode) => {
     const cls = "relative h-full w-full overflow-clip";

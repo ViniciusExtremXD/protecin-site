@@ -1,133 +1,96 @@
-import { useEffect, useId, useRef, useState } from "react";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { useEffect, useId, useState } from "react";
 import { Plus } from "lucide-react";
-import { SECOES, SETORES, type ImagemId, type Setor } from "../../data/site";
-import { CursorPreview, DUR, DrawIcon, EASE_OUT, Reveal, Rule, SplitLines, VIEWPORT, ease } from "../../components/motion";
+import { SECOES, SETORES, UI, type Setor } from "../../data/site";
+import { Reveal, RevealGroup, RevealItem, SplitLines } from "../../components/motion";
 import { Container } from "../../components/layout/Container";
-import { CaptionedFigure } from "../../components/ui/CaptionedFigure";
 import { GhostCta } from "../../components/ui/cta";
+import { IMAGENS } from "../../data/imagens.gen";
+import { Img } from "../../components/ui/Img";
 import { SectionLabel } from "../../components/ui/SectionLabel";
-import { useMotionPref } from "../../lib/motion-pref";
+import { useIsDesktop } from "../../lib/media";
 import { pushEvent } from "../../lib/track";
+import { quebrar } from "../clientes/linhas";
 
 /*
- * H8. Setores (design-final §9 H8), tom escuro. Três linhas tipográficas gigantes, cada uma um acordeão
- * (<h3><button aria-expanded>) que abre o texto literal do setor. Desktop: prévia da imagem que segue o ponteiro.
- * Celular: miniatura 16:9 sempre visível acima do nome.
- * O texto fica sempre no DOM. O recolhimento só vale com o motor no ar (html.motion-up): sem JS, tudo aberto.
+ * H8. Setores (design-final §9 H8, compactada pela qa/AJUSTES-SOBRIEDADE.md), tom escuro.
+ * Desktop: H2 e texto à esquerda; à direita, os 3 setores em linhas (miniatura 3:2, nome e o texto literal).
+ * Celular: a mesma lista, com o texto de cada setor num acordeão (<h3><button aria-expanded>) para a seção não
+ * passar de uma tela e meia. O texto fica sempre no DOM; o recolhimento só vale no celular e com o motor no ar
+ * (html.motion-up): sem JS, tudo aberto. Sem nomes gigantes, sem prévia que segue o ponteiro.
  */
 
-/** Entrada "linha" (máscara, y 110% → 0 e rotate 3° → 0) sem aria-label: o texto fica no nome do botão. */
-function LinhaMascara({ children, className }: { children: string; className?: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, VIEWPORT);
-  const reduced = useMotionPref() === "reduced";
-  return (
-    <span ref={ref} data-motion="linha" className={`-mb-[0.08em] -mt-[0.2em] block overflow-clip pb-[0.08em] pt-[0.2em] ${className ?? ""}`}>
-      <motion.span
-        className="block origin-bottom-left"
-        initial={{ y: "110%", rotate: 3 }}
-        animate={inView || reduced ? { y: "0%", rotate: 0 } : undefined}
-        transition={reduced ? { duration: 0 } : { duration: DUR.longa, ease: ease(EASE_OUT) }}
-      >
-        {children}
-      </motion.span>
-    </span>
-  );
-}
+const MINI = { desktop: 160, celular: 96 } as const; // largura da miniatura 3:2, em px (o Img soma o recorte e a densidade)
+// Foto recortada (PNG com fundo transparente): zoom leve a partir da esquerda esconde o canto recortado em diagonal.
+const RECORTE = 1.12;
+// Nome do setor: o mesmo tamanho no HTML pré-renderizado (botão) e no desktop hidratado (texto), sem salto.
+const NOME = "block font-semibold leading-snug text-[19px] lg:text-[clamp(1.375rem,1.8vw,1.75rem)] lg:leading-[1.2]";
 
-function Linha({ setor, i, aberto, alternar, aoEntrar }: { setor: Setor; i: number; aberto: boolean; alternar: () => void; aoEntrar: () => void }) {
-  const ref = useRef<HTMLLIElement>(null);
-  const reduced = useMotionPref() === "reduced";
+function Linha({ setor, desktop, aberto, alternar }: { setor: Setor; desktop: boolean; aberto: boolean; alternar: () => void }) {
   const [montado, setMontado] = useState(false);
   useEffect(() => setMontado(true), []);
   const id = useId();
   const painel = `${id}-painel`;
   const botao = `${id}-botao`;
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const deriva = useTransform(scrollYProgress, [0, 1], i % 2 === 0 ? ["4%", "-4%"] : ["-4%", "4%"]);
-
-  const itens = {
-    hidden: reduced ? { opacity: 0 } : { opacity: 0, y: 16 },
-    show: { opacity: 1, y: 0, transition: reduced ? { duration: DUR.micro } : { duration: DUR.base, ease: ease(EASE_OUT) } },
-  };
+  const recolhido = !desktop && !aberto;
 
   return (
-    <li ref={ref} className="relative" onPointerEnter={aoEntrar}>
-      {/* miniatura do celular */}
-      <Reveal preset="fade" className="pt-8 lg:hidden">
-        <CaptionedFigure
-          img={{ id: setor.imagem, alt: "", sizes: "(min-width: 768px) 90vw, 100vw" }}
-          credit="ilustrativa"
-          creditPosition="sobre"
-          parallax={6}
-          aspect="16/9"
-          radius={18}
+    <div className="grid grid-cols-[6rem_1fr] items-center gap-x-4 border-t border-papel-50/10 py-4 lg:grid-cols-[10rem_1fr] lg:items-start lg:gap-x-6 lg:py-6">
+      <div className="relative aspect-[3/2] overflow-clip rounded-lg bg-noite-900 lg:row-span-2">
+        <Img
+          id={setor.imagem}
+          alt=""
+          sizes={`(min-width: 1024px) ${MINI.desktop}px, ${MINI.celular}px`}
+          frame={3 / 2}
+          zoom={IMAGENS[setor.imagem].alpha ? RECORTE : 1}
+          className="block h-full w-full"
+          imgClassName={`h-full w-full object-cover ${IMAGENS[setor.imagem].alpha ? "origin-[0%_35%] scale-[1.12]" : ""}`}
         />
-      </Reveal>
+      </div>
 
-      <h3>
-        <button
-          id={botao}
-          type="button"
-          aria-expanded={aberto}
-          aria-controls={painel}
-          onClick={alternar}
-          className="group flex w-full items-center justify-between gap-6 py-6 text-left lg:py-9"
-        >
-          <motion.span className="block min-w-0" style={reduced ? { x: 0 } : { x: deriva }}>
-            <span className={`block transition-[transform,color] duration-200 ease-out lg:group-hover:translate-x-6 lg:group-hover:text-brasa-400 ${aberto ? "text-brasa-400" : "text-papel-50"}`}>
-              <LinhaMascara className="display-l stretch-66 uppercase lg:text-[clamp(3rem,5.2vw,6.25rem)] lg:leading-[0.9]">{setor.nome}</LinhaMascara>
-            </span>
-          </motion.span>
-          <Reveal as="span" preset="fade" delay={0.2} className="shrink-0">
+      <h3 className="min-w-0">
+        {desktop ? (
+          <span className={`${NOME} text-papel-50`}>{setor.nome}</span>
+        ) : (
+          <button
+            id={botao}
+            type="button"
+            aria-expanded={aberto}
+            aria-controls={painel}
+            onClick={alternar}
+            className="group flex min-h-16 w-full items-center justify-between gap-3 text-left lg:min-h-0"
+          >
+            <span className={`${NOME} transition-colors duration-200 ${aberto ? "text-brasa-300" : "text-papel-50"}`}>{setor.nome}</span>
             <span
               aria-hidden
-              className={`grid h-11 w-11 place-items-center rounded-full border transition-[transform,border-color,background-color] duration-[350ms] ease-out lg:h-14 lg:w-14 ${
-                aberto ? "rotate-[135deg] border-brasa-400 bg-brasa-400/10 text-brasa-300" : "border-papel-50/30 text-papel-50 group-hover:border-papel-50/80"
+              className={`grid h-10 w-10 shrink-0 place-items-center rounded-full border lg:hidden transition-[transform,border-color] duration-300 ease-out ${
+                aberto ? "rotate-45 border-brasa-400 text-brasa-300" : "border-papel-50/25 text-papel-50"
               }`}
             >
-              <Plus size={22} strokeWidth={1.5} />
+              <Plus size={18} strokeWidth={1.5} />
             </span>
-          </Reveal>
-        </button>
+          </button>
+        )}
       </h3>
 
       <div
         id={painel}
-        role="region"
-        aria-labelledby={botao}
-        aria-hidden={montado && !aberto ? true : undefined}
-        className={`grid grid-rows-[1fr] transition-[grid-template-rows] duration-[400ms] ease-out [.motion-reduced_&]:duration-200 ${aberto ? "" : "[.motion-up_&]:grid-rows-[0fr]"}`}
+        role={desktop ? undefined : "region"}
+        aria-labelledby={desktop ? undefined : botao}
+        aria-hidden={montado && recolhido ? true : undefined}
+        className={`col-span-2 grid grid-rows-[1fr] transition-[grid-template-rows] duration-300 ease-out lg:col-span-1 lg:col-start-2 lg:!grid-rows-[1fr] ${recolhido ? "[.motion-up_&]:grid-rows-[0fr]" : ""}`}
       >
         <div className="min-h-0 overflow-hidden">
-          <motion.div
-            className="grid grid-cols-1 gap-6 pb-10 lg:grid-cols-12 lg:gap-x-6 lg:pb-14"
-            initial={false}
-            animate={aberto ? "show" : "hidden"}
-            variants={{ hidden: {}, show: { transition: { staggerChildren: reduced ? 0 : 0.06 } } }}
-          >
-            <motion.div variants={itens} data-motion="sobe" className="flex items-center gap-5 text-brasa-400 lg:col-span-4">
-              {setor.icones.map((ic, k) => (
-                <DrawIcon key={ic} icon={ic} size={36} delay={k * 0.15} drawn={aberto} />
-              ))}
-            </motion.div>
-            <motion.p variants={itens} data-motion="sobe" className="corpo-l max-w-[58ch] text-papel-300 lg:col-span-7 lg:col-start-6">
-              {setor.texto}
-            </motion.p>
-          </motion.div>
+          <p className="corpo pb-1 pt-3 text-papel-300 lg:pt-2">{setor.texto}</p>
         </div>
       </div>
-      <Rule delay={0.12 * (i + 1)} />
-    </li>
+    </div>
   );
 }
 
 /** H8 da home (`#setores`). Sem props. */
 export default function Setores() {
-  const lista = useRef<HTMLUListElement>(null);
+  const desktop = useIsDesktop();
   const [aberto, setAberto] = useState<Setor["id"] | null>(null);
-  const [previa, setPrevia] = useState<ImagemId | null>(null);
 
   const alternar = (s: Setor) => {
     const abrir = aberto !== s.id;
@@ -136,38 +99,39 @@ export default function Setores() {
   };
 
   return (
-    <section id="setores" data-section="H8" className="grain relative bg-noite-950 py-24 [contain-intrinsic-size:auto_1500px] [content-visibility:auto] lg:py-40">
+    <section id="setores" data-section="H8" className="grain relative bg-noite-950 py-16 lg:py-24">
       <Container>
         <SectionLabel index={SECOES.setores.index} label={SECOES.setores.label} />
-        <div className="mt-10 grid grid-cols-1 gap-y-8 lg:mt-14 lg:grid-cols-12 lg:gap-x-6">
-          <div className="lg:col-span-8">
-            <Reveal as="p" className="text-[17px] font-semibold leading-snug text-brasa-300 lg:text-[19px]">
-              {SETORES.sobretitulo}
-            </Reveal>
-            <SplitLines as="h2" lines={SETORES.h2.linhas} text={SETORES.h2.texto} delay={0.08} className="display-xl mt-5 text-papel-50 lg:text-[clamp(2.75rem,4.4vw,4.75rem)]" />
-          </div>
-          <div className="lg:col-span-4 lg:col-start-9 lg:self-end">
-            <Reveal as="p" delay={0.15} className="corpo text-papel-300">
+
+        <div className="mt-8 grid grid-cols-1 gap-y-10 lg:mt-12 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-6 lg:gap-y-10">
+          <div className="lg:col-span-5">
+            <SplitLines
+              as="h2"
+              lines={quebrar(SETORES.h2.texto, 3)}
+              text={SETORES.h2.texto}
+              className="display-xl text-[2rem] text-papel-50 lg:text-[clamp(2.5rem,3.9vw,3.5rem)]"
+            />
+            <Reveal as="p" delay={0.1} className="corpo mt-6 text-papel-300 lg:mt-8 lg:max-w-[42ch]">
               {SETORES.texto}
             </Reveal>
           </div>
-        </div>
 
-        <div className="mt-14 lg:mt-24">
-          <Rule />
-        </div>
-        <ul ref={lista} onPointerLeave={() => setPrevia(null)}>
-          {SETORES.itens.map((s, i) => (
-            <Linha key={s.id} setor={s} i={i} aberto={aberto === s.id} alternar={() => alternar(s)} aoEntrar={() => setPrevia(s.imagem)} />
-          ))}
-        </ul>
+          <div className="lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1">
+            <RevealGroup as="ul" stagger={0.08} className="border-b border-papel-50/10">
+              {SETORES.itens.map((s, i) => (
+                <RevealItem key={s.id} as="li" index={i}>
+                  <Linha setor={s} desktop={desktop} aberto={aberto === s.id} alternar={() => alternar(s)} />
+                </RevealItem>
+              ))}
+            </RevealGroup>
+            <p className="rotulo mt-4 text-papel-500">{UI.imagemIlustrativa}</p>
+          </div>
 
-        <Reveal className="mt-12 lg:mt-16">
-          <GhostCta to={SETORES.link.to}>{SETORES.link.label}</GhostCta>
-        </Reveal>
+          <Reveal className="lg:col-span-5 lg:row-start-2">
+            <GhostCta to={SETORES.link.to}>{SETORES.link.label}</GhostCta>
+          </Reveal>
+        </div>
       </Container>
-      <CursorPreview image={previa} containerRef={lista} />
     </section>
   );
 }
-

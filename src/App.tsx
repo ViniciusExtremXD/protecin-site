@@ -1,6 +1,5 @@
 import { FloatingContact } from "./components/chrome/FloatingContact";
 import { MotionRoot } from "./components/chrome/MotionRoot";
-import { MotionToast } from "./components/chrome/MotionToast";
 import { Nav } from "./components/chrome/Nav";
 import { PageCurtain } from "./components/chrome/PageCurtain";
 import { Preloader } from "./components/chrome/Preloader";
@@ -22,7 +21,8 @@ function Pagina() {
   );
 }
 
-/** Aplicação inteira (design-final §17.8): roteador, motor de movimento e o chrome em volta da página. */
+/** Aplicação inteira (design-final §17.8): roteador, motor de movimento e o chrome em volta da página. Sem aviso nem
+ * botão de movimento: o site anima sempre (AJUSTES-SOBRIEDADE §1). */
 export default function App({ path }: { path: string }) {
   return (
     <RouterProvider initialPath={path}>
@@ -35,7 +35,6 @@ export default function App({ path }: { path: string }) {
         <Footer />
         <FloatingContact />
         <PageCurtain />
-        <MotionToast />
         <ProposalBadge />
       </MotionRoot>
     </RouterProvider>

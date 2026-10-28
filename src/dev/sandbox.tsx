@@ -3,7 +3,7 @@
  *   dev.html?s=home/Abertura,home/Escala&rota=/   → seções isoladas com o chrome real
  *   dev.html?todas=1                               → lista as seções encontradas
  *   dev.html?s=__primitivas                        → página de teste de cada primitiva e peça de chrome
- * Acrescente &motion=full, &motion=reduced ou &proposta=1 para os outros modos.
+ * Acrescente &proposta=1 para o modo proposta. O movimento fica sempre ligado (não há modo reduzido).
  */
 import { StrictMode, useEffect, useRef, useState, type ComponentType, type ReactNode } from "react";
 import { createRoot, type Root } from "react-dom/client";
@@ -63,8 +63,6 @@ import { SectionLabel } from "../components/ui/SectionLabel";
 import { Symbol } from "../components/ui/Symbol";
 import { FloatingContact } from "../components/chrome/FloatingContact";
 import { MotionRoot } from "../components/chrome/MotionRoot";
-import { MotionToast } from "../components/chrome/MotionToast";
-import { MotionToggle } from "../components/chrome/MotionToggle";
 import { Nav } from "../components/chrome/Nav";
 import { PageCurtain } from "../components/chrome/PageCurtain";
 import { Preloader } from "../components/chrome/Preloader";
@@ -349,7 +347,7 @@ function Primitivas() {
               brackets
             />
             <ClipReveal from="left" className="relative aspect-[16/10] overflow-clip">
-              <LazyVideo id="extintor" label="Vídeo ilustrativo: pessoa entra com extintor numa sala com fumaça" when="near" className="h-full w-full" sizes="(min-width: 1024px) 40vw, 100vw" />
+              <LazyVideo id="hero" label="Vídeo ilustrativo: módulos de sistema fixo de supressão" when="near" className="h-full w-full" sizes="(min-width: 1024px) 40vw, 100vw" />
               <span className="rotulo absolute bottom-3 left-3 rounded-[6px] bg-noite-950/70 px-2.5 py-1.5 text-papel-50">IMAGEM ILUSTRATIVA</span>
             </ClipReveal>
           </div>
@@ -568,7 +566,6 @@ function Primitivas() {
           <ReservedSlot id="preco-unico" />
         </div>
         <div className="mt-10 flex flex-wrap items-center gap-6">
-          <MotionToggle />
           <a className="rotulo text-papel-300 underline-offset-4 hover:underline" href="?s=__primitivas&proposta=1">
             ativar proposta
           </a>
@@ -609,7 +606,6 @@ function Sandbox() {
         <Footer />
         <FloatingContact />
         <PageCurtain />
-        <MotionToast />
         <ProposalBadge />
       </MotionRoot>
     </RouterProvider>
@@ -619,6 +615,7 @@ function Sandbox() {
 // HMR: reaproveita a raiz (recriar com createRoot no mesmo contêiner gera aviso e monta tudo duas vezes)
 const raiz: Root = (import.meta.hot?.data.raiz as Root | undefined) ?? createRoot(document.getElementById("root")!);
 if (import.meta.hot) import.meta.hot.data.raiz = raiz;
+(window as Window & { __ptBoot?: number }).__ptBoot = Date.now(); // seguro anti-invisível do <head> (dev.html)
 raiz.render(
   <StrictMode>
     <Sandbox />

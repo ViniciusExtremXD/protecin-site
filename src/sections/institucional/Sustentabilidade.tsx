@@ -1,84 +1,59 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
 import { IMAGENS } from "../../data/imagens.gen";
 import { INSTITUCIONAL, UI } from "../../data/site";
-import { ClipReveal, ParallaxMedia, Reveal, StampBadge } from "../../components/motion";
+import { Reveal } from "../../components/motion";
 import { Container } from "../../components/layout/Container";
 import { Img } from "../../components/ui/Img";
 import { SectionLabel } from "../../components/ui/SectionLabel";
-import { useMotionPref } from "../../lib/motion-pref";
-import { Revela } from "../shared/historia/Revela";
+import { H2 } from "../shared/historia/estilo";
 
 /*
- * /institucional/ · Sustentabilidade (design-final §10.1, tom escuro). Paisagem ilustrativa ao fundo (parallax,
- * véu escuro), a frase "Cuidar também é prevenir." palavra por palavra, o texto num cartão que abre em cortina,
- * o carimbo da Política de Preservação Ambiental (marco de 2004) e as mãos com a muda flutuando.
+ * /institucional/ · Sustentabilidade (design-final §10.1, tom escuro, com qa/AJUSTES-SOBRIEDADE.md por cima).
+ * Texto à esquerda (título, o fato de 2004 e o texto literal) e a paisagem ilustrativa à direita, nítida e na
+ * proporção dela (3:2), com o crédito.
+ * Fora da rodada 1: paisagem velada ao fundo com parallax (ficava turva), seção de 110vh, "prevenir." em vermelho,
+ * carimbo de 2004, cartão em cortina e as mãos com muda flutuando.
  */
 
 /** Rótulo de interface (no site atual o bloco se chama "Responsabilidade e Sustentabilidade"). */
 const ROTULO = "Sustentabilidade";
 
-/** O recorte corta o antebraço na borda esquerda da foto: a borda some num degradê, sem linha dura. */
-const RECORTE = { WebkitMaskImage: "linear-gradient(90deg, transparent 2%, #000 34%)", maskImage: "linear-gradient(90deg, transparent 2%, #000 34%)" };
-
-function Maos() {
-  const ref = useRef<HTMLElement>(null);
-  const reduced = useMotionPref() === "reduced";
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["8%", "-8%"]);
-  const id = INSTITUCIONAL.sustentabilidade.imagem;
-  return (
-    <figure ref={ref} className="relative mx-auto w-[min(70vw,300px)] lg:w-full lg:max-w-[420px]">
-      <Reveal>
-        <motion.div style={reduced ? RECORTE : { ...RECORTE, y }}>
-          <Img id={id} alt={IMAGENS[id].alt} sizes="(min-width: 1024px) 30vw, 70vw" className="block" imgClassName="h-auto w-full" />
-        </motion.div>
-      </Reveal>
-      <figcaption className="rotulo mt-3 text-center text-papel-500 lg:text-left">{UI.imagemIlustrativa.toUpperCase()}</figcaption>
-    </figure>
-  );
-}
-
 export default function Sustentabilidade() {
   const s = INSTITUCIONAL.sustentabilidade;
 
   return (
-    <section
-      id="sustentabilidade"
-      data-section="SUST"
-      className="grain relative isolate flex min-h-[90svh] items-center overflow-clip bg-noite-950 lg:min-h-[110vh]"
-    >
-      {/* fundo: paisagem ilustrativa com parallax e véu */}
-      <div aria-hidden className="absolute inset-0 -z-[1]">
-        <div className="absolute inset-0 opacity-[0.35]">
-          <ParallaxMedia amount={12}>
-            <Img id={s.fundo} alt="" sizes="100vw" className="block h-full w-full" imgClassName="h-full w-full object-cover" />
-          </ParallaxMedia>
-        </div>
-        <div className="absolute inset-0 bg-noite-950/70" />
-        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-noite-950 to-noite-950/0" />
-      </div>
-      <p className="rotulo absolute bottom-4 right-5 z-[1] rounded-[6px] bg-noite-950/70 px-2.5 py-1.5 text-papel-300 md:right-8 lg:right-12 xl:right-16">
-        {UI.imagemIlustrativa.toUpperCase()}
-      </p>
-
-      <Container className="relative py-24 lg:py-36">
-        <div className="grid grid-cols-1 items-center gap-y-14 lg:grid-cols-12 lg:gap-x-6">
-          <div className="lg:col-span-7">
+    <section id="sustentabilidade" data-section="SUST" className="grain relative bg-noite-950 py-16 text-papel-50 md:py-24 lg:py-28">
+      <Container>
+        <div className="grid grid-cols-1 gap-y-10 lg:grid-cols-12 lg:items-center lg:gap-x-6">
+          <div className="lg:col-span-5">
             <SectionLabel index="03" label={ROTULO} />
-            <Revela as="h2" modo="palavra" texto={s.titulo} destaque={["prevenir"]} className="display-xl mt-6 max-w-[12ch] text-papel-50" />
-            <div className="mt-8">
-              <StampBadge text={s.linha2004} className="text-brasa-300" />
-            </div>
-            <ClipReveal radius={18} delay={0.1} className="mt-10 max-w-[38rem]">
-              <div className="rounded-r-md border border-papel-50/10 bg-noite-900/80 p-7 lg:p-9">
-                <p className="corpo-l text-pretty text-papel-300">{s.texto}</p>
+            <Reveal y={20} delay={0.06}>
+              <h2 className={`${H2} mt-4 text-papel-50 lg:mt-5`}>{s.titulo}</h2>
+            </Reveal>
+            <Reveal y={20} delay={0.12}>
+              <p className="mt-5 flex items-center gap-3 text-[15px] font-semibold text-papel-50 lg:mt-6">
+                <span aria-hidden className="block h-px w-6 shrink-0 bg-brasa-400" />
+                {s.linha2004}
+              </p>
+              <p className="mt-5 max-w-[56ch] text-pretty text-[17px] leading-[1.6] text-papel-300">{s.texto}</p>
+            </Reveal>
+          </div>
+
+          <figure className="lg:col-span-6 lg:col-start-7">
+            <Reveal y={20} delay={0.1}>
+              <div className="overflow-clip rounded-2xl bg-noite-900" style={{ aspectRatio: "3/2" }}>
+                <Img
+                  id={s.fundo}
+                  alt={IMAGENS[s.fundo].alt}
+                  // largura exibida (6 de 12 colunas), quadro 3:2 como a foto; o Img aplica a densidade mínima
+                  sizes="(min-width: 1440px) 650px, (min-width: 1024px) 45vw, 100vw"
+                  frame={3 / 2}
+                  className="block h-full w-full"
+                  imgClassName="h-full w-full object-cover"
+                />
               </div>
-            </ClipReveal>
-          </div>
-          <div className="lg:col-span-4 lg:col-start-9">
-            <Maos />
-          </div>
+            </Reveal>
+            <figcaption className="rotulo mt-3 text-[12px] text-papel-500">{UI.imagemIlustrativa.toUpperCase()}</figcaption>
+          </figure>
         </div>
       </Container>
     </section>

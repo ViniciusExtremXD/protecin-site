@@ -1,7 +1,6 @@
 import { useRef, type CSSProperties, type ReactNode } from "react";
 import { motion, useInView } from "framer-motion";
-import { useMotionPref } from "../../lib/motion-pref";
-import { DUR, EASE_OUT, STAGGER, VIEWPORT, ease } from "./tokens";
+import { DESLOCAMENTO, EASE_OUT, STAGGER, VIEWPORT, ease } from "./tokens";
 
 export type Linhas = readonly string[] | { readonly desktop: readonly string[]; readonly celular: readonly string[] };
 
@@ -35,7 +34,11 @@ export function comDestaque(linha: string, highlight: readonly string[], cls: st
   );
 }
 
-/** Título revelado linha a linha: cada linha numa máscara, y 110% → 0 e rotate 3° → 0 (800 ms, stagger 80 ms). */
+/**
+ * Título revelado linha a linha (rodada de sobriedade): cada linha entra com opacidade 0 → 1 e subida de 24 px
+ * (700 ms, stagger 80 ms). Sem máscara recortando e sem giro. css: a mesma entrada em CSS (.e-linha-i), antes da
+ * hidratação.
+ */
 export function SplitLines({
   lines,
   as: Tag = "h2",
@@ -50,7 +53,6 @@ export function SplitLines({
 }: SplitLinesProps) {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, VIEWPORT);
-  const reduced = useMotionPref() === "reduced";
   const label = text ?? ("desktop" in lines ? lines.desktop : lines).join(" ");
 
   const conjunto = (ls: readonly string[], extra: string) => (
@@ -59,17 +61,17 @@ export function SplitLines({
         const conteudo = comDestaque(linha, highlight, highlightClassName);
         const atraso = delay + i * stagger;
         return (
-          <span key={i} className={`block overflow-clip pb-[0.08em] pt-[0.2em] -mb-[0.08em] -mt-[0.2em] ${lineClassName ?? ""}`}>
+          <span key={i} className={`block pb-[0.08em] pt-[0.2em] -mb-[0.08em] -mt-[0.2em] ${lineClassName ?? ""}`}>
             {css ? (
-              <span className="e-linha-i block origin-bottom-left" style={{ "--d": `${Math.round(atraso * 1000)}ms` } as CSSProperties}>
+              <span className="e-linha-i block" style={{ "--d": `${Math.round(atraso * 1000)}ms` } as CSSProperties}>
                 {conteudo}
               </span>
             ) : (
               <motion.span
-                className="block origin-bottom-left"
-                initial={{ y: "110%", rotate: 3 }}
-                animate={inView || reduced ? { y: "0%", rotate: 0 } : undefined}
-                transition={reduced ? { duration: 0 } : { duration: DUR.longa, ease: ease(EASE_OUT), delay: atraso }}
+                className="block"
+                initial={{ opacity: 0, y: DESLOCAMENTO.max }}
+                animate={inView ? { opacity: 1, y: 0 } : undefined}
+                transition={{ duration: 0.7, ease: ease(EASE_OUT), delay: atraso }}
               >
                 {conteudo}
               </motion.span>

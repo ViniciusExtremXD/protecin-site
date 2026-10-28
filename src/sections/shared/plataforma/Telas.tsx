@@ -5,7 +5,6 @@ import { PLATAFORMA } from "../../../data/site";
 import { Odometer, Reel, variantesPreset } from "../../../components/motion";
 import { EASE_OUT, ease } from "../../../components/motion/tokens";
 import { Img } from "../../../components/ui/Img";
-import { useMotionPref } from "../../../lib/motion-pref";
 import { PHONE } from "./PhoneMock";
 
 /*
@@ -47,7 +46,7 @@ export function Cabecalho() {
 export function TelaSplash() {
   return (
     <div className="relative h-full w-full overflow-clip bg-marinho-700">
-      <Img id="app-splash" alt="" sizes="364px" className="absolute left-[-42px] top-[-18px] block w-[364px]" imgClassName="block h-auto w-full" />
+      <Img id="app-splash" alt="" sizes="(min-width: 1024px) 600px, 240px" className="absolute left-[-42px] top-[-18px] block w-[364px]" imgClassName="block h-auto w-full" />
     </div>
   );
 }
@@ -95,7 +94,6 @@ export interface TelaOrdensProps {
 }
 
 export function TelaOrdens({ andamento = 0, barra, montar, banner = false }: TelaOrdensProps) {
-  const reduced = useMotionPref() === "reduced";
   const fixos = [1, 0]; // "2 de 3" e "1 de 3" nos outros cartões
   const barraPrincipal = barra ? (
     <motion.span className="block h-full w-full origin-left rounded-full bg-brasa-500" style={{ scaleX: barra }} />
@@ -104,10 +102,10 @@ export function TelaOrdens({ andamento = 0, barra, montar, banner = false }: Tel
       className="block h-full w-full origin-left rounded-full bg-brasa-500"
       initial={false}
       animate={{ scaleX: (andamento + 1) / 3 }}
-      transition={reduced ? { duration: 0 } : { duration: 0.5, ease: ease(EASE_OUT) }}
+      transition={{ duration: 0.5, ease: ease(EASE_OUT) }}
     />
   );
-  const animado = montar !== undefined && !reduced;
+  const animado = montar !== undefined;
 
   const cartao = (i: number, conteudo: ReactNode) =>
     animado ? (
@@ -141,7 +139,7 @@ export function TelaOrdens({ andamento = 0, barra, montar, banner = false }: Tel
         className="absolute inset-x-2.5 top-[42px] z-10 flex items-center gap-2.5 rounded-[14px] bg-noite-950 px-3 py-2.5 text-papel-50 shadow-[0_14px_30px_-12px_rgba(5,10,18,0.7)]"
         initial={false}
         animate={{ y: banner ? "0%" : "-170%" }}
-        transition={reduced ? { duration: 0 } : { duration: 0.35, ease: ease(EASE_OUT) }}
+        transition={{ duration: 0.35, ease: ease(EASE_OUT) }}
       >
         <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brasa-500">
           <Bell size={14} strokeWidth={1.75} />
@@ -174,7 +172,6 @@ export interface TelaOfflineProps {
 }
 
 export function TelaOffline({ checks, sinc }: TelaOfflineProps) {
-  const reduced = useMotionPref() === "reduced";
   const [giros, setGiros] = useState(0);
   useEffect(() => {
     if (sinc) setGiros((g) => g + 1);
@@ -204,13 +201,13 @@ export function TelaOffline({ checks, sinc }: TelaOfflineProps) {
             borderColor: sinc ? "rgba(14,52,82,0.9)" : "rgba(14,52,82,0.25)",
             color: sinc ? "#0E3452" : "#4B5866",
           }}
-          transition={{ duration: reduced ? 0 : 0.35 }}
+          transition={{ duration: 0.35 }}
         >
           <motion.span
             className="inline-flex"
             initial={false}
             animate={{ rotate: giros * 360 }}
-            transition={reduced ? { duration: 0 } : { duration: 0.6, ease: ease(EASE_OUT) }}
+            transition={{ duration: 0.6, ease: ease(EASE_OUT) }}
           >
             <RefreshCw size={15} strokeWidth={2} />
           </motion.span>

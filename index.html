@@ -2,17 +2,11 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <!-- Preferência de movimento, modo proposta e intro (design-final §7.1). Síncrono e antes de qualquer CSS. -->
+    <!-- Movimento sempre ligado, modo proposta, intro e seguro anti-invisível (AJUSTES-SOBRIEDADE §1). Síncrono e antes de qualquer CSS. -->
     <script>
       (function () {
-        var h = document.documentElement, pref = null, s = location.search;
-        try { pref = localStorage.getItem("pt-motion"); } catch (e) {}
-        var m = /[?&]motion=(full|reduced|1|0)\b/.exec(s);
-        if (m) { pref = (m[1] === "full" || m[1] === "1") ? "full" : "reduced"; try { localStorage.setItem("pt-motion", pref); } catch (e) {} }
-        var sys = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
-        var reduced = pref ? pref === "reduced" : sys;
-        h.classList.add(reduced ? "motion-reduced" : "motion-full");
-        if (sys && !pref) h.classList.add("motion-reduced-sys");
+        var h = document.documentElement, s = location.search, t0 = Date.now();
+        h.classList.add("motion-full");
         try {
           if (/[?&]proposta=1\b/.test(s)) sessionStorage.setItem("pt-proposta", "1");
           if (/[?&]proposta=0\b/.test(s)) sessionStorage.removeItem("pt-proposta");
@@ -20,8 +14,22 @@
         } catch (e) {}
         var intro = false;
         try { intro = !sessionStorage.getItem("pt-intro"); sessionStorage.setItem("pt-intro", "1"); } catch (e) {}
-        if (intro && !reduced) h.classList.add("intro");
-        setTimeout(function () { if (!h.classList.contains("motion-up")) h.classList.add("motion-failed"); }, 4000);
+        if (intro) h.classList.add("intro");
+        var subiu = function () { return h.classList.contains("motion-up"); };
+        var falhou = function () { if (!subiu()) h.classList.add("motion-failed"); };
+        addEventListener("error", function (e) {
+          var t = e.target, u = (t && (t.src || t.href)) || e.filename || "";
+          if (!subiu() && u.indexOf(location.origin) === 0 && (t === window || /^(SCRIPT|LINK)$/.test(t.tagName))) falhou();
+        }, true);
+        document.addEventListener("DOMContentLoaded", function () { if (!window.__ptBoot) falhou(); });
+        // prazo: 12 s depois que o JS começou a rodar (window.__ptBoot, do main.tsx) para a hidratação terminar, ou
+        // 20 s sem o JS ter rodado; antes disso só falha por erro de script ou JS ausente no DOMContentLoaded
+        (function checar() {
+          if (subiu()) return;
+          var b = window.__ptBoot, agora = Date.now();
+          if (b ? agora - b > 12000 : agora - t0 > 20000) return falhou();
+          setTimeout(checar, 1000);
+        })();
       })();
     </script>
     <noscript><style>
@@ -40,8 +48,9 @@
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
     <link rel="preload" as="font" type="font/woff2" href="%BASE_URL%fonts/archivo-latin-wdth-normal.woff2" crossorigin />
-    <!--lcp:inicio (só a home; o prerender remove das outras rotas)-->
-    <link rel="preload" as="image" type="image/avif" media="(min-width: 768px)" imagesrcset="%BASE_URL%img/hero-poster-828.avif 828w, %BASE_URL%img/hero-poster-1280.avif 1280w" imagesizes="100vw" fetchpriority="high" />
+    <!--lcp:inicio (só a home; o prerender remove das outras rotas). imagesizes = o sizes que o Img do poster calcula
+         (100vw com a densidade mínima de 1,5 em DPR baixo): o preload e a imagem escolhem o mesmo arquivo.-->
+    <link rel="preload" as="image" type="image/avif" media="(min-width: 768px)" imagesrcset="%BASE_URL%img/hero-poster-828.avif 828w, %BASE_URL%img/hero-poster-1280.avif 1280w" imagesizes="(max-resolution: 1.1dppx) calc(100vw * 1.5), (max-resolution: 1.4dppx) calc(100vw * 1.2), 100vw" fetchpriority="high" />
     <link rel="preload" as="image" type="image/avif" media="(max-width: 767px)" imagesrcset="%BASE_URL%img/hero-poster-v-540.avif 540w" imagesizes="100vw" fetchpriority="high" />
     <!--lcp:fim-->
     <style>
@@ -63,15 +72,21 @@
         src: url("%BASE_URL%fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2-variations"), url("%BASE_URL%fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2");
         unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
       }
-      /* Fallback com as métricas da Archivo (medidas do woff2 com @capsizecss/unpack): sem salto de layout na troca. */
-      @font-face {
-        font-family: "Archivo Fallback";
-        src: local("Arial");
-        size-adjust: 102.29%;
-        ascent-override: 85.84%;
-        descent-override: 20.53%;
-        line-gap-override: 0%;
-      }
+      /* Fallbacks calibrados (rodada de sobriedade): uma face por faixa de font-stretch e por peso (Arial / Arial Bold,
+         sem negrito sintético), com size-adjust = razão de avanço medida em todo texto do site (Archivo ÷ Arial) e as
+         métricas verticais da Archivo (878/210) divididas pelo size-adjust. O texto condensado em fallback ocupa a
+         mesma largura e a troca de fonte não quebra linhas de novo (sem CLS). Mono: JetBrains Mono ÷ Consolas.
+         Recalibrar: node scripts/calibrar-fontes.mjs. */
+      @font-face { font-family: "Archivo Fallback"; src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Arimo"), local("Helvetica"); font-weight: 100 599; font-stretch: 50% 64%; size-adjust: 72.2%; ascent-override: 121.61%; descent-override: 29.09%; line-gap-override: 0%; }
+      @font-face { font-family: "Archivo Fallback"; src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Arimo Bold"), local("Helvetica Bold"); font-weight: 600 1000; font-stretch: 50% 64%; size-adjust: 68.52%; ascent-override: 128.14%; descent-override: 30.65%; line-gap-override: 0%; }
+      @font-face { font-family: "Archivo Fallback"; src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Arimo"), local("Helvetica"); font-weight: 100 599; font-stretch: 64% 70%; size-adjust: 77.4%; ascent-override: 113.44%; descent-override: 27.13%; line-gap-override: 0%; }
+      @font-face { font-family: "Archivo Fallback"; src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Arimo Bold"), local("Helvetica Bold"); font-weight: 600 1000; font-stretch: 64% 70%; size-adjust: 73.45%; ascent-override: 119.54%; descent-override: 28.59%; line-gap-override: 0%; }
+      @font-face { font-family: "Archivo Fallback"; src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Arimo"), local("Helvetica"); font-weight: 100 599; font-stretch: 70% 87%; size-adjust: 82.8%; ascent-override: 106.04%; descent-override: 25.36%; line-gap-override: 0%; }
+      @font-face { font-family: "Archivo Fallback"; src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Arimo Bold"), local("Helvetica Bold"); font-weight: 600 1000; font-stretch: 70% 87%; size-adjust: 78.5%; ascent-override: 111.85%; descent-override: 26.75%; line-gap-override: 0%; }
+      @font-face { font-family: "Archivo Fallback"; src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Arimo"), local("Helvetica"); font-weight: 100 599; font-stretch: 87% 200%; size-adjust: 102.4%; ascent-override: 85.74%; descent-override: 20.51%; line-gap-override: 0%; }
+      @font-face { font-family: "Archivo Fallback"; src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("Arimo Bold"), local("Helvetica Bold"); font-weight: 600 1000; font-stretch: 87% 200%; size-adjust: 97.1%; ascent-override: 90.42%; descent-override: 21.63%; line-gap-override: 0%; }
+      @font-face { font-family: "JetBrains Mono Fallback"; src: local("Consolas"); font-weight: 100 599; size-adjust: 113%; ascent-override: 90.27%; descent-override: 26.55%; line-gap-override: 0%; }
+      @font-face { font-family: "JetBrains Mono Fallback"; src: local("Consolas Bold"); font-weight: 600 1000; size-adjust: 112.3%; ascent-override: 90.83%; descent-override: 26.71%; line-gap-override: 0%; }
     </style>
     <!--structured-data-->
   </head>

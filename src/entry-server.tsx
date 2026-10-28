@@ -1,8 +1,10 @@
 import { StrictMode } from "react";
 import { renderToString } from "react-dom/server";
 import App from "./App";
+import { ajustarSizes } from "./components/ui/Img";
+import { IMAGENS, type ImagemId } from "./data/imagens.gen";
 import { COMPANY, NOT_FOUND, ROUTES, SERVICOS, type Rota } from "./data/site";
-import { assetUrl } from "./lib/urls";
+import { assetUrl, imgUrl } from "./lib/urls";
 
 /*
  * Só no build (design-final §8 e §17.8): o scripts/prerender.mjs chama render(url), head(url) e structuredData()
@@ -47,6 +49,19 @@ export function head(url: string, origem: string, previa = false): string {
     `<meta name="twitter:card" content="summary_large_image" />`,
   ];
   return tags.filter(Boolean).join("\n    ");
+}
+
+/**
+ * Preload do poster do hero (só a home): as larguras saem de IMAGENS e o imagesizes é o mesmo sizes que o Img do
+ * poster calcula (100vw com a densidade mínima de 1,5 em DPR baixo), para o preload e a imagem escolherem o mesmo
+ * arquivo. O prerender troca o bloco <!--lcp:inicio-->…<!--lcp:fim--> do template por isto.
+ */
+export function preloadLcp(): string {
+  const set = (id: ImagemId) => IMAGENS[id].larguras.map((w) => `${imgUrl(id, w, "avif")} ${w}w`).join(", ");
+  return [
+    `<link rel="preload" as="image" type="image/avif" media="(min-width: 768px)" imagesrcset="${set("hero-poster")}" imagesizes="${ajustarSizes("100vw")}" fetchpriority="high" />`,
+    `<link rel="preload" as="image" type="image/avif" media="(max-width: 767px)" imagesrcset="${set("hero-poster-v")}" imagesizes="100vw" fetchpriority="high" />`,
+  ].join("\n    ");
 }
 
 /** JSON-LD: ProfessionalService (com os 8 serviços) e WebSite. Sem FAQPage (não há FAQ real). */

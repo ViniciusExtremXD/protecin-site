@@ -1,6 +1,7 @@
 // Capturas e checagens de QA com Chrome headless.
 // Uso: node capturar.mjs <base-url> [saida] [rotas separadas por vírgula] [--faixas N]
-//   As rotas podem levar query (ex.: "/?motion=full"). --faixas limita as capturas por página (padrão 60).
+//   As rotas podem levar query (ex.: "/?proposta=1"). --faixas limita as capturas por página (padrão 60).
+//   O site novo anima sempre (não há ?motion= nem modo reduzido): nenhuma query é necessária para ver o movimento.
 // Gera, por rota e por tela (desktop e celular): captura da página em faixas da altura da tela,
 // erros de console, requisições que falharam, rolagem horizontal e elementos que vazam da tela.
 import fs from 'node:fs';
@@ -44,8 +45,8 @@ for (const rota of rotas) {
       falhas.push(`${t} ${r.url()}`.slice(0, 300));
     });
     page.on('response', (r) => { if (r.status() >= 400) falhas.push(`${r.status()} ${r.url()}`.slice(0, 300)); });
-    // site novo: sem o aviso de movimento reduzido por cima das capturas (sem efeito em outros sites)
-    await page.evaluateOnNewDocument(() => { try { sessionStorage.setItem('pt-toast', '1'); } catch {} });
+    // site novo: sem o preloader da 1ª visita da sessão (sem efeito em outros sites)
+    await page.evaluateOnNewDocument(() => { try { sessionStorage.setItem('pt-intro', '1'); } catch {} });
 
     const inicio = Date.now();
     await page.goto(base + rota, { waitUntil: 'networkidle2', timeout: 90000 });

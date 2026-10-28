@@ -3,20 +3,22 @@
  * Lê o template dist/index.html (saída do vite build) e o entry-server compilado em dist-server/, e grava:
  *   dist/<rota>/index.html para cada rota de ROUTES, dist/404.html e dist/sitemap.xml.
  * O bloco <!--lcp:inicio-->…<!--lcp:fim--> (preload do poster do hero) só fica na home. Apaga dist-server/ no fim.
+ * PT_DIST e PT_DIST_SERVER trocam as pastas (build de teste fora do dist/ do projeto).
  */
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 const raiz = process.cwd();
-const dist = path.join(raiz, "dist");
-const servidor = path.join(raiz, "dist-server", "entry-server.js");
+const dist = process.env.PT_DIST ? path.resolve(process.env.PT_DIST) : path.join(raiz, "dist");
+const pastaServidor = process.env.PT_DIST_SERVER ? path.resolve(process.env.PT_DIST_SERVER) : path.join(raiz, "dist-server");
+const servidor = path.join(pastaServidor, "entry-server.js");
 const base = (process.env.VITE_BASE ?? "/").replace(/\/?$/, "/");
 const previa = base !== "/";
 // origem absoluta do og:image: a prévia mora no GitHub Pages; a produção, no domínio da Protecin
 const origem = previa ? "https://viniciusextremxd.github.io" : "https://protecin.com.br";
 
-const { render, head, structuredData, ROUTES, NOT_FOUND } = await import(pathToFileURL(servidor).href);
+const { render, head, structuredData, preloadLcp, ROUTES, NOT_FOUND } = await import(pathToFileURL(servidor).href);
 
 const template = fs.readFileSync(path.join(dist, "index.html"), "utf8");
 for (const marca of ['<div id="root"></div>', "<!--head-->", "<!--structured-data-->", "<!--lcp:inicio", "<!--lcp:fim-->"]) {
@@ -30,10 +32,8 @@ function pagina(url) {
   let html = template;
   html = html.replace("<!--head-->", head(url, origem, previa));
   html = html.replace("<!--structured-data-->", jsonLd);
-  html =
-    url === "/"
-      ? html.replace(/<!--lcp:inicio[^>]*-->\s*/, "").replace(/\s*<!--lcp:fim-->/, "")
-      : html.replace(/\s*<!--lcp:inicio[\s\S]*?<!--lcp:fim-->/, "");
+  // home: o preload do poster do hero sai de preloadLcp() (larguras de IMAGENS e o sizes do Img); demais: sem preload
+  html = url === "/" ? html.replace(/<!--lcp:inicio[\s\S]*?<!--lcp:fim-->/, preloadLcp()) : html.replace(/\s*<!--lcp:inicio[\s\S]*?<!--lcp:fim-->/, "");
   const corpo = render(url);
   if (/<!--\$!-->/.test(corpo)) throw new Error(`prerender: Suspense sem resolver em ${url}`);
   const h1 = (corpo.match(/<h1[\s>]/g) || []).length;
@@ -61,5 +61,5 @@ const urls = ROUTES.filter((r) => !r.noindex)
   .join("\n");
 fs.writeFileSync(path.join(dist, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);
 
-fs.rmSync(path.join(raiz, "dist-server"), { recursive: true, force: true });
+fs.rmSync(pastaServidor, { recursive: true, force: true });
 console.log(`prerender: ${ROUTES.length} rotas + 404.html + sitemap.xml (base ${base})`);

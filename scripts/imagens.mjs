@@ -16,7 +16,17 @@ const PUBLICO = path.join(raiz, "public");
 const GEN = path.join(raiz, "src", "data", "imagens.gen.ts");
 const CACHE = path.join(raiz, "scratch", "imagens-cache.json");
 const FORCE = process.argv.includes("--force");
-const VERSAO = "4";
+const VERSAO = "5";
+
+/*
+ * Qualidade (rodada de sobriedade, qa/AJUSTES-SOBRIEDADE.md §4): sem teto de bytes nas fotos (o teto de 60 KB a
+ * 1000 px deixava a foto empapada). AVIF q55 (4:4:4, padrão do sharp) e WebP q80 com smartSubsample (bordas
+ * vermelhas sem borrão de croma). Logos: WebP q85 com alfa q90.
+ */
+const Q = { avif: 55, webp: 80, logo: 85, alfa: 90 };
+// Larguras: G = foto exibida grande (até 2400, onde a origem permite); M = foto de cartão/capítulo (até 1920).
+const G = [640, 960, 1280, 1600, 1920, 2400];
+const M = [640, 960, 1280, 1600, 1920];
 
 // Cores da marca (design-final §4.1).
 const COR = { navy: "#0E3452", brasa500: "#BE1E29", brasa400: "#E8442E", papel50: "#F3EFE9", noite950: "#050A12" };
@@ -25,77 +35,83 @@ const COR = { navy: "#0E3452", brasa500: "#BE1E29", brasa400: "#E8442E", papel50
  * MAPA: id publicado → origem e opções. Nenhum id leva nome de cliente.
  * A foto dos cilindros é localizada pelo SHA-256 do arquivo, para que o nome original não apareça neste código.
  * crédito: "acervo" (foto real da Protecin), "ilustrativa" (banco de imagens) ou "marca" (logos e capas).
- * teto: KB máximos do AVIF por largura (a qualidade desce até caber).
+ * nitidez: sigma de um sharpen leve DEPOIS de reduzir (só nas origens que já chegaram moles).
+ * maxOrigem: maior largura gerada para origens moles (a foto só é entregue com redução de 2× ou mais).
  */
 const OBRA = { modulate: { saturation: 0.92 }, gamma: 1.05, sharpen: true };
 const MAPA = [
   // Posters dos vídeos (scripts/videos.mjs)
-  { id: "hero-poster", poster: "hero-poster.jpg", larguras: [828, 1280, 1920], credito: "ilustrativa", teto: { 828: 70, 1280: 120, 1920: 160 },
+  // posters: até 1920 / 608 quando o scripts/videos.mjs --force regerar os quadros da fonte de 1080p (hoje 1280 / 540)
+  { id: "hero-poster", poster: "hero-poster.jpg", larguras: [828, 1280, 1920], credito: "ilustrativa",
     alt: "Módulos vermelhos de sistema fixo de supressão de incêndio, com válvulas e tubulação" },
-  { id: "hero-poster-v", poster: "hero-poster-v.jpg", larguras: [540], credito: "ilustrativa", teto: { 540: 60 },
+  { id: "hero-poster-v", poster: "hero-poster-v.jpg", larguras: [540, 608], credito: "ilustrativa",
     alt: "Módulos vermelhos de sistema fixo de supressão de incêndio, com válvulas e tubulação" },
-  { id: "poster-tablet", poster: "poster-tablet.jpg", larguras: [640, 1280], credito: "ilustrativa", alt: "Profissional consultando um tablet em campo" },
-  { id: "poster-extintor", poster: "poster-extintor.jpg", larguras: [640, 1280], credito: "ilustrativa", alt: "Pessoa entrando com um extintor em uma sala tomada por fumaça" },
-  { id: "poster-fogo", poster: "poster-fogo.jpg", larguras: [640, 1280], credito: "ilustrativa", alt: "Chamas em close sobre fundo preto" },
+  // (posters de tablet, extintor e fogo saíram: os vídeos não são mais usados nas seções)
 
   // Fotos reais do acervo
-  { id: "obra-parede-sistemas", arquivo: "4.jpg", larguras: [828, 1440, 2200], credito: "acervo", tratamento: OBRA, teto: { 828: 70, 1440: 170, 2200: 300 },
+  { id: "obra-parede-sistemas", arquivo: "4.jpg", larguras: G, credito: "acervo", tratamento: OBRA,
     alt: "Parede com tubulação vermelha, painel de alarme, extintor com etiqueta PROTECIN, abrigo de mangueira e placa de saída" },
-  { id: "obra-cilindros-supressao", sha256: "11c395f2eee33820d6dfbb7d55f7eb98509094627b72a9eb03b3ffb0ff3528e9", larguras: [828, 1440, 2200], credito: "acervo",
-    tratamento: OBRA, teto: { 828: 60, 1440: 130, 2200: 240 },
+  { id: "obra-cilindros-supressao", sha256: "11c395f2eee33820d6dfbb7d55f7eb98509094627b72a9eb03b3ffb0ff3528e9", larguras: G, credito: "acervo",
+    tratamento: OBRA,
     alt: "Bateria de cilindros vermelhos numerados de sistema fixo de supressão, com coletor, válvulas e mangueiras" },
-  { id: "app-splash", arquivo: "App_1.png", larguras: [360, 720], credito: "acervo", teto: { 360: 30, 720: 60 },
+  { id: "app-splash", arquivo: "App_1.png", larguras: [360, 540, 720, 1080], credito: "acervo",
     alt: "Tela de abertura do aplicativo Protecin, com o logo branco sobre azul-marinho" },
-  { id: "app-webmaster-notebook", arquivo: "App_2.png", larguras: [760, 1520], credito: "acervo", teto: { 760: 100, 1520: 200 },
+  { id: "app-webmaster-notebook", arquivo: "App_2.png", larguras: [640, 960, 1280, 1600, 2048], credito: "acervo",
     alt: "Notebook com a tela de login do Web Master da Protecin" },
-  { id: "app-login-celular", arquivo: "App_3.png", larguras: [360, 720], credito: "acervo", teto: { 360: 40, 720: 80 },
+  { id: "app-login-celular", arquivo: "App_3.png", larguras: [360, 540, 720, 1080], credito: "acervo",
     alt: "Celular com a tela de login do aplicativo Protecin" },
-  { id: "kids-ong-colagem", arquivo: "Institucional_4.png", larguras: [640, 1080], credito: "acervo", teto: { 1080: 110 },
+  { id: "kids-ong-colagem", arquivo: "Institucional_4.png", larguras: [640, 860, 1080], credito: "acervo",
     alt: "Colagem de fotos de ações do Kids ONG, com os rostos das crianças borrados" },
   { id: "kids-ong-logo", arquivo: "logo_kids_ong.png", larguras: [240, 479], credito: "marca", alt: "Kids ONG, Trabalho Voluntário" },
   { id: "catalogo-capa", arquivo: "Screenshot-2025-07-30-143726.png", larguras: [360, 554], credito: "marca", alt: "Capa do Catálogo Digital Protecin" },
 
   // Banco de imagens herdado do site atual
-  { id: "co2-cilindros", arquivo: "Home_BG_1-1.jpg", larguras: [828, 1440, 2200], credito: "ilustrativa", teto: { 1440: 150 },
+  { id: "co2-cilindros", arquivo: "Home_BG_1-1.jpg", larguras: G, credito: "ilustrativa",
     alt: "Bateria de cilindros vermelhos de CO2 com mangueiras e válvulas" },
-  { id: "valvulas-sprinkler", arquivo: "Design_sem_nome.png", larguras: [640, 1200], credito: "ilustrativa",
+  { id: "valvulas-sprinkler", arquivo: "Design_sem_nome.png", larguras: [480, 640, 960, 1280, 1600, 2048], credito: "ilustrativa",
     alt: "Estação de válvulas vermelhas de sprinkler com manômetros e volantes" },
-  { id: "servico-instalacao", arquivo: "Instalacao_1.jpg", larguras: [640, 1000, 1600], credito: "ilustrativa", teto: { 1000: 60 },
+  { id: "servico-instalacao", arquivo: "Instalacao_1.jpg", larguras: M, credito: "ilustrativa",
     alt: "Linha de válvulas de sprinkler vermelhas e amarelas" },
-  { id: "servico-instalacao-2", arquivo: "Inspecao_1.jpg", larguras: [640, 1000], credito: "ilustrativa", teto: { 1000: 60 },
+  { id: "servico-instalacao-2", arquivo: "Inspecao_1.jpg", larguras: M, credito: "ilustrativa",
     alt: "Painel de alarme de incêndio aberto, com a placa eletrônica, detectores e acionadores manuais" },
-  { id: "servico-projetos", arquivo: "Servicos_2.jpg", larguras: [640, 1000, 1600], credito: "ilustrativa", teto: { 1000: 60 },
+  // origem mole (foto de banco ampliada, 3500 px): sem foto melhor do mesmo assunto no acervo; entregue até 1600 px
+  // (redução ≥ 2,2×) com nitidez leve depois de reduzir. Seções: exibir até ~1000 px CSS de largura.
+  { id: "servico-projetos", arquivo: "Servicos_2.jpg", larguras: [640, 960, 1280, 1600], credito: "ilustrativa", nitidez: 0.5,
     alt: "Planta técnica sobre a mesa, com óculos, capacete e trena" },
   { id: "servico-documentacao", arquivo: "architect-project-engineer-is-checking-house-building-quality-checklist-inspecting-1-1.jpg",
-    larguras: [640, 1000, 1600], credito: "ilustrativa", teto: { 1000: 60 }, alt: "Profissional preenchendo um checklist em prancheta" },
-  { id: "servico-inspecoes", arquivo: "Inspecao_2.jpg", larguras: [640, 1000, 1600], credito: "ilustrativa", teto: { 1000: 60 },
+    larguras: M, credito: "ilustrativa", alt: "Profissional preenchendo um checklist em prancheta" },
+  { id: "servico-inspecoes", arquivo: "Inspecao_2.jpg", larguras: M, credito: "ilustrativa",
     alt: "Mão com caneta conferindo o manômetro de um extintor, ao lado de um tablet" },
-  { id: "servico-inspecoes-2", arquivo: "Manutencao_2.jpg", larguras: [640, 1000], credito: "ilustrativa", teto: { 1000: 60 },
+  { id: "servico-inspecoes-2", arquivo: "Manutencao_2.jpg", larguras: M, credito: "ilustrativa",
     alt: "Técnico de capacete e colete anotando ao lado de um abrigo de hidrante" },
-  { id: "servico-gestao", arquivo: "Manutencao_1.jpg", larguras: [640, 1000, 1600], credito: "ilustrativa", teto: { 1000: 60 },
+  { id: "servico-gestao", arquivo: "Manutencao_1.jpg", larguras: M, credito: "ilustrativa",
     alt: "Dois técnicos de capacete conferindo extintores com um tablet" },
-  { id: "servico-riscos", arquivo: "Riscos_2.jpg", larguras: [640, 1000, 1600], credito: "ilustrativa", teto: { 1000: 60 },
+  { id: "servico-riscos", arquivo: "Riscos_2.jpg", larguras: M, credito: "ilustrativa",
     alt: "Equipe de capacete reunida diante de um quadro, em orientação de segurança" },
-  { id: "servico-venda", arquivo: "Venda_2.jpg", larguras: [640, 1000, 1600], credito: "ilustrativa", teto: { 1000: 60 },
+  { id: "servico-venda", arquivo: "Venda_2.jpg", larguras: M, credito: "ilustrativa",
     alt: "Mangueiras de incêndio vermelhas enroladas, com conexões" },
-  { id: "servico-sinalizacao", arquivo: "Riscos_1.jpg", larguras: [640, 1000, 1600], credito: "ilustrativa", teto: { 1000: 60 },
+  // origem mole (5695 px muito comprimidos): única foto de sinalização de saída do acervo; entregue até 1920 px
+  // (redução ≥ 3×) com nitidez leve depois de reduzir.
+  { id: "servico-sinalizacao", arquivo: "Riscos_1.jpg", larguras: M, credito: "ilustrativa", nitidez: 0.5,
     alt: "Placa verde de saída de emergência no teto" },
-  { id: "setor-financeiro-tecnologia-saude", arquivo: "Inspecao_1.jpg", larguras: [640, 1280, 1920], credito: "ilustrativa",
-    crop: { left: 0, top: 436, width: 4183, height: 2353 }, teto: { 640: 40 },
+  { id: "setor-financeiro-tecnologia-saude", arquivo: "Inspecao_1.jpg", larguras: G, credito: "ilustrativa",
+    crop: { left: 0, top: 436, width: 4183, height: 2353 },
     alt: "Painel de alarme de incêndio aberto, com a placa eletrônica e acionadores manuais" },
-  { id: "setor-industrial-agronegocio", arquivo: "Servicos_1.jpg", larguras: [640, 1280, 1920], credito: "ilustrativa", teto: { 640: 40 },
+  { id: "setor-industrial-agronegocio", arquivo: "Servicos_1.jpg", larguras: G, credito: "ilustrativa",
     alt: "Dois engenheiros de capacete com um tablet em uma planta industrial" },
-  { id: "setor-energia-transporte", arquivo: "Home_Image_1-e1754481613736.png", larguras: [640, 1280], credito: "ilustrativa", teto: { 640: 40 },
+  { id: "setor-energia-transporte", arquivo: "Home_Image_1-e1754481613736.png", larguras: [640, 960, 1280, 1635], credito: "ilustrativa",
     alt: "Esfera de armazenamento de gás em uma planta industrial" },
-  { id: "institucional-pilar", arquivo: "Institucional_3.png", larguras: [828, 1440], credito: "ilustrativa",
+  // PNGs de 2048 px que já vieram ampliados: na largura cheia o AVIF dobra de peso (ruído da ampliação) sem ganhar
+  // detalhe; vão até 1600 px.
+  { id: "institucional-pilar", arquivo: "Institucional_3.png", larguras: [640, 960, 1280, 1600], credito: "ilustrativa",
     alt: "Pilar de concreto com tubulação vermelha, abrigo de hidrante, extintor, acionador manual e sirene" },
-  { id: "institucional-maos", arquivo: "Institucional_7.png", larguras: [480, 960], credito: "ilustrativa", alt: "Mãos segurando uma muda de planta" },
-  { id: "institucional-paisagem", arquivo: "Institucional_8.jpg", larguras: [828, 1440, 2200], credito: "ilustrativa",
+  { id: "institucional-maos", arquivo: "Institucional_7.png", larguras: [480, 800, 1200], credito: "ilustrativa", alt: "Mãos segurando uma muda de planta" },
+  { id: "institucional-paisagem", arquivo: "Institucional_8.jpg", larguras: G, credito: "ilustrativa",
     alt: "Paisagem verde com uma árvore ao nascer do sol" },
-  { id: "institucional-extintor", arquivo: "Institucional_2.png", larguras: [640, 1200], credito: "ilustrativa",
+  { id: "institucional-extintor", arquivo: "Institucional_2.png", larguras: [640, 960, 1280, 1600], credito: "ilustrativa",
     alt: "Mão com luva segurando um extintor vermelho" },
-  { id: "institucional-compromisso", arquivo: "compromisso.png", larguras: [640, 1200], credito: "ilustrativa", alt: "Mãos empilhadas de uma equipe" },
-  { id: "clientes-aperto", arquivo: "Clientes_1.jpg", larguras: [828, 1440], credito: "ilustrativa", alt: "Aperto de mão entre dois executivos" },
+  { id: "institucional-compromisso", arquivo: "compromisso.png", larguras: [640, 960, 1280, 1600], credito: "ilustrativa", alt: "Mãos empilhadas de uma equipe" },
+  { id: "clientes-aperto", arquivo: "Clientes_1.jpg", larguras: [640, 960, 1280, 1784], credito: "ilustrativa", alt: "Aperto de mão entre dois executivos" },
 
   // Logos de fabricantes e entidades: aparados, só WebP
   ...[
@@ -110,11 +126,11 @@ const MAPA = [
     ["logo-germek", "LOGO-GRMK-AZUL-GERMEK.png", "Germek Equipamentos"],
     ["entidade-abspk", "ABSPK.png", "ABSpk, Associação Brasileira de Sprinklers"],
     ["entidade-nfpa", "NFPA.png", "NFPA"],
-  ].map(([id, arquivo, alt]) => ({ id, arquivo, larguras: [240, 480], credito: "marca", trim: true, soWebp: true, tetoWebp: 12, alphaQ: 45, alt })),
+  ].map(([id, arquivo, alt]) => ({ id, arquivo, larguras: [240, 480], credito: "marca", trim: true, soWebp: true, logo: true, alt })),
 
   // Wordmark recortado do logo horizontal (§4.5)
-  { id: "protecin-wordmark", arquivo: "Ativo-1.png", larguras: [400, 800], credito: "marca", wordmark: "original", tetoWebp: 12, alphaQ: 60, alt: "Protecin" },
-  { id: "protecin-wordmark-negativo", arquivo: "Ativo-1.png", larguras: [400, 800], credito: "marca", wordmark: "negativo", tetoWebp: 12, alphaQ: 60, alt: "Protecin" },
+  { id: "protecin-wordmark", arquivo: "Ativo-1.png", larguras: [400, 800], credito: "marca", wordmark: "original", logo: true, alt: "Protecin" },
+  { id: "protecin-wordmark-negativo", arquivo: "Ativo-1.png", larguras: [400, 800], credito: "marca", wordmark: "negativo", logo: true, alt: "Protecin" },
 ];
 
 // ---------- utilidades ----------
@@ -206,21 +222,12 @@ async function mestre(e) {
   return { raw, w: meta.width, h: meta.height, alpha };
 }
 
-async function codificar(raw, largura, formato, qualidade, alphaQ) {
-  const p = sharp(raw.data, { raw: raw.info }).resize({ width: largura, withoutEnlargement: true });
-  if (formato === "avif") return p.avif({ quality: qualidade, effort: 6 }).toBuffer();
-  return p.webp({ quality: qualidade, alphaQuality: alphaQ, effort: 6 }).toBuffer();
-}
-
-/** Codifica descendo a qualidade até caber no teto (KB). */
-async function codificarNoTeto(raw, largura, formato, qInicial, tetoKB, alphaQ = 90) {
-  let q = qInicial;
-  let buf = await codificar(raw, largura, formato, q, alphaQ);
-  while (tetoKB && buf.length > tetoKB * 1024 && q > 28) {
-    q -= 4;
-    buf = await codificar(raw, largura, formato, q, alphaQ);
-  }
-  return { buf, q };
+/** Reduz (Lanczos3), aplica a nitidez leve da entrada (se houver) e codifica. Sem teto de bytes. */
+async function codificar(raw, largura, formato, e) {
+  let p = sharp(raw.data, { raw: raw.info }).resize({ width: largura, withoutEnlargement: true });
+  if (e.nitidez) p = p.sharpen({ sigma: e.nitidez });
+  if (formato === "avif") return p.avif({ quality: Q.avif, effort: 6 }).toBuffer();
+  return p.webp({ quality: e.logo ? Q.logo : Q.webp, alphaQuality: Q.alfa, smartSubsample: true, effort: 6 }).toBuffer();
 }
 
 function assinatura(e, src) {
@@ -314,13 +321,12 @@ async function main() {
     const pesos = [];
     for (const l of larguras) {
       for (const f of formatos) {
-        const teto = f === "avif" ? e.teto?.[l] : e.tetoWebp ?? (e.teto?.[l] ? Math.round(e.teto[l] * 1.4) : undefined);
-        const { buf, q } = await codificarNoTeto(m.raw, l, f, f === "avif" ? 50 : 72, teto, e.alphaQ);
+        const buf = await codificar(m.raw, l, f, e);
         const nome = `${e.id}-${l}.${f}`;
         fs.writeFileSync(path.join(SAIDA, nome), buf);
         arquivos.push(nome);
         gerados.add(nome);
-        pesos.push(`${l}.${f}=${kb(buf.length)}KB${q !== (f === "avif" ? 50 : 72) ? `(q${q})` : ""}`);
+        pesos.push(`${l}.${f}=${kb(buf.length)}KB`);
       }
     }
     const info = { w: m.w, h: m.h, larguras, alpha: m.alpha, avif: !e.soWebp, credito: e.credito, alt: e.alt };

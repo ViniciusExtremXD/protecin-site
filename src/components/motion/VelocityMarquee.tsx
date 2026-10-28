@@ -17,8 +17,8 @@ const wrap = (min: number, max: number, v: number) => {
 };
 
 /**
- * Fita infinita (Seven + pausa): 4 cópias, acelera e inverte com a velocidade da rolagem, para no hover por mola e
- * só roda o laço de quadros enquanto está na tela. Reduzido: flex-wrap estático com 1 cópia.
+ * Fita infinita (Seven + pausa): 4 cópias, acelera de leve e inverte com a velocidade da rolagem (fator 0,4 na
+ * rodada de sobriedade), para no hover por mola e só roda o laço de quadros enquanto está na tela.
  */
 export function VelocityMarquee({ baseVelocity = -1.2, pauseOnHover = true, className, trackClassName, ariaLabel, children }: VelocityMarqueeProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -27,7 +27,7 @@ export function VelocityMarquee({ baseVelocity = -1.2, pauseOnHover = true, clas
   const { scrollY } = useScroll();
   const vel = useVelocity(scrollY);
   const velSuave = useSpring(vel, { damping: 50, stiffness: 400 });
-  const fatorVel = useTransform(velSuave, [0, 1000], [0, 1.2], { clamp: false });
+  const fatorVel = useTransform(velSuave, [0, 1000], [0, 0.4], { clamp: false });
   const pausa = useMotionValue(1);
   const pausaSuave = useSpring(pausa, { stiffness: 140, damping: 24 });
   const x = useTransform(baseX, (v) => `${wrap(-25, 0, v)}%`);

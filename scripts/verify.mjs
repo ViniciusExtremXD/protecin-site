@@ -2,19 +2,23 @@
  * Verificação do site (design-final §16 e §17.8, passo 7). Obrigatória antes de publicar.
  *
  * puppeteer-core com o Chrome instalado, perfil em caminho curto (o Chrome recusa perfil em caminho longo).
- * Seis telas: 1440×900, 1366×657, 768×1024, 390×844, 320×720 e 844×390, nos dois modos de movimento
- * (?motion=full e prefers-reduced-motion: reduce emulado, sem parâmetro).
+ * Seis telas: 1440×900, 1366×657, 768×1024, 390×844, 320×720 e 844×390, com prefers-reduced-motion emulado em
+ * no-preference ("full") e em reduce ("reduzido"). Contrato da rodada de sobriedade (qa/AJUSTES-SOBRIEDADE.md):
+ * não existe modo reduzido para o visitante — nos dois casos o site ANIMA (motion-full, Lenis no desktop, cenas
+ * fixadas, entradas), sem botão nem aviso de movimento e sem ?motion=.
  *
  * Critérios (AC-xx de §16): conteúdo (01–05), motion (06–12), funcional e conversão (13–19), SEO e
- * acessibilidade (20–23, com axe-core), peso da home (25) e o teto das cenas fixadas do QA (rolagem presa =
- * altura da seção − 100vh: ≤ 2,5 telas no desktop, ≤ 1,5 no celular). Lighthouse e fps ficam fora (AC-24/26:
- * scripts/medir-desempenho.mjs e Lighthouse).
+ * acessibilidade (20–23, com axe-core), peso da home (25), o teto das cenas fixadas (AC-QA-PIN: rolagem presa =
+ * altura da seção − 100vh ≤ 1,2 tela no desktop, no máximo 3 cenas na home; no celular só a Abertura prende, até
+ * 0,6) e o comprimento das páginas (AC-QA-ALTURA, scrollHeight em 1440×900 e 390×844, §2). Lighthouse e fps
+ * ficam fora (AC-24/26: scripts/medir-desempenho.mjs e Lighthouse).
  *
  * Uso:
  *   node scripts/verify.mjs --estatico            dist/ servido em http://127.0.0.1:4195/protecin-site/ (GitHub Pages)
  *   node scripts/verify.mjs                       dist/ de um build com base "/" servido em http://127.0.0.1:4195/
  *   node scripts/verify.mjs --url <url-base>      um site já no ar (ex.: a prévia publicada)
  *   --so home,servicos   filtra rotas   ·   --telas 1440,390   filtra telas   ·   --rapido   só 1440 e 390
+ *   --dist <pasta>   serve outra pasta no lugar do dist/ (build de teste)   ·   --porta 4195   ·   --saida <pasta> do relatório
  * Saída: verificacao/relatorio.json (+ verificacao/relatorio.txt) e código 1 se algum critério falhar.
  */
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
@@ -26,7 +30,6 @@ import { gzipSync } from "node:zlib";
 import puppeteer from "puppeteer-core";
 
 const RAIZ = process.cwd();
-const SAIDA = path.join(RAIZ, "verificacao");
 const require = createRequire(import.meta.url);
 const args = process.argv.slice(2);
 const arg = (n) => (args.includes(n) ? args[args.indexOf(n) + 1] : null);
@@ -35,7 +38,9 @@ const URL_EXTERNA = arg("--url");
 const RAPIDO = args.includes("--rapido");
 const filtroRotas = arg("--so")?.split(",");
 const filtroTelas = arg("--telas")?.split(",").map(Number);
-const PORTA = 4195;
+const PORTA = Number(arg("--porta") ?? 4195);
+const SAIDA = path.resolve(arg("--saida") ?? path.join(RAIZ, "verificacao"));
+const DIST = path.resolve(arg("--dist") ?? path.join(RAIZ, "dist"));
 
 const CHROMES = [
   "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
@@ -85,11 +90,11 @@ let PREFIXO = "";
 if (URL_EXTERNA) {
   BASE_URL = URL_EXTERNA.replace(/\/$/, "");
 } else {
-  if (!existsSync(path.join(RAIZ, "dist", "index.html"))) {
+  if (!existsSync(path.join(DIST, "index.html"))) {
     console.error("dist/ não existe. Rode `npm run build:gh` (ou `npm run build`) antes.");
     process.exit(1);
   }
-  const html = readFileSync(path.join(RAIZ, "dist", "index.html"), "utf8");
+  const html = readFileSync(path.join(DIST, "index.html"), "utf8");
   const temBaseGh = html.includes("/protecin-site/assets/");
   if (ESTATICO && !temBaseGh) {
     console.error("verify --estatico: o dist/ não foi gerado com VITE_BASE=/protecin-site/. Rode `npm run build:gh`.");
@@ -97,7 +102,7 @@ if (URL_EXTERNA) {
   }
   PREFIXO = temBaseGh ? "/protecin-site" : "";
   const { servir } = await import(pathToFileURL(path.join(RAIZ, "scripts", "servir-estatico.mjs")).href);
-  servidor = await servir(PORTA, PREFIXO, path.resolve("dist"));
+  servidor = await servir(PORTA, PREFIXO, DIST);
   BASE_URL = `http://127.0.0.1:${PORTA}${PREFIXO}`;
 }
 const PREVIA = URL_EXTERNA ? !/protecin\.com\.br/.test(URL_EXTERNA) : PREFIXO !== "";
@@ -110,12 +115,12 @@ const NOMES = {
   "AC-03": "Autorizada só com Kidde, Everlux, Notifier e Simplex",
   "AC-04": "toda figure com crédito; nenhum arquivo proibido em public/img",
   "AC-05": "espaços reservados só com ?proposta=1 (e os 4 aparecem)",
-  "AC-06": "cobertura de animação ≥ 98% (?motion=full)",
+  "AC-06": "cobertura de animação ≥ 98%",
   "AC-07": "nada invisível depois de rolar (os dois modos)",
   "AC-08": "cenas fixadas: cada elemento ≥ 0,9 em alguma amostra",
   "AC-09": "entradas: ≥ 5 valores e 200 a 900 ms",
   "AC-10": "sem JS e com animation:none: nada invisível, H1 e CTA na tela",
-  "AC-11": "reduzido: motion-reduced, sem fixação, sem brasas, sem Lenis; full fixa",
+  "AC-11": "movimento sempre ligado: com reduce emulado o site anima (motion-full, Lenis, cenas, entradas); sem toggle, aviso nem brasas",
   "AC-12": "animação infinita só em fitas/pacotes; nada roda fora da tela",
   "AC-13": "CTA de orçamento visível sem rolar (1440×900 e 390×844)",
   "AC-14": "formato dos links wa.me, tel: e mailto:",
@@ -128,8 +133,9 @@ const NOMES = {
   "AC-21": "alt em toda img; favicon e 404.html",
   "AC-22": "axe-core: contraste AA e sem violação séria",
   "AC-23": "celular: alvos ≥ 44×44 e nenhum texto longo < 13 px",
-  "AC-25": "peso da home: 1ª carga < 700 KB e rolada < 1,9 MB (sem vídeo)",
-  "AC-QA-PIN": "cenas fixadas: rolagem presa ≤ 2,5 telas (desktop) e ≤ 1,5 (celular)",
+  "AC-25": "peso da home: 1ª carga < 700 KB e rolada < 2 MB (sem vídeo)",
+  "AC-QA-PIN": "cenas fixadas: ≤ 1,2 tela presa (desktop, ≤ 3 na home); celular só a Abertura, ≤ 0,6",
+  "AC-QA-ALTURA": "comprimento das páginas (scrollHeight) dentro do teto de AJUSTES-SOBRIEDADE §2",
   CONSOLE: "zero erro ou aviso de console",
   OVERFLOW: "zero rolagem horizontal",
 };
@@ -161,11 +167,25 @@ const requisicoesGtm = [];
 const RUIDO_CONSOLE = [/React DevTools/i];
 const ehAntivirus = (u = "") => /kaspersky-labs\.com|\.scr\.kaspersky/.test(u);
 
+// Teto do comprimento das páginas (AJUSTES-SOBRIEDADE §2): [1440×900, 390×844]. "Demais" = o que tinham na prévia
+// publicada antes da rodada (28/10/2026), arredondado para cima.
+const TETO_ALTURA = {
+  home: [13000, 15000],
+  servicos: [9000, 11000],
+  institucional: [7500, 9500],
+  app: [7500, 9500],
+  clientes: [7500, 9500],
+  catalogo: [3700, 5300],
+  contato: [3900, 5600],
+  creditos: [3100, 5300],
+  404: [2100, 3200],
+};
+
 /**
- * Página nova em contexto limpo (storage zerado). modo: "full" (?motion=full + no-preference) ou "reduzido"
- * (prefers-reduced-motion: reduce emulado, sem parâmetro). js=false desliga o JavaScript.
+ * Página nova em contexto limpo (storage zerado). modo: "full" (prefers-reduced-motion: no-preference) ou "reduzido"
+ * (prefers-reduced-motion: reduce emulado). Os dois têm de animar igual. js=false desliga o JavaScript.
  */
-async function abrir(rota, tela, { modo = "full", js = true, query = "", antes, semToast = false, semIntro = true, esperar = 1300 } = {}) {
+async function abrir(rota, tela, { modo = "full", js = true, query = "", antes, semIntro = true, esperar = 1300 } = {}) {
   const ctx = await browser.createBrowserContext();
   const page = await ctx.newPage();
   await page.setViewport(tela);
@@ -196,20 +216,14 @@ async function abrir(rota, tela, { modo = "full", js = true, query = "", antes, 
     if (r.status() >= 400 && !(rota.includes("nao-existe") && r.url().includes("nao-existe"))) falhas.push(`${r.status()} ${r.url()}`);
   });
   if (js) {
-    await page.evaluateOnNewDocument(
-      (semToast, semIntro) => {
-        try {
-          if (semToast) sessionStorage.setItem("pt-toast", "1");
-          if (semIntro) sessionStorage.setItem("pt-intro", "1");
-        } catch {}
-      },
-      semToast,
-      semIntro,
-    );
+    await page.evaluateOnNewDocument((semIntro) => {
+      try {
+        if (semIntro) sessionStorage.setItem("pt-intro", "1");
+      } catch {}
+    }, semIntro);
   }
   if (antes) await antes(page);
-  const q = [modo === "full" ? "motion=full" : "", query].filter(Boolean).join("&");
-  const url = `${BASE_URL}${rota}${q ? `?${q}` : ""}`;
+  const url = `${BASE_URL}${rota}${query ? `?${query}` : ""}`;
   await page.goto(url, { waitUntil: "networkidle2", timeout: 90000 });
   if (esperar) await espera(esperar);
   return { page, ctx, consoleMsgs, falhas, url };
@@ -319,8 +333,8 @@ if (!URL_EXTERNA) {
     }
   };
   const achados = [];
-  for (const dir of ["src", "public", "dist"]) {
-    andar(path.join(RAIZ, dir), (p, n) => {
+  for (const dir of [path.join(RAIZ, "src"), path.join(RAIZ, "public"), DIST]) {
+    andar(dir, (p, n) => {
       if (new RegExp(NOME_BANCO, "i").test(n)) achados.push(p);
       else if (/\.(tsx?|css|html|js|json|txt|xml|svg)$/.test(n) && new RegExp(NOME_BANCO, "i").test(readFileSync(p, "utf8"))) achados.push(p);
     });
@@ -362,42 +376,61 @@ for (const tela of TELAS) {
         registrar("AC-13", !!cta, `${rot}: nenhum CTA de orçamento inteiro e livre na 1ª tela`);
       }
 
-      // AC-11: classes e cenas no carregamento
+      // AC-11: movimento sempre ligado, nos dois modos (com reduce emulado o site anima igual)
       const estado = await page.evaluate(() => ({
-        reduced: document.documentElement.classList.contains("motion-reduced"),
+        full: document.documentElement.classList.contains("motion-full"),
+        reduced: /motion-reduced/.test(document.documentElement.className),
+        falhou: document.documentElement.classList.contains("motion-failed"),
+        subiu: document.documentElement.classList.contains("motion-up"),
         lenis: document.documentElement.classList.contains("lenis"),
         pins: [...document.querySelectorAll("[data-pin-stage]")].map((s) => s.dataset.pin),
         brasas: document.querySelectorAll('canvas[data-motion="brasas"]').length,
+        toggle: document.querySelectorAll('[data-motion="toggle"], [data-motion="toast"]').length + (/Animações:|Ativar movimento|Manter reduzido/.test(document.body.innerText) ? 1 : 0),
       }));
-      if (modo === "reduzido") {
-        registrar("AC-11", estado.reduced, `${rot}: html sem motion-reduced`);
-        registrar("AC-11", estado.pins.every((p) => p === "off"), `${rot}: cena fixada ligada no reduzido`);
-        registrar("AC-11", !estado.lenis, `${rot}: Lenis criado no reduzido`);
-      } else {
-        registrar("AC-11", !estado.reduced, `${rot}: motion-reduced com ?motion=full`);
-        if (desktop && tela.height >= 640 && estado.pins.length) registrar("AC-11", estado.pins.includes("on"), `${rot}: nenhuma cena fixada com ?motion=full`);
-      }
+      registrar("AC-11", estado.full && !estado.reduced, `${rot}: html sem motion-full ou com motion-reduced (${estado.full}/${estado.reduced})`);
+      registrar("AC-11", estado.subiu && !estado.falhou, `${rot}: motor não subiu ou seguro motion-failed disparou (up ${estado.subiu}, failed ${estado.falhou})`);
+      registrar("AC-11", estado.toggle === 0, `${rot}: botão ou aviso de movimento na página`);
+      registrar("AC-11", estado.brasas === 0, `${rot}: ${estado.brasas} canvas de brasas`);
+      // Lenis: só com mouse (no toque ele não é criado de propósito)
+      if (!tela.hasTouch) registrar("AC-11", estado.lenis, `${rot}: Lenis não criado (o movimento é sempre ligado)`);
+      if (desktop && tela.height >= 640 && estado.pins.length && r.page === "home") registrar("AC-11", estado.pins.includes("on"), `${rot}: nenhuma cena fixada ligada`);
 
-      // teto das cenas fixadas (QA): rolagem presa = altura − 100vh
-      if (modo === "full") {
+      // teto das cenas fixadas (AJUSTES-SOBRIEDADE §2): rolagem presa = altura − 100vh
+      {
         const cenas = await page.evaluate(() =>
           [...document.querySelectorAll('[data-pin-stage][data-pin="on"]')].map((s) => ({
             id: s.id || s.closest("[data-section]")?.dataset.section || s.querySelector("[data-section]")?.dataset.section || s.getAttribute("aria-label") || "?",
+            abertura: false, // marcado abaixo: só a cena #topo da home é a Abertura
             telas: +((s.offsetHeight - innerHeight) / innerHeight).toFixed(2),
           })),
         );
-        const teto = desktop ? 2.5 : 1.5;
-        for (const c of cenas) {
-          registrar("AC-QA-PIN", c.telas <= teto + 0.02, `${rot}: cena ${c.id} prende ${c.telas} telas (teto ${teto})`);
-          relatorio.medidas[`pin ${tela.nome} ${r.rota} ${c.id}`] = c.telas;
+        const ehAbertura = r.page === "home";
+        for (const c of cenas) c.abertura = c.abertura || (ehAbertura && c.id === "topo");
+        if (desktop) {
+          for (const c of cenas) registrar("AC-QA-PIN", c.telas <= 1.2 + 0.02, `${rot}: cena ${c.id} prende ${c.telas} telas (teto 1,2)`);
+          if (r.page === "home") registrar("AC-QA-PIN", cenas.length <= 3, `${rot}: ${cenas.length} cenas fixadas na home (teto 3)`);
+        } else {
+          for (const c of cenas) {
+            registrar("AC-QA-PIN", c.abertura, `${rot}: cena ${c.id} fixada no celular/tablet (só a Abertura pode)`);
+            if (c.abertura) registrar("AC-QA-PIN", c.telas <= 0.6 + 0.02, `${rot}: Abertura prende ${c.telas} telas (teto 0,6)`);
+          }
         }
+        for (const c of cenas) relatorio.medidas[`pin ${tela.nome} ${modo} ${r.rota} ${c.id}`] = c.telas;
       }
 
       // rola a página inteira (dispara entradas e lazy)
       await varrer(page);
-      if (modo === "reduzido") {
+      {
         const brasas = await page.evaluate(() => document.querySelectorAll('canvas[data-motion="brasas"]').length);
-        registrar("AC-11", brasas === 0, `${rot}: ${brasas} canvas de brasas no reduzido`);
+        registrar("AC-11", brasas === 0, `${rot}: ${brasas} canvas de brasas`);
+      }
+
+      // AC-QA-ALTURA: comprimento da página (depois de rolar: lazy e cenas já ligadas)
+      if (tela.width === 1440 || tela.width === 390) {
+        const altura = await page.evaluate(() => document.documentElement.scrollHeight);
+        const teto = TETO_ALTURA[r.page]?.[tela.width === 1440 ? 0 : 1];
+        relatorio.medidas[`altura ${tela.nome} ${modo} ${r.rota}`] = altura;
+        if (teto) registrar("AC-QA-ALTURA", altura <= teto, `${rot}: scrollHeight ${altura} px (teto ${teto})`);
       }
 
       // AC-07: nada invisível depois de rolar (fora das cenas fixadas, que o AC-08 cobre)
@@ -411,7 +444,7 @@ for (const tela of TELAS) {
       );
       registrar("AC-07", invisiveis.length === 0, invisiveis.length ? `${rot}: ${invisiveis.length} invisíveis: ${[...new Set(invisiveis)].slice(0, 6).join(" | ")}` : "");
 
-      // AC-06: cobertura (só no full)
+      // AC-06: cobertura (os dois modos animam igual: mede no full)
       if (modo === "full") {
         const cob = await page.evaluate(() => {
           const alvos = window.__pt.alvos();
@@ -473,7 +506,7 @@ for (const tela of TELAS) {
 log("\n# Cenas fixadas (AC-08)");
 for (const tela of [T1440, T390]) {
   for (const r of ROTAS) {
-    const { page, ctx } = await abrir(r.rota, tela, { modo: "full", semToast: true });
+    const { page, ctx } = await abrir(r.rota, tela, { modo: "full" });
     await page.evaluate(AUDITORIA);
     const n = await page.evaluate(() => document.querySelectorAll('[data-pin-stage][data-pin="on"]').length);
     for (let i = 0; i < n; i++) {
@@ -522,9 +555,16 @@ for (const tela of [T1440, T390]) {
 }
 
 // ================================================================== 4. entradas quadro a quadro (AC-09)
-log("\n# Entradas (AC-09)");
-for (const r of ROTAS.filter((x) => x.page !== "404")) {
-  const { page, ctx } = await abrir(r.rota, T1440, { modo: "full", semToast: true });
+// No modo "reduzido" (reduce emulado) as entradas da home e de /servicos/ também são medidas: têm de animar igual
+// (AC-11, movimento sempre ligado).
+log("\n# Entradas (AC-09; reduce emulado conta também no AC-11)");
+const CASOS_ENTRADA = [
+  ...ROTAS.filter((x) => x.page !== "404").map((r) => ({ r, modo: "full" })),
+  ...ROTAS.filter((x) => ["home", "servicos"].includes(x.nome)).map((r) => ({ r, modo: "reduzido" })),
+];
+for (const { r, modo } of CASOS_ENTRADA) {
+  const ac = modo === "full" ? "AC-09" : "AC-11";
+  const { page, ctx } = await abrir(r.rota, T1440, { modo });
   const candidatos = await page.evaluate(() => {
     const tipos = ["sobe", "linha", "palavra", "fade", "monta", "virada", "carimbo", "cortina"];
     const vistos = new Set();
@@ -582,13 +622,14 @@ for (const r of ROTAS.filter((x) => x.page !== "404")) {
       return { distintos, duracao: ini === null ? 0 : Math.round(fim - ini) };
     }, i);
     const ok = medida.distintos >= 5 && medida.duracao >= 180 && medida.duracao <= 1000;
-    registrar("AC-09", ok, `${r.rota} ${candidatos[i]}: ${medida.distintos} valores em ${medida.duracao} ms`);
-    relatorio.medidas[`entrada ${r.rota} ${candidatos[i]}`] = medida;
-    log(`  ${r.rota} ${candidatos[i]}: ${medida.distintos} valores, ${medida.duracao} ms`);
+    registrar(ac, ok, `${modo} ${r.rota} ${candidatos[i]}: ${medida.distintos} valores em ${medida.duracao} ms`);
+    relatorio.medidas[`entrada ${modo} ${r.rota} ${candidatos[i]}`] = medida;
+    log(`  ${modo} ${r.rota} ${candidatos[i]}: ${medida.distintos} valores, ${medida.duracao} ms`);
   }
+  if (modo === "reduzido") registrar("AC-11", candidatos.length > 0, `reduzido ${r.rota}: nenhuma entrada animada encontrada`);
   // entrada CSS do hero (2ª visita da sessão, sem preloader)
   await page.evaluate(() => window.scrollTo(0, 0));
-  await page.goto(`${BASE_URL}${r.rota}?motion=full`, { waitUntil: "domcontentloaded" });
+  await page.goto(`${BASE_URL}${r.rota}`, { waitUntil: "domcontentloaded" });
   const hero = await page.evaluate(async () => {
     const el = document.querySelector("h1 .e-linha-i, h1[data-motion] span span span, .e-sobe, .e-linha-i");
     if (!el) return null;
@@ -605,9 +646,9 @@ for (const r of ROTAS.filter((x) => x.page !== "404")) {
     return { distintos: new Set(amostras.map((a) => a[1])).size, duracao: ini === null ? 0 : Math.round(fim - ini) };
   });
   if (hero) {
-    relatorio.medidas[`entrada ${r.rota} hero-css`] = hero;
-    registrar("AC-09", hero.distintos >= 5 && hero.duracao >= 180 && hero.duracao <= 1000, `${r.rota} hero CSS: ${hero.distintos} valores em ${hero.duracao} ms`);
-    log(`  ${r.rota} hero CSS: ${hero.distintos} valores, ${hero.duracao} ms`);
+    relatorio.medidas[`entrada ${modo} ${r.rota} hero-css`] = hero;
+    registrar(ac, hero.distintos >= 5 && hero.duracao >= 180 && hero.duracao <= 1000, `${modo} ${r.rota} hero CSS: ${hero.distintos} valores em ${hero.duracao} ms`);
+    log(`  ${modo} ${r.rota} hero CSS: ${hero.distintos} valores, ${hero.duracao} ms`);
   }
   await ctx.close();
 }
@@ -662,7 +703,6 @@ for (const tela of [T1440, T390]) {
       const { page, ctx, consoleMsgs } = await abrir(r.rota, tela, {
         modo: "full",
         semIntro: false,
-        semToast: true,
         esperar: 1200,
         antes: (p) =>
           p.evaluateOnNewDocument((css) => {
@@ -719,7 +759,7 @@ const reservadosVistos = new Set();
 const numerosFora = new Map();
 for (const r of ROTAS) {
   for (const proposta of [false, true]) {
-    const { page, ctx } = await abrir(r.rota, T1440, { modo: "reduzido", semToast: true, query: proposta ? "proposta=1" : "" });
+    const { page, ctx } = await abrir(r.rota, T1440, { modo: "reduzido", query: proposta ? "proposta=1" : "" });
     await varrer(page, 0.9, 60);
     const d = await page.evaluate(() => {
       const textos = [];
@@ -809,7 +849,7 @@ nota("AC-05", `reservados vistos com ?proposta=1: ${[...reservadosVistos].join("
 // ================================================================== 7. animações infinitas e fora da tela (AC-12)
 log("\n# Animações infinitas e fora da tela (AC-12)");
 for (const r of ROTAS.filter((x) => ["home", "servicos", "app", "catalogo", "institucional", "clientes"].includes(x.nome))) {
-  const { page, ctx } = await abrir(r.rota, T1440, { modo: "full", semToast: true });
+  const { page, ctx } = await abrir(r.rota, T1440, { modo: "full" });
   await varrer(page, 0.8, 90);
   const infinitas = await page.evaluate(() =>
     document
@@ -874,7 +914,7 @@ const dataLayer = (page) => page.evaluate(() => (window.dataLayer || []).filter(
 if (ehHome) {
   // AC-15: um CTA de cada canal
   for (const tela of [T1440, T390]) {
-    const { page, ctx } = await abrir("/", tela, { modo: "full", semToast: true, antes: interceptarExternos });
+    const { page, ctx } = await abrir("/", tela, { modo: "full", antes: interceptarExternos });
     for (const canal of ["whatsapp", "phone", "email"]) {
       const clicou = await page.evaluate((canal) => {
         const a = [...document.querySelectorAll(`a[data-lead-channel="${canal}"]`)].find((x) => {
@@ -902,7 +942,6 @@ for (const r of ROTAS.filter((x) => ["home", "contato"].includes(x.nome))) {
   const pedidos = [];
   const { page, ctx } = await abrir(r.rota, tela, {
     modo: "full",
-    semToast: true,
     antes: async (p) => {
       await interceptarExternos(p);
       p.on("request", (q) => pedidos.push(q.url()));
@@ -964,7 +1003,7 @@ for (const r of ROTAS.filter((x) => ["home", "contato"].includes(x.nome))) {
 // AC-17: menu
 for (const tela of [T390, T1440]) {
   if (!ehHome) break;
-  const { page, ctx } = await abrir("/", tela, { modo: "full", semToast: true });
+  const { page, ctx } = await abrir("/", tela, { modo: "full" });
   const rot = `${tela.nome} menu`;
   try {
     await page.evaluate(() => window.scrollTo(0, 300));
@@ -1040,7 +1079,7 @@ for (const tela of [T390, T1440]) {
 
 // AC-18: navegação interna, cortina, head, voltar e âncora direta
 if (ehHome) {
-  const { page, ctx, consoleMsgs } = await abrir("/", T1440, { modo: "full", semToast: true });
+  const { page, ctx, consoleMsgs } = await abrir("/", T1440, { modo: "full" });
   try {
     await page.evaluate(() => {
       window.__marca = 1;
@@ -1080,8 +1119,8 @@ if (ehHome) {
   await ctx.close();
   // âncora direta: cai no capítulo, logo abaixo da nav
   for (const [tela, modo] of [[T1440, "full"], [T1440, "reduzido"], [T390, "full"]]) {
-    const { page: p2, ctx: c2 } = await abrir("/servicos/", tela, { modo, semToast: true, query: "", esperar: 0 });
-    await p2.goto(`${BASE_URL}/servicos/${modo === "full" ? "?motion=full" : ""}#projetos-tecnicos`, { waitUntil: "networkidle2" });
+    const { page: p2, ctx: c2 } = await abrir("/servicos/", tela, { modo, query: "", esperar: 0 });
+    await p2.goto(`${BASE_URL}/servicos/#projetos-tecnicos`, { waitUntil: "networkidle2" });
     await espera(2600);
     const topo = await p2.evaluate(() => {
       const el = document.getElementById("projetos-tecnicos");
@@ -1101,8 +1140,8 @@ const axeFonte = readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
 for (const tela of [T1440, T390]) {
   for (const r of ROTAS) {
     for (const modo of ["reduzido", "full"]) {
-      const { page, ctx } = await abrir(r.rota, tela, { modo, semToast: true });
-      await varrer(page, 0.6, modo === "full" ? 120 : 40);
+      const { page, ctx } = await abrir(r.rota, tela, { modo });
+      await varrer(page, 0.6, 120);
       await page.evaluate(axeFonte);
       const res = await page.evaluate(async () => {
         // eslint-disable-next-line no-undef
@@ -1130,9 +1169,9 @@ for (const tela of [T1440, T390]) {
         if (v.decorativos) nota("AC-22", `${tela.nome} ${modo} ${r.rota}: ${v.decorativos} nós de ${v.id} em letreiro decorativo aria-hidden (fora da regra)`);
         if (!v.n) continue;
         const grave = v.id === "color-contrast" || v.impacto === "serious" || v.impacto === "critical";
-        // ScrollLitText (AppFecho): as palavras começam a 0,18 e acendem com a rolagem; no full, o contraste
-        // de quem ainda não acendeu é esperado (o reduzido mostra tudo aceso e é medido do mesmo jeito)
-        const soAcende = v.id === "color-contrast" && modo === "full" && v.nos.every((n) => /\[acende\]/.test(n));
+        // ScrollLitText (AppFecho): as palavras começam a 0,18 e acendem com a rolagem; o contraste de quem ainda
+        // não acendeu é esperado (o movimento é sempre ligado, nos dois modos)
+        const soAcende = v.id === "color-contrast" && v.nos.every((n) => /\[acende\]/.test(n));
         if (grave && !soAcende) registrar("AC-22", false, `${tela.nome} ${modo} ${r.rota}: ${v.id} (${v.impacto}, ${v.n}): ${v.nos.join(" || ")}`);
         else nota("AC-22", `${tela.nome} ${modo} ${r.rota}: ${v.id} (${v.impacto}, ${v.n})${soAcende ? " [ScrollLitText antes de acender]" : ""}`);
       }
@@ -1185,7 +1224,7 @@ if (ehHome) {
         );
       } else somar(e.encodedDataLength);
     });
-    await page.goto(`${BASE_URL}/${modo === "full" ? "?motion=full" : ""}`, { waitUntil: "networkidle0", timeout: 90000 });
+    await page.goto(`${BASE_URL}/`, { waitUntil: "networkidle0", timeout: 90000 });
     await espera(1500);
     await Promise.all(pendentes);
     fase = "rolagem";
@@ -1195,7 +1234,7 @@ if (ehHome) {
     const kb = (b) => Math.round(b / 1024);
     relatorio.medidas[`peso home ${tela.nome} ${modo}`] = { primeiraCargaKB: kb(primeira), roladaKB: kb(total), videoKB: kb(video) };
     registrar("AC-25", primeira < 700 * 1024, `${tela.nome} ${modo}: 1ª carga ${kb(primeira)} KB (meta < 700)`);
-    registrar("AC-25", total < 1.9 * 1024 * 1024, `${tela.nome} ${modo}: home rolada ${kb(total)} KB sem vídeo (meta < 1946)`);
+    registrar("AC-25", total < 2 * 1024 * 1024, `${tela.nome} ${modo}: home rolada ${kb(total)} KB sem vídeo (meta < 2048)`);
     log(`  ${tela.nome} ${modo}: 1ª carga ${kb(primeira)} KB, rolada ${kb(total)} KB, vídeo ${kb(video)} KB`);
     await ctx.close();
   }

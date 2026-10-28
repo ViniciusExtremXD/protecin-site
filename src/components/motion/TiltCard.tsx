@@ -1,16 +1,15 @@
 import { useRef, type PointerEvent, type ReactNode } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useMotionPref } from "../../lib/motion-pref";
-import { SPRING } from "./tokens";
+import { SPRING, TILT_MAX } from "./tokens";
 
 /**
  * Cartão com inclinação 3D pelo ponteiro (só mouse). `glare`: faixa de brilho linear que corre com a inclinação
- * (não é luz radial seguindo o ponteiro, que foi cortada no QA).
+ * (não é luz radial seguindo o ponteiro, que foi cortada no QA). Rodada de sobriedade: inclinação com teto de 4°.
  */
-export function TiltCard({ max = 8, perspective = 900, glare = false, className, children }: { max?: number; perspective?: number; glare?: boolean; className?: string; children: ReactNode }) {
+export function TiltCard({ max: maxPedido = TILT_MAX, perspective = 1200, glare = false, className, children }: { max?: number; perspective?: number; glare?: boolean; className?: string; children: ReactNode }) {
+  const max = Math.min(maxPedido, TILT_MAX);
   const ref = useRef<HTMLDivElement>(null);
   const rect = useRef<DOMRect | null>(null);
-  const reduced = useMotionPref() === "reduced";
   const rx = useMotionValue(0);
   const ry = useMotionValue(0);
   const sx = useSpring(rx, SPRING.tilt);
@@ -20,7 +19,7 @@ export function TiltCard({ max = 8, perspective = 900, glare = false, className,
   const gx = useTransform(sy, [-max, max], ["-35%", "35%"]);
 
   const onEnter = (e: PointerEvent) => {
-    if (e.pointerType !== "mouse" || reduced || !ref.current) return;
+    if (e.pointerType !== "mouse" || !ref.current) return;
     rect.current = ref.current.getBoundingClientRect();
     ativo.set(1);
   };
@@ -53,7 +52,7 @@ export function TiltCard({ max = 8, perspective = 900, glare = false, className,
       {glare && (
         <span aria-hidden className="pointer-events-none absolute inset-0 overflow-clip rounded-[inherit]">
           <motion.span
-            className="absolute inset-y-0 -left-1/2 w-[200%] bg-[linear-gradient(105deg,transparent_42%,rgba(243,239,233,0.16)_50%,transparent_58%)]"
+            className="absolute inset-y-0 -left-1/2 w-[200%] bg-[linear-gradient(105deg,transparent_42%,rgba(243,239,233,0.1)_50%,transparent_58%)]"
             style={{ x: gx, opacity: brilho }}
           />
         </span>

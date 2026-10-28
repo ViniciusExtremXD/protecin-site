@@ -3,7 +3,6 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-
 import { Phone } from "lucide-react";
 import { UI } from "../../data/site";
 import { useIsDesktop } from "../../lib/media";
-import { useMotionPref } from "../../lib/motion-pref";
 import { usePath } from "../../lib/router";
 import { EASE_OUT, ease } from "../motion/tokens";
 import { OrcamentoCta, PhoneLink, WhatsAppLink } from "../ui/cta";
@@ -11,13 +10,12 @@ import { GlifoWhatsApp } from "../ui/glifos";
 
 /**
  * Contato flutuante (§7.6). Celular: barra inferior com WhatsApp, Ligar e Orçamento (56 px + safe-area).
- * Desktop: botão redondo de WhatsApp com anel que pulsa 3 vezes e rótulo no hover.
+ * Desktop: botão redondo de WhatsApp (entra com fade e subida curta, sem mola nem anel pulsando) e rótulo no hover.
  * Entra depois de 640 px de rolagem; some com #orcamento, formulário ou rodapé na tela, ou com um campo em foco.
  */
 export function FloatingContact() {
   const desktop = useIsDesktop();
   const path = usePath();
-  const reduced = useMotionPref() === "reduced";
   const { scrollY } = useScroll();
   const [passou, setPassou] = useState(false);
   const [conflito, setConflito] = useState(false);
@@ -63,17 +61,16 @@ export function FloatingContact() {
             key="botao"
             data-motion="flutuante"
             className="fixed bottom-6 right-6 z-flutuante"
-            initial={reduced ? { opacity: 0 } : { scale: 0, rotate: -90 }}
-            animate={reduced ? { opacity: 1 } : { scale: 1, rotate: 0 }}
-            exit={reduced ? { opacity: 0, transition: { duration: 0.2 } } : { scale: 0, rotate: -90, transition: { duration: 0.25 } }}
-            transition={reduced ? { duration: 0.2 } : { type: "spring", stiffness: 260, damping: 18 }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 16, transition: { duration: 0.25 } }}
+            transition={{ duration: 0.5, ease: ease(EASE_OUT) }}
           >
             <WhatsAppLink
               location="botao_flutuante"
               aria-label={UI.falarWhatsapp}
               className="group flex h-14 items-center rounded-full bg-noite-900 pl-[17px] pr-[17px] text-papel-50 shadow-[0_18px_40px_-14px_rgba(0,0,0,0.75)] ring-1 ring-noite-600 transition-colors duration-200 hover:ring-whatsapp"
             >
-              {!reduced && <span aria-hidden className="anel-3 absolute inset-0 rounded-full ring-2 ring-whatsapp/70" />}
               <GlifoWhatsApp size={22} className="relative shrink-0 text-whatsapp" />
               <span className="relative max-w-0 overflow-hidden whitespace-nowrap text-[15px] font-semibold transition-[max-width,margin] duration-[350ms] ease-out group-hover:ml-3 group-hover:max-w-[180px] group-focus-visible:ml-3 group-focus-visible:max-w-[180px]">
                 {UI.falarWhatsapp}
@@ -85,10 +82,10 @@ export function FloatingContact() {
             key="barra"
             data-motion="barra"
             className="fixed inset-x-0 bottom-0 z-flutuante border-t border-noite-700 bg-noite-950/95 pb-[env(safe-area-inset-bottom)]"
-            initial={reduced ? { opacity: 0 } : { y: "100%" }}
-            animate={reduced ? { opacity: 1 } : { y: "0%" }}
-            exit={reduced ? { opacity: 0 } : { y: "100%" }}
-            transition={{ duration: reduced ? 0.2 : 0.35, ease: ease(EASE_OUT) }}
+            initial={{ y: "100%" }}
+            animate={{ y: "0%" }}
+            exit={{ y: "100%" }}
+            transition={{ duration: 0.4, ease: ease(EASE_OUT) }}
           >
             <div className="grid h-14 grid-cols-3">
               <WhatsAppLink location="barra_mobile" className="flex items-center justify-center gap-2 text-[15px] font-semibold text-papel-50">

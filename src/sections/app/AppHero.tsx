@@ -7,32 +7,31 @@ import { Container } from "../../components/layout/Container";
 import { OrcamentoCta, WhatsAppCta } from "../../components/ui/cta";
 import { Img } from "../../components/ui/Img";
 import { Link } from "../../lib/router";
-import { useMotionPref } from "../../lib/motion-pref";
 
 /*
- * Abertura de /nosso-app/ (§10.5): acima da dobra, então a entrada é CSS (só sob html.motion-full; sem JS e no
- * reduzido tudo aparece parado). O notebook do Web Master sobe com rotateX e o celular entra girando; depois a
- * tela do celular troca do splash para o login (mesmo aparelho, mesmo tamanho). Na rolagem, parallax leve.
+ * Abertura de /nosso-app/ (§10.5): acima da dobra, então a entrada é CSS (sob html.motion-full, que o <head>
+ * sempre põe; sem JS tudo aparece parado). Rodada de sobriedade: o notebook do Web Master e o celular só sobem
+ * 24 px com fade (sem rotateX nem giro na entrada; o celular fica levemente inclinado, parado); depois a tela do
+ * celular troca do splash para o login (mesmo aparelho, mesmo tamanho). Na rolagem, parallax leve.
  */
 const ENTRADA = `
-@keyframes app-note { from { opacity: 0; transform: perspective(1600px) translate3d(0, 60px, 0) rotateX(18deg); } }
-@keyframes app-cel { from { opacity: 0; transform: translate3d(0, 120px, 0) rotate(8deg); } }
+@keyframes app-note { from { opacity: 0; transform: translate3d(0, 24px, 0); } }
+@keyframes app-cel { from { opacity: 0; transform: translate3d(0, 24px, 0) rotate(-4deg); } }
 @keyframes app-splash { from { opacity: 1; } to { opacity: 0; } }
 .app-cel { transform: rotate(-4deg); }
 .app-splash { opacity: 0; }
-html.motion-full .app-note { animation: app-note 900ms cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--t0) + 60ms); }
-html.motion-full .app-cel { animation: app-cel 900ms cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--t0) + 180ms); }
-html.motion-full .app-splash { animation: app-splash 300ms cubic-bezier(0.65, 0, 0.35, 1) both; animation-delay: calc(var(--t0) + 880ms); }
+html.motion-full .app-note { animation: app-note 800ms cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--t0) + 60ms); }
+html.motion-full .app-cel { animation: app-cel 800ms cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--t0) + 180ms); }
+html.motion-full .app-splash { animation: app-splash 300ms cubic-bezier(0.65, 0, 0.35, 1) both; animation-delay: calc(var(--t0) + 900ms); }
 `;
 
 const d = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 
 export default function AppHero() {
   const ref = useRef<HTMLElement>(null);
-  const reduced = useMotionPref() === "reduced";
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const yCel = useTransform(scrollYProgress, [0, 1], ["0%", "-12%"]);
-  const yNote = useTransform(scrollYProgress, [0, 1], ["0%", "-4%"]);
+  const yCel = useTransform(scrollYProgress, [0, 1], ["0%", "-8%"]);
+  const yNote = useTransform(scrollYProgress, [0, 1], ["0%", "-3%"]);
   const titulo = linhasTexto(APP_HERO.h1);
 
   return (
@@ -77,30 +76,30 @@ export default function AppHero() {
         {/* notebook (Web Master) e celular (login) à frente, à direita */}
         <div className="relative mx-auto w-[80%] max-w-[420px] lg:col-span-6 lg:w-full lg:max-w-none">
           <div className="relative aspect-[640/560]">
-            <motion.div className="absolute left-0 top-[4%] w-[84%]" style={{ y: reduced ? "0%" : yNote }}>
+            <motion.div className="absolute left-0 top-[4%] w-[84%]" style={{ y: yNote }}>
               <div data-motion="css" className="app-note">
                 <Img
                   id="app-webmaster-notebook"
                   alt={IMAGENS["app-webmaster-notebook"].alt}
                   eager
-                  sizes="(min-width: 1024px) 42vw, 70vw"
+                  sizes="(min-width: 1024px) 820px, 70vw"
                   className="block w-full"
                   imgClassName="h-auto w-full drop-shadow-[0_40px_50px_rgba(0,0,0,0.5)]"
                 />
               </div>
             </motion.div>
-            <motion.div className="absolute bottom-0 right-[2%] w-[36%]" style={{ y: reduced ? "0%" : yCel }}>
+            <motion.div className="absolute bottom-0 right-[2%] w-[36%]" style={{ y: yCel }}>
               <div data-motion="css" className="app-cel relative">
                 <Img
                   id="app-login-celular"
                   alt={IMAGENS["app-login-celular"].alt}
                   eager
-                  sizes="(min-width: 1024px) 18vw, 30vw"
+                  sizes="(min-width: 1024px) 400px, 30vw"
                   className="block w-full"
                   imgClassName="h-auto w-full drop-shadow-[0_40px_40px_rgba(0,0,0,0.55)]"
                 />
                 <div aria-hidden className="app-splash absolute inset-0">
-                  <Img id="app-splash" alt="" eager sizes="(min-width: 1024px) 18vw, 30vw" className="block w-full" imgClassName="h-auto w-full" />
+                  <Img id="app-splash" alt="" eager sizes="(min-width: 1024px) 400px, 30vw" className="block w-full" imgClassName="h-auto w-full" />
                 </div>
               </div>
             </motion.div>

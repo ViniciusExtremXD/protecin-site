@@ -2,12 +2,10 @@ import { useEffect, useId, useRef, useState, type ChangeEvent, type FormEvent, t
 import { AnimatePresence, motion, useAnimationControls, useInView, type Variants } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, CircleAlert } from "lucide-react";
 import { COMPANY, FORM, SERVICOS, SETORES_FORM } from "../../../data/site";
-import { DUR, EASE_IN, EASE_OUT, SPRING, VIEWPORT, ease } from "../../../components/motion/tokens";
-import { FocusBrackets } from "../../../components/motion/FocusBrackets";
+import { DUR, EASE_IN, EASE_OUT, VIEWPORT, ease } from "../../../components/motion/tokens";
 import { TextRoll } from "../../../components/motion/TextRoll";
 import { ChipToggle } from "../../../components/ui/Chip";
 import { EVENTO_SERVICO, EmailLink, WhatsAppCta, WhatsAppLink } from "../../../components/ui/cta";
-import { useMotionPref } from "../../../lib/motion-pref";
 import { pushEvent, trackLead } from "../../../lib/track";
 import { enviarSolicitacao, resumoCompleto, type Solicitacao } from "./envio";
 import { emailValido, mascararTelefone, nomeValido, telefoneValido } from "./mascara";
@@ -26,6 +24,11 @@ type Status = "editando" | "enviando" | "sucesso" | "erro";
 type CampoId = "nome" | "email" | "telefone";
 
 const NAO_SEI = "ainda-nao-sei";
+/** "ETAPA 2 DE 3" → "Etapa 2 de 3". */
+const etapaTexto = (n: number) => {
+  const t = FORM.etapa(n).toLowerCase();
+  return t.charAt(0).toUpperCase() + t.slice(1);
+};
 const OBRIGATORIOS: CampoId[] = ["nome", "email", "telefone"];
 
 export interface OrcamentoFormProps {
@@ -40,26 +43,14 @@ export interface OrcamentoFormProps {
 const out = ease(EASE_OUT);
 const ETAPA_FULL: Variants = {
   oculto: { opacity: 1, x: 0 },
-  entra: (d: number) => ({ opacity: 0, x: 40 * d }),
+  entra: (d: number) => ({ opacity: 0, x: 20 * d }),
   centro: { opacity: 1, x: 0, transition: { duration: DUR.curta, ease: out, staggerChildren: 0.05, delayChildren: 0.04 } },
-  sai: (d: number) => ({ opacity: 0, x: -40 * d, transition: { duration: 0.25, ease: ease(EASE_IN) } }),
-};
-const ETAPA_REDUZIDA: Variants = {
-  oculto: { opacity: 1 },
-  entra: { opacity: 0 },
-  centro: { opacity: 1, x: 0, transition: { duration: DUR.micro } },
-  sai: { opacity: 0, transition: { duration: 0.15 } },
+  sai: (d: number) => ({ opacity: 0, x: -20 * d, transition: { duration: 0.25, ease: ease(EASE_IN) } }),
 };
 const ITEM_FULL: Variants = {
   oculto: { opacity: 0, y: 16 },
   entra: { opacity: 0, y: 10 },
   centro: { opacity: 1, y: 0, transition: { duration: DUR.curta, ease: out } },
-  sai: {},
-};
-const ITEM_REDUZIDO: Variants = {
-  oculto: { opacity: 0 },
-  entra: { opacity: 1 },
-  centro: { opacity: 1, y: 0, transition: { duration: DUR.micro } },
   sai: {},
 };
 
@@ -69,7 +60,7 @@ const BTN =
 
 function BotaoPrimario({ children, type = "button", disabled, onClick, carregando = false, seta = true }: { children: string; type?: "button" | "submit"; disabled?: boolean; onClick?: () => void; carregando?: boolean; seta?: boolean }) {
   return (
-    <button type={type} disabled={disabled || carregando} onClick={onClick} className={`${BTN} bg-brasa-500 text-white shadow-[0_18px_40px_-18px_rgba(190,30,41,0.8)] ${carregando ? "!opacity-100" : ""}`}>
+    <button type={type} disabled={disabled || carregando} onClick={onClick} className={`${BTN} bg-brasa-500 text-white ${carregando ? "!opacity-100" : ""}`}>
       <span aria-hidden className="cta-varredura absolute inset-0 origin-left scale-x-0 bg-brasa-600 transition-transform duration-[350ms] ease-out group-hover:scale-x-100 group-disabled:!scale-x-0" />
       {carregando ? (
         <>
@@ -125,13 +116,11 @@ interface CampoProps {
 }
 
 function Campo({ id, name, rotulo, placeholder, valor, onValor, onSair, obrigatorio, erro, tremor = 0, multilinha, tipo = "text", inputMode, autoComplete, maxLength, campoRef, className, item }: CampoProps) {
-  const reduced = useMotionPref() === "reduced";
   const tremer = useAnimationControls();
-  const [foco, setFoco] = useState(false);
   const erroId = `${id}-erro`;
 
   useEffect(() => {
-    if (!tremor || !erro || reduced) return;
+    if (!tremor || !erro) return;
     void tremer.start({ x: [0, -6, 6, 0], transition: { duration: 0.3, ease: "easeInOut" } });
     // só quando o contador de tremor muda (envio com erro)
   }, [tremor]);
@@ -148,11 +137,7 @@ function Campo({ id, name, rotulo, placeholder, valor, onValor, onSair, obrigato
     "aria-invalid": erro ? true : undefined,
     "aria-describedby": erroId,
     "aria-required": obrigatorio || undefined,
-    onFocus: () => setFoco(true),
-    onBlur: () => {
-      setFoco(false);
-      onSair?.();
-    },
+    onBlur: () => onSair?.(),
   };
 
   return (
@@ -172,7 +157,7 @@ function Campo({ id, name, rotulo, placeholder, valor, onValor, onSair, obrigato
         )}
         <label
           htmlFor={id}
-          className="pointer-events-none absolute left-0 top-5 flex h-11 origin-[0%_50%] -translate-y-[22px] scale-[0.8] items-center whitespace-nowrap text-[17px] text-papel-300 transition-transform duration-200 ease-out peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-[22px] peer-focus:scale-[0.8] peer-focus:text-papel-50 [html.motion-reduced_&]:transition-none"
+          className="pointer-events-none absolute left-0 top-5 flex h-11 origin-[0%_50%] -translate-y-[22px] scale-[0.8] items-center whitespace-nowrap text-[17px] text-papel-300 transition-transform duration-200 ease-out peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-[22px] peer-focus:scale-[0.8] peer-focus:text-papel-50"
         >
           {rotulo}
           {obrigatorio && (
@@ -184,18 +169,15 @@ function Campo({ id, name, rotulo, placeholder, valor, onValor, onSair, obrigato
         <span aria-hidden className={`absolute inset-x-0 bottom-0 h-px ${erro ? "bg-brasa-300" : "bg-noite-600"}`} />
         <span
           aria-hidden
-          className="absolute inset-x-0 bottom-0 h-[2px] origin-left scale-x-0 bg-brasa-400 transition-transform duration-200 ease-out peer-focus:scale-x-100 [html.motion-reduced_&]:transition-none"
+          className="absolute inset-x-0 bottom-0 h-[2px] origin-left scale-x-0 bg-brasa-400 transition-transform duration-200 ease-out peer-focus:scale-x-100"
         />
-        <span aria-hidden className="pointer-events-none absolute -bottom-1.5 -left-3 -right-3 top-0">
-          <FocusBrackets mode="hover" offset={8} size={12} className={foco ? "is-on" : ""} />
-        </span>
       </motion.div>
       <div id={erroId} aria-live="polite" className="min-h-[24px] pt-1.5">
         <AnimatePresence initial={false}>
           {erro && (
             <motion.p
               key={erro}
-              initial={{ opacity: 0, y: reduced ? 0 : -4 }}
+              initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, transition: { duration: 0.12 } }}
               transition={{ duration: DUR.micro, ease: out }}
@@ -213,7 +195,6 @@ function Campo({ id, name, rotulo, placeholder, valor, onValor, onSair, obrigato
 
 // ---------------------------------------------------------------- formulário
 export default function OrcamentoForm({ formLocation = "orcamento", card = "escuro", className }: OrcamentoFormProps) {
-  const reduced = useMotionPref() === "reduced";
   const uid = useId().replace(/:/g, "");
   const raiz = useRef<HTMLFormElement>(null);
   const visto = useInView(raiz, VIEWPORT);
@@ -331,9 +312,9 @@ export default function OrcamentoForm({ formLocation = "orcamento", card = "escu
   };
 
   // ------------------------------------------------ apresentação
-  const variantesEtapa = reduced ? ETAPA_REDUZIDA : ETAPA_FULL;
-  const item = reduced ? ITEM_REDUZIDO : ITEM_FULL;
-  const estado = visto || reduced ? "centro" : "oculto";
+  const variantesEtapa = ETAPA_FULL;
+  const item = ITEM_FULL;
+  const estado = visto ? "centro" : "oculto";
   const tituloId = `${uid}-titulo`;
   const etapaTituloId = `${uid}-etapa`;
   const barra = status === "sucesso" ? 3 : etapa;
@@ -366,17 +347,17 @@ export default function OrcamentoForm({ formLocation = "orcamento", card = "escu
         // sem animação de opacidade neste wrapper: o acionador de visibilidade do GTM mede .msg-sucesso
         className="msg-sucesso flex flex-1 flex-col justify-center outline-none"
         data-motion="sobe"
-        initial={reduced ? false : { y: 16, scale: 0.98 }}
+        initial={{ y: 16, scale: 0.98 }}
         animate={{ y: 0, scale: 1 }}
         transition={{ duration: DUR.curta, ease: out }}
       >
         <motion.span
           aria-hidden
-          data-motion="carimbo"
+          data-motion="sobe"
           className="grid h-16 w-16 place-items-center rounded-full bg-marinho-700 text-papel-50"
-          initial={reduced ? false : { opacity: 0, scale: 1.35, rotate: -8 }}
-          animate={{ opacity: 1, scale: 1, rotate: 0 }}
-          transition={{ type: "spring", ...SPRING.encaixe, delay: 0.12 }}
+          initial={{ opacity: 0, scale: 0.85 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: DUR.curta, ease: out, delay: 0.12 }}
         >
           <Check size={28} strokeWidth={1.75} />
         </motion.span>
@@ -393,7 +374,7 @@ export default function OrcamentoForm({ formLocation = "orcamento", card = "escu
         role="alert"
         className="flex flex-1 flex-col justify-center outline-none"
         data-motion="sobe"
-        initial={reduced ? false : { y: 16, opacity: 0 }}
+        initial={{ y: 16, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: DUR.curta, ease: out }}
       >
@@ -594,14 +575,14 @@ export default function OrcamentoForm({ formLocation = "orcamento", card = "escu
       onFocus={onFocusForm}
       aria-labelledby={tituloId}
       aria-busy={status === "enviando" || undefined}
-      className={`relative flex flex-col overflow-clip rounded-r-lg border border-noite-700 ${fundo} p-6 sm:p-8 lg:min-h-[640px] lg:p-10 ${className ?? ""}`}
+      className={`relative flex flex-col overflow-clip rounded-2xl border border-noite-700 ${fundo} p-6 sm:p-8 lg:min-h-[600px] lg:p-9 ${className ?? ""}`}
     >
       <div className="flex flex-col-reverse items-start gap-1.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
         <h3 id={tituloId} className="text-[24px] font-bold leading-tight text-papel-50 [font-stretch:75%] lg:text-[30px]">
           {FORM.titulo}
         </h3>
-        <p className="rotulo shrink-0 text-papel-500 tnum" aria-live="polite">
-          {FORM.etapa(barra)}
+        <p className="tnum shrink-0 text-[14px] font-medium text-papel-500" aria-live="polite">
+          {etapaTexto(barra)}
         </p>
       </div>
       <div aria-hidden className="mt-4 flex gap-1.5">
@@ -611,7 +592,7 @@ export default function OrcamentoForm({ formLocation = "orcamento", card = "escu
               className="absolute inset-0 origin-left bg-brasa-400"
               initial={false}
               animate={{ scaleX: i <= barra ? 1 : 0 }}
-              transition={reduced ? { duration: 0 } : { duration: DUR.curta, ease: out }}
+              transition={{ duration: DUR.curta, ease: out }}
             />
           </span>
         ))}

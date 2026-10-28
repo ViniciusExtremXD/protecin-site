@@ -7,7 +7,8 @@
  *
  * Uso: node scripts/medir-desempenho.mjs [url] [--cpu 4] [--mobile] [--reduzido] [--4g] [--gpu]
  *   --4g: a carga roda com rede e CPU do Lighthouse mobile (150 ms de RTT, 1,6 Mbps, CPU 4x) para estimar o LCP
- *   sem url e com --estatico: serve dist/ em http://127.0.0.1:4195/protecin-site/ e mede a home em ?motion=full
+ *   sem url: serve dist/ em http://127.0.0.1:4195/protecin-site/ e mede a home (o site anima sempre; --reduzido só
+ *   emula prefers-reduced-motion: reduce, que não muda nada)
  *   → verificacao/desempenho[-mobile][-reduzido].json e resumo no console
  */
 import { mkdir, rm, writeFile } from "node:fs/promises";
@@ -31,7 +32,6 @@ if (!url) {
   servidor = await servir(4195, "/protecin-site", path.resolve("dist"));
   url = "http://127.0.0.1:4195/protecin-site/";
 }
-if (!reduzido && !/[?&]motion=/.test(url)) url += (url.includes("?") ? "&" : "?") + "motion=full";
 
 const CHROMES = [
   "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",

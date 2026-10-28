@@ -1,42 +1,37 @@
-import { FAIXA_CTA, type PageId } from "../../data/site";
+import { Phone } from "lucide-react";
+import { COMPANY, FAIXA_CTA, type PageId } from "../../data/site";
 import { Reveal, RevealGroup, RevealItem } from "../motion/Reveal";
-import { SectionRise } from "../motion/SectionRise";
-import { VelocityMarquee } from "../motion/VelocityMarquee";
-import { OrcamentoCta, PhoneCta, WhatsAppCta } from "../ui/cta";
+import { OrcamentoCta, PhoneLink, WhatsAppCta } from "../ui/cta";
 import { Container } from "./Container";
 
 /**
- * Faixa de CTA no fim de toda página interna (§7.10): mundo-vermelho atenuado, letreiro gigante decorativo
- * "SOLICITAR ORÇAMENTO ·" correndo e os três caminhos de contato.
- * Sem brasas aqui: pelo QA, elas ficam só no fecho do Orçamento (H10) e no fim da Abertura.
+ * Faixa de CTA no fim de toda página interna (§7.10, rodada de sobriedade): faixa compacta noite-900 com borda de
+ * 1 px, a frase à esquerda e o CTA principal (orçamento) com um secundário (WhatsApp) à direita; o telefone vem
+ * como link de texto. Sem letreiro gigante correndo, sem glow vermelho e sem brasas.
  */
 export function FaixaCta({ page }: { page: PageId }) {
   return (
-    <SectionRise id="fale-com-a-protecin" className="isolate bg-noite-950">
-      <div aria-hidden className="absolute inset-0 -z-10 bg-mundo-vermelho opacity-60" />
-      <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-3/4 bg-luz-brasa opacity-50" />
-      <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-1/3 bg-gradient-to-b from-transparent to-noite-950" />
-      <div aria-hidden className="pt-14 lg:pt-20">
-        <VelocityMarquee baseVelocity={-0.8} className="display-xxl select-none py-[0.1em] text-papel-50/[0.07]">
-          <span className="pr-[0.25em]">{FAIXA_CTA.letreiro}</span>
-        </VelocityMarquee>
-      </div>
-      <Container className="relative pb-24 pt-10 text-center lg:pb-32 lg:pt-14">
-        <Reveal>
-          <p className="corpo-l mx-auto max-w-[40ch] text-balance text-papel-50">{FAIXA_CTA.frase}</p>
+    <section id="fale-com-a-protecin" aria-label={FAIXA_CTA.titulo} className="border-t border-noite-700 bg-noite-900">
+      <Container className="flex flex-col gap-6 py-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:py-14">
+        <Reveal className="max-w-[44ch]">
+          <p className="titulo text-balance text-papel-50">{FAIXA_CTA.titulo}</p>
+          <p className="mt-2 text-[16px] leading-relaxed text-papel-300 lg:text-[17px]">
+            {FAIXA_CTA.frase}{" "}
+            <PhoneLink location="faixa_cta" detail={page} className="inline-flex min-h-11 items-center gap-1.5 whitespace-nowrap font-semibold text-papel-50 underline decoration-papel-50/30 underline-offset-4 transition-colors duration-200 hover:decoration-papel-50">
+              <Phone aria-hidden size={16} strokeWidth={1.75} />
+              <span className="tnum">{COMPANY.phoneDisplay}</span>
+            </PhoneLink>
+          </p>
         </Reveal>
-        <RevealGroup stagger={0.06} className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center lg:mt-10">
+        <RevealGroup stagger={0.06} className="flex shrink-0 flex-col items-stretch gap-3 sm:flex-row sm:items-center">
           <RevealItem>
             <OrcamentoCta formLocation="faixa_cta" full className="sm:w-auto" />
           </RevealItem>
           <RevealItem>
             <WhatsAppCta location="faixa_cta" detail={page} full className="sm:w-auto" />
           </RevealItem>
-          <RevealItem>
-            <PhoneCta location="faixa_cta" full className="sm:w-auto" />
-          </RevealItem>
         </RevealGroup>
       </Container>
-    </SectionRise>
+    </section>
   );
 }

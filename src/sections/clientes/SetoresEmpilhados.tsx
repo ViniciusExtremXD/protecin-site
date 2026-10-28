@@ -1,85 +1,53 @@
-import { createRef, useMemo, type RefObject } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { SETORES, UI, type Setor } from "../../data/site";
-import { DrawIcon, ParallaxMedia, Reveal, SplitLines } from "../../components/motion";
+import { SETORES, UI } from "../../data/site";
+import { IMAGENS } from "../../data/imagens.gen";
+import { RevealGroup, RevealItem } from "../../components/motion";
 import { Container } from "../../components/layout/Container";
 import { Img } from "../../components/ui/Img";
-import { useMotionPref } from "../../lib/motion-pref";
-import { quebrar } from "./linhas";
 
 /*
- * /nossos-clientes/: setores empilhados (design-final §10.3). Três painéis sticky de 100svh, um cobrindo o outro.
- * Quando o seguinte cobre, o de baixo faz scale 1 → 0,92 e escurece (véu 0 → 0,6). Imagens de banco com o crédito
- * "Imagem ilustrativa". Reduzido e tela baixa: painéis em fluxo normal.
+ * /nossos-clientes/: os 3 setores (design-final §10.3, refeita pela qa/AJUSTES-SOBRIEDADE.md). Os painéis sticky de
+ * 100svh saíram: agora é uma grade sóbria de 3 colunas (1 no celular), cada setor com a imagem em paisagem 3:2, o
+ * nome e o texto literal. Continua logo abaixo da ClientesEscala, no mesmo fundo escuro. Imagens de banco: um crédito
+ * "Imagem ilustrativa" para a grade, sem selo sobre cada foto. O id/data-section antigos ficam (âncora e verify).
  */
 
-function Painel({ setor, proximo }: { setor: Setor; proximo: RefObject<HTMLDivElement> | null }) {
-  const reduced = useMotionPref() === "reduced";
-  // progresso do painel seguinte: do pé da tela (0) até o topo (1)
-  // o marcador do seguinte vem depois no DOM: mede no useEffect (layoutEffect: false), quando a ref já existe
-  const { scrollYProgress } = useScroll({ target: proximo ?? undefined, offset: ["start end", "start start"], layoutEffect: false });
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
-  const cobre = useTransform(scrollYProgress, [0, 1], [0, 0.6]);
-  const ligado = !!proximo && !reduced;
+// Largura exibida do quadro 3:2 (3 colunas no desktop, 2 no tablet, 1 no celular; margens do Container e gap de 24 px).
+// O Img soma o recorte do object-cover (frame) e a densidade mínima das telas de DPR baixo.
+const SIZES =
+  "(min-width: 1280px) calc((min(100vw, 1440px) - 176px) / 3), (min-width: 1024px) calc((100vw - 144px) / 3), (min-width: 768px) calc((100vw - 88px) / 2), calc(100vw - 40px)";
 
-  return (
-    <article
-      className="sticky top-0 h-[100svh] overflow-clip bg-noite-950 curto:relative curto:h-auto curto:min-h-[100svh] [.motion-reduced_&]:relative [.motion-reduced_&]:h-auto [.motion-reduced_&]:min-h-[90svh]"
-    >
-      <motion.div data-motion="empilha" className="relative h-full w-full curto:min-h-[100svh] [.motion-reduced_&]:min-h-[90svh]" style={ligado ? { scale, transformOrigin: "50% 30%" } : undefined}>
-        <div className="absolute inset-0">
-          <ParallaxMedia amount={8}>
-            <Img id={setor.imagem} alt="" sizes="100vw" className="block h-full w-full" imgClassName="h-full w-full object-cover" />
-          </ParallaxMedia>
-        </div>
-        <div aria-hidden className="absolute inset-0 bg-noite-950/65" />
-        <div aria-hidden className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-noite-950 via-noite-950/55 to-transparent" />
-
-        <Container className="relative flex h-full flex-col justify-end pb-14 pt-32 curto:min-h-[100svh] lg:pb-20 [.motion-reduced_&]:min-h-[90svh]">
-          <div className="grid grid-cols-1 gap-y-6 lg:grid-cols-12 lg:gap-x-6">
-            <div className="lg:col-span-8">
-              <div className="flex items-center gap-4 text-brasa-400 lg:gap-5">
-                {setor.icones.map((ic, k) => (
-                  <DrawIcon key={ic} icon={ic} size={34} delay={k * 0.15} />
-                ))}
-              </div>
-              <SplitLines
-                as="h3"
-                lines={{ desktop: quebrar(setor.nome, 2), celular: [setor.nome] }}
-                text={setor.nome}
-                className="display-xl mt-6 text-papel-50 lg:mt-8 lg:text-[clamp(2.75rem,5.6vw,6rem)]"
-              />
-            </div>
-            <div className="lg:col-span-4 lg:col-start-9 lg:self-end">
-              <Reveal as="p" delay={0.15} className="corpo-l text-papel-50/90">
-                {setor.texto}
-              </Reveal>
-            </div>
-          </div>
-        </Container>
-
-        <p className="rotulo absolute right-5 top-24 rounded-[6px] bg-noite-950/70 px-2.5 py-1.5 text-papel-50 md:right-8 lg:right-12 lg:top-28 xl:right-16">
-          {UI.imagemIlustrativa}
-        </p>
-
-        {ligado && <motion.div aria-hidden className="pointer-events-none absolute inset-0 bg-noite-950" style={{ opacity: cobre }} />}
-      </motion.div>
-    </article>
-  );
-}
+// Foto recortada (PNG com fundo transparente, a da esfera de gás): um zoom leve a partir da esquerda esconde o canto
+// recortado em diagonal, que no quadro 3:2 parecia corte errado.
+const RECORTE = 1.12;
 
 /** SetoresEmpilhados (`#setores` em /nossos-clientes/). Sem props. */
 export default function SetoresEmpilhados() {
-  const marcas = useMemo(() => SETORES.itens.map(() => createRef<HTMLDivElement>()), []);
   return (
-    <section id="setores" data-section="setores-empilhados" className="relative bg-noite-950">
-      {SETORES.itens.map((s, i) => (
-        <div key={s.id} className="contents">
-          {/* marcador em fluxo normal no começo de cada painel (o sticky não serve de alvo de medida) */}
-          <div ref={marcas[i]} aria-hidden className="h-0" />
-          <Painel setor={s} proximo={marcas[i + 1] ?? null} />
-        </div>
-      ))}
+    <section id="setores" data-section="setores-empilhados" className="grain relative bg-noite-950 pb-16 lg:pb-28">
+      <Container>
+        <RevealGroup as="ul" stagger={0.08} className="grid grid-cols-1 gap-y-12 border-t border-papel-50/10 pt-10 md:grid-cols-2 md:gap-x-6 lg:grid-cols-3 lg:pt-14">
+          {SETORES.itens.map((s, i) => (
+            <RevealItem key={s.id} as="li" index={i}>
+              <article>
+                <div className="relative aspect-[3/2] overflow-clip rounded-xl bg-noite-900">
+                  <Img
+                    id={s.imagem}
+                    alt={IMAGENS[s.imagem].alt}
+                    sizes={SIZES}
+                    frame={3 / 2}
+                    zoom={IMAGENS[s.imagem].alpha ? RECORTE : 1}
+                    className="block h-full w-full"
+                    imgClassName={`h-full w-full object-cover ${IMAGENS[s.imagem].alpha ? "origin-[0%_35%] scale-[1.12]" : ""}`}
+                  />
+                </div>
+                <h3 className="titulo mt-5 text-papel-50 lg:mt-6">{s.nome}</h3>
+                <p className="corpo mt-3 text-papel-300">{s.texto}</p>
+              </article>
+            </RevealItem>
+          ))}
+        </RevealGroup>
+        <p className="rotulo mt-8 text-papel-500 lg:mt-10">{UI.imagemIlustrativa}</p>
+      </Container>
     </section>
   );
 }
