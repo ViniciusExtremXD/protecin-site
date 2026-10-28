@@ -1,15 +1,16 @@
 /**
  * Mede a carga e a fluidez da rolagem como uma pessoa rola (adaptado da Indafire; design-final §15 e AC-26).
  *
- * Carga (sem desaceleração de CPU): LCP, CLS e bytes transferidos sem vídeo.
+ * Carga (sem desaceleração de CPU, ou 4G + CPU 4x com --4g): FCP, LCP, TBT (soma do que passa de 50 ms em cada
+ * tarefa longa até o fim da medida da carga, uma aproximação do TBT do Lighthouse), CLS e bytes sem vídeo.
  * Rolagem (CPU desacelerada, padrão 4x): roda do mouse no desktop, scrollBy no celular, intervalo entre quadros
  * e custo do navegador (estilo, layout, script).
  *
- * Uso: node scripts/medir-desempenho.mjs [url] [--cpu 4] [--mobile] [--reduzido] [--4g] [--gpu]
+ * Uso: node scripts/medir-desempenho.mjs [url] [--cpu 4] [--mobile] [--reduzido] [--4g] [--gpu] [--saida <pasta>]
  *   --4g: a carga roda com rede e CPU do Lighthouse mobile (150 ms de RTT, 1,6 Mbps, CPU 4x) para estimar o LCP
  *   sem url: serve dist/ em http://127.0.0.1:4195/protecin-site/ e mede a home (o site anima sempre; --reduzido só
  *   emula prefers-reduced-motion: reduce, que não muda nada)
- *   → verificacao/desempenho[-mobile][-reduzido].json e resumo no console
+ *   → <saida, padrão verificacao>/desempenho[-mobile][-reduzido][-4g].json e resumo no console
  */
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -24,6 +25,7 @@ const cpu = Number(args.includes("--cpu") ? args[args.indexOf("--cpu") + 1] : 4)
 const mobile = args.includes("--mobile");
 const reduzido = args.includes("--reduzido");
 const rede4g = args.includes("--4g");
+const SAIDA = args.includes("--saida") ? args[args.indexOf("--saida") + 1] : "verificacao";
 const ehAntivirus = (u = "") => /kaspersky-labs\.com|\.scr\.kaspersky/.test(u);
 let url = args.find((a) => a.startsWith("http"));
 let servidor = null;
@@ -101,13 +103,21 @@ async function main() {
         for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value;
       }).observe({ type: "layout-shift", buffered: true });
       window.__longas = 0;
+      window.__tbt = 0;
       new PerformanceObserver((l) => {
+        for (const e of l.getEntries()) window.__tbt += Math.max(0, e.duration - 50);
         window.__longas += l.getEntries().length;
       }).observe({ type: "longtask", buffered: true });
     });
     await page.goto(url, { waitUntil: "networkidle2", timeout: 120000 });
     await new Promise((r) => setTimeout(r, 2500));
-    const carga = await page.evaluate(() => ({ lcp: window.__lcp, lcpEl: window.__lcpEl, cls: window.__cls }));
+    const carga = await page.evaluate(() => ({
+      lcp: window.__lcp,
+      lcpEl: window.__lcpEl,
+      cls: window.__cls,
+      tbt: window.__tbt,
+      fcp: performance.getEntriesByName("first-contentful-paint")[0]?.startTime ?? 0,
+    }));
     await Promise.all(pendentes);
     const bytesCarga = bytes;
     if (rede4g) await cdp.send("Network.emulateNetworkConditions", { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
@@ -151,7 +161,9 @@ async function main() {
       viewport: mobile ? "390 (celular)" : "1440",
       movimento: reduzido ? "reduzido" : "completo",
       cargaComo: rede4g ? "4G simulado do Lighthouse (150 ms, 1,6 Mbps, CPU 4x)" : "rede local, CPU sem desaceleração",
+      fcpMs: Math.round(carga.fcp),
       lcpMs: Math.round(carga.lcp),
+      tbtMs: Math.round(carga.tbt),
       lcpElemento: carga.lcpEl,
       clsCarga: +carga.cls.toFixed(4),
       clsAposRolar: +fim.cls.toFixed(4),
@@ -172,8 +184,8 @@ async function main() {
       custoScriptMs: d("ScriptDuration"),
       tarefasLongas: fim.longas,
     };
-    await mkdir("verificacao", { recursive: true });
-    await writeFile(path.join("verificacao", `desempenho${mobile ? "-mobile" : ""}${reduzido ? "-reduzido" : ""}${rede4g ? "-4g" : ""}.json`), JSON.stringify(resultado, null, 2));
+    await mkdir(SAIDA, { recursive: true });
+    await writeFile(path.join(SAIDA, `desempenho${mobile ? "-mobile" : ""}${reduzido ? "-reduzido" : ""}${rede4g ? "-4g" : ""}.json`), JSON.stringify(resultado, null, 2));
     console.log(resultado);
   } finally {
     await nav.close();

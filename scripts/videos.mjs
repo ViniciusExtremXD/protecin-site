@@ -3,8 +3,8 @@
 // scripts/imagens.mjs converte) e grava src/data/videos.gen.ts.
 // Uso: node scripts/videos.mjs [--force]   (HERO_FONTE=principal|reserva1|reserva2 troca a fonte do hero; padrão reserva1)
 // Rodada 2: só o vídeo do hero continua no site (tablet, extintor e fogo saíram das seções). HERO_1080=1 troca a
-// fonte do hero pela versão de 1920×1080 do mesmo vídeo (Pexels 34775769, 17,5 MB para baixar), para os posters
-// saírem em 1920 (desktop) e 608×1080 (vertical); rode com --force e depois npm run imagens.
+// fonte do hero pela versão de 1920×1080 do mesmo vídeo (Pexels 34775769, 17,5 MB para baixar): vídeo de 1920 e
+// vertical de 608×1080, posters em 1920 (desktop) e 608×1080 (vertical); rode com --force e depois npm run imagens.
 import { execFile } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
@@ -31,8 +31,8 @@ const FONTES = {
     pagina: "https://www.pexels.com/video/industrial-fire-suppression-system-setup-34775810/",
     licenca: "Licença Pexels",
   },
-  // fonte do hero publicado (1280×720). Com HERO_1080=1 vale a versão de 1920×1080 do mesmo vídeo (o "download" da
-  // Pexels redireciona para ela): dá o poster de 1920 e o vertical de 608×1080; o vídeo continua saindo em 1280.
+  // fonte do hero (1280×720). Com HERO_1080=1 vale a versão de 1920×1080 do mesmo vídeo (o "download" da Pexels
+  // redireciona para ela): vídeo de 1920, vertical de 608×1080 e posters nessas resoluções.
   reserva1: process.env.HERO_1080 ? {
     url: "https://videos.pexels.com/video-files/34775769/14743052_1920_1080_30fps.mp4",
     arquivo: "pexels-34775769-1080.mp4",
@@ -64,18 +64,23 @@ const FONTES = {
 const HERO = process.env.HERO_FONTE ?? "reserva1";
 if (!FONTES[HERO]) throw new Error(`HERO_FONTE inválida: ${HERO}`);
 
-// Saídas: filtros, CRF inicial e teto (MB) de §12.2.
+// Saídas: filtros, CRF inicial e teto (MB) de §12.2. Com HERO_1080=1 (fonte 1920×1080) o vídeo do desktop sai em
+// 1920 e o vertical no recorte 9:16 cheio da altura (608×1080), com o mesmo teto de peso (o CRF sobe até caber).
+const H1080 = !!process.env.HERO_1080;
 const SAIDAS = [
-  { id: "hero", fonte: HERO, arquivo: "hero-supressao-1280.mp4", vf: "scale=1280:-2,fps=30", crf: 27, teto: 3.0, t: FONTES[HERO].duracaoMax },
+  H1080
+    ? // em 1920 o CRF que cabe no teto (32) borra demais: duas passadas na taxa que enche o teto (≈ 3.050 kbps)
+      { id: "hero", fonte: HERO, arquivo: "hero-supressao-1920.mp4", vf: "scale=1920:-2,fps=30", duasPassadas: true, teto: 3.0, t: FONTES[HERO].duracaoMax, dims: [1920, 1080] }
+    : { id: "hero", fonte: HERO, arquivo: "hero-supressao-1280.mp4", vf: "scale=1280:-2,fps=30", crf: 27, teto: 3.0, t: FONTES[HERO].duracaoMax, dims: [1280, 720] },
   {
     id: "hero",
     mobile: true,
     fonte: HERO,
-    arquivo: "hero-supressao-540v.mp4",
-    // recorte vertical central: 9:16 da altura da fonte
-    vf: "crop=round(ih*9/32)*2:ih:(iw-round(ih*9/32)*2)/2:0,scale=540:960,fps=30",
-    crf: 28,
-    teto: 1.5,
+    arquivo: H1080 ? "hero-supressao-608v.mp4" : "hero-supressao-540v.mp4",
+    // recorte vertical central: 9:16 da altura da fonte (no 1080p sem reescala: 608×1080)
+    vf: H1080 ? "crop=round(ih*9/32)*2:ih:(iw-round(ih*9/32)*2)/2:0,fps=30" : "crop=round(ih*9/32)*2:ih:(iw-round(ih*9/32)*2)/2:0,scale=540:960,fps=30",
+    crf: H1080 ? 29 : 28,
+    teto: H1080 ? 1.6 : 1.5,
     t: FONTES[HERO].duracaoMax,
   },
 ];
@@ -125,6 +130,17 @@ async function quadros(chave, origem) {
 async function codificar(s, origem) {
   const destino = path.join(SAIDA, s.arquivo);
   if (fs.existsSync(destino) && !FORCE) return destino;
+  if (s.duasPassadas) {
+    // taxa média que enche 97% do teto na duração do trecho
+    const kbps = Math.floor((s.teto * 0.97 * MB * 8) / s.t / 1000);
+    const log = path.join(SRC, `passadas-${s.arquivo}`);
+    const base = ["-i", origem, "-t", String(s.t), "-an", "-vf", s.vf, "-c:v", "libx264", "-profile:v", "high", "-preset", "slow", "-b:v", `${kbps}k`, "-passlogfile", log];
+    await ff([...base, "-pass", "1", "-f", "mp4", process.platform === "win32" ? "NUL" : "/dev/null"]);
+    await ff([...base, "-pass", "2", "-pix_fmt", "yuv420p", "-movflags", "+faststart", destino]);
+    for (const f of fs.readdirSync(SRC)) if (f.startsWith(path.basename(log))) fs.rmSync(path.join(SRC, f));
+    console.log(`  ${s.arquivo}: 2 passadas a ${kbps} kbps → ${(fs.statSync(destino).size / MB).toFixed(2)} MB (teto ${s.teto} MB)`);
+    return destino;
+  }
   for (let crf = s.crf; crf <= 32; crf += 2) {
     const args = ["-i", origem];
     if (s.t) args.push("-t", String(s.t));
@@ -185,7 +201,7 @@ async function main() {
   const produzidos = new Set(SAIDAS.map((s) => s.arquivo));
   for (const f of fs.readdirSync(SAIDA)) if (/\.mp4$/.test(f) && !produzidos.has(f)) fs.rmSync(path.join(SAIDA, f));
 
-  const dims = { hero: [1280, 720] };
+  const dims = { hero: SAIDAS.find((s) => s.id === "hero" && !s.mobile).dims };
   const posterDe = { hero: "hero-poster" };
   const linhas = Object.entries(resultado).map(([id, v]) => {
     const campos = {

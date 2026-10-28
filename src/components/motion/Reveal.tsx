@@ -30,22 +30,6 @@ function ruido(i: number, semente: number): number {
   return Math.round(((h >>> 0) / 4294967295) * 2000) / 1000 - 1;
 }
 
-/** Mantido por compatibilidade (não há mais modo reduzido): opacidade em 200 ms e transform instantâneo. */
-export const TRANSICAO_REDUZIDA = {
-  duration: DUR.micro,
-  x: { duration: 0 },
-  y: { duration: 0 },
-  rotate: { duration: 0 },
-  rotateX: { duration: 0 },
-  scale: { duration: 0 },
-};
-
-/** Mantido por compatibilidade (não há mais modo reduzido): só fade, sem deslocamento. */
-export const FADE_REDUZIDO: Variants = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, x: 0, y: 0, rotate: 0, rotateX: 0, scale: 1, transition: TRANSICAO_REDUZIDA },
-};
-
 /**
  * Variantes de cada preset (§5.2, recalibradas na rodada de sobriedade). Sem `delay` quando o pai controla a cascata.
  *  - sobe: opacidade e subida de até 24 px (0,6 s);

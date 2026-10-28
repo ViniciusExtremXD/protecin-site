@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { animate, motion, useMotionValue, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Plus } from "lucide-react";
 import { NA_PRATICA, SECOES, linhasTexto, servicoPorSlug, type Hotspot as PontoFoto, type ServicoSlug } from "../../data/site";
 import { IMAGENS } from "../../data/imagens.gen";
 import { Link } from "../../lib/router";
@@ -16,12 +16,12 @@ import { Hotspot, numeroPonto, type EstadoHotspot } from "./napratica/Hotspot";
 
 /*
  * H4 · Na prática (design-final §9 H4, recalibrado por qa/AJUSTES-SOBRIEDADE.md).
- * Desktop (≥ 1024 × 640): cena fixada curta (168vh, 0,68 tela presa). A foto real fica num quadro 4:3 da grade, e
+ * Desktop (≥ 1024 × 640): cena fixada curta (152vh, 0,52 tela presa). A foto real fica num quadro 4:3 da grade, e
  * uma "câmera" passeia pelos 5 pontos dela: a rolagem só escolhe o ponto, e a câmera vai até ele por tempo
  * (0,8 s), então a cena pode ser curta sem a foto "correr". À esquerda, a lista dos 5 pontos e o texto do ponto
  * ativo. O passeio começa um pouco antes de a cena prender (topo a 15% da tela).
- * Celular, tablet e tela baixa: sequência normal (foto com os 5 marcadores e a lista com a miniatura de cada ponto).
- * Depois: o bloco dos cilindros (250+), compacto.
+ * Celular, tablet e tela baixa: sequência normal (foto com os 5 marcadores e os pontos num acordeão de abertura
+ * única, um texto por vez, como no desktop). Depois: o bloco dos cilindros (250+), compacto.
  */
 
 const PONTOS: readonly PontoFoto[] = NA_PRATICA.pontos;
@@ -213,33 +213,15 @@ function Palco({ index }: { index: string }) {
 }
 
 // ---------------------------------------------------------------- sequência (celular, tablet, tela baixa, sem JS)
-const MINI = 52; // lado da miniatura (px)
-const ZOOM_MINI = 3.4; // a miniatura mostra ~1/3 da largura da foto em volta do ponto
-
-/** Miniatura do ponto: a "câmera" parada nele. Entra com a foto assentando (scale 1,12 → 1). */
-function Miniatura({ pt }: { pt: PontoFoto }) {
-  const W = MINI * ZOOM_MINI;
-  const H = W * 0.75;
-  const left = Math.min(0, Math.max(MINI - W, MINI / 2 - (pt.x / 100) * W));
-  const top = Math.min(0, Math.max(MINI - H, MINI / 2 - (pt.y / 100) * H));
-  return (
-    <div aria-hidden className="relative shrink-0 overflow-clip rounded-[10px] bg-noite-900 ring-1 ring-papel-50/10" style={{ width: MINI, height: MINI }}>
-      <motion.div
-        className="absolute"
-        style={{ left, top, width: W, height: H, transformOrigin: `${pt.x}% ${pt.y}%` }}
-        initial={{ scale: 1.12, opacity: 0 }}
-        whileInView={{ scale: 1, opacity: 1 }}
-        viewport={{ once: true, margin: "0px 0px -10% 0px" }}
-        transition={{ duration: DUR.longa, ease: ease(EASE_OUT) }}
-      >
-        <Img id={NA_PRATICA.imagem} alt="" sizes={`${Math.round(W)}px`} className="block h-full w-full" imgClassName="h-full w-full object-cover" />
-      </motion.div>
-    </div>
-  );
-}
-
+/**
+ * Foto com os 5 marcadores e, abaixo, os 5 pontos num acordeão de abertura única (<details name>, funciona sem
+ * JS): como no desktop, um texto por vez. O 1º vem aberto; tocar num marcador abre o ponto dele e rola até lá.
+ * Antes era uma lista com miniatura e todos os textos abertos (~1.150 px no celular).
+ */
 function Sequencia({ index }: { index: string }) {
+  const [aberto, setAberto] = useState(0);
   const irPara = (pt: PontoFoto) => {
+    setAberto(PONTOS.findIndex((p) => p.id === pt.id));
     scrollToHash(`#na-pratica-ponto-${pt.id}`);
     pushEvent("hotspot_open", { ponto: pt.id });
   };
@@ -266,7 +248,12 @@ function Sequencia({ index }: { index: string }) {
                 <li key={pt.id} className="pointer-events-auto absolute block h-0 w-0" style={{ left: `${pt.x}%`, top: `${pt.y}%` }}>
                   <Reveal preset="fade" delay={0.3 + k * 0.06} className="absolute -left-[22px] -top-[22px]">
                     {/* no celular a foto tem ~350 px: o desenho encolhe para 32 px, o alvo de toque continua com 44 */}
-                    <Hotspot ponto={pt} onSelect={irPara} className="[@media(max-width:767px)]:[&>svg]:scale-[0.72]" />
+                    <Hotspot
+                      ponto={pt}
+                      estado={k === aberto ? "ativo" : "geral"}
+                      onSelect={irPara}
+                      className="[@media(max-width:767px)]:[&>svg]:scale-[0.72]"
+                    />
                   </Reveal>
                 </li>
               ))}
@@ -275,25 +262,32 @@ function Sequencia({ index }: { index: string }) {
           </div>
         </figure>
 
-        <ol className="mt-6 grid grid-cols-1 gap-x-8 md:grid-cols-2 lg:col-span-5 lg:mt-12 lg:block">
-          {PONTOS.map((pt) => (
-            <li key={pt.id} id={`na-pratica-ponto-${pt.id}`} className="scroll-mt-24 border-t border-noite-700 py-4 first:border-t-0 md:[&:nth-child(2)]:border-t-0 lg:[&:nth-child(2)]:border-t lg:py-6">
-              <Reveal y={16}>
-                <div className="flex items-center gap-4">
-                  <div className="lg:hidden">
-                    <Miniatura pt={pt} />
-                  </div>
-                  <h3 className="text-[18px] font-semibold leading-snug text-papel-50 lg:text-[19px]">
-                    <span className="tnum mr-2.5 text-brasa-300">{numeroPonto(pt.id)}</span>
-                    {pt.titulo}
-                  </h3>
+        <Reveal as="ol" y={16} className="mt-6 border-b border-noite-700 lg:col-span-5 lg:mt-12">
+          {PONTOS.map((pt, k) => (
+            <li key={pt.id} id={`na-pratica-ponto-${pt.id}`} className="scroll-mt-24 border-t border-noite-700">
+              <details
+                name="na-pratica-pontos"
+                open={k === aberto}
+                onToggle={(e) => {
+                  const aberta = e.currentTarget.open;
+                  setAberto((a) => (aberta ? k : a === k ? -1 : a));
+                }}
+                className="group/d"
+              >
+                <summary className="flex min-h-14 cursor-pointer list-none items-center gap-4 py-2 [&::-webkit-details-marker]:hidden">
+                  <span className="tnum w-6 shrink-0 text-[15px] font-semibold text-brasa-300">{numeroPonto(pt.id)}</span>
+                  <h3 className="min-w-0 flex-1 text-[18px] font-semibold leading-snug text-papel-50 lg:text-[19px]">{pt.titulo}</h3>
+                  <Plus aria-hidden size={18} strokeWidth={1.5} className="shrink-0 text-papel-300 transition-transform duration-300 ease-out group-open/d:rotate-45" />
+                </summary>
+                {/* entrada CSS ao abrir (styles.css, details[open] > .na-pratica-corpo) */}
+                <div className="na-pratica-corpo pb-4 pl-10">
+                  <p className="text-[16px] leading-[1.6] text-papel-300 lg:text-[17px]">{pt.texto}</p>
+                  <LinkServico slug={pt.servico} />
                 </div>
-                <p className="mt-2.5 text-[16px] leading-[1.6] text-papel-300 lg:mt-1.5 lg:text-[17px]">{pt.texto}</p>
-                <LinkServico slug={pt.servico} />
-              </Reveal>
+              </details>
             </li>
           ))}
-        </ol>
+        </Reveal>
       </div>
     </Container>
   );
@@ -313,7 +307,7 @@ export interface NaPraticaProps {
 export default function NaPratica({ id = "na-pratica", index = SECOES.naPratica.index }: NaPraticaProps = {}) {
   return (
     <section id={id} data-section="H4" aria-label={linhasTexto(NA_PRATICA.h2.linhas)} className="grain relative bg-noite-950">
-      <PinStage mode="pin" heightClassName="h-[168vh]">
+      <PinStage mode="pin" heightClassName="h-[152vh]">
         <Cena index={index} />
       </PinStage>
       <Container className="pb-16 lg:pb-20">

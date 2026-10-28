@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
-import { useMotionPref } from "../../lib/motion-pref";
 import { SPRING } from "./tokens";
 
 export interface ReelProps {
@@ -19,7 +18,6 @@ export interface ReelProps {
  * Todos os itens ficam no DOM.
  */
 export function Reel({ count, index = 0, progress, axis = "y", className, itemClassName, children, label }: ReelProps) {
-  const reduced = useMotionPref() === "reduced";
   const reserva = useMotionValue(0);
   const fim = `-${((count - 1) * 100) / count}%`;
   const continuo = useTransform(progress ?? reserva, [0, 1], ["0%", fim]);
@@ -30,10 +28,10 @@ export function Reel({ count, index = 0, progress, axis = "y", className, itemCl
     <div data-motion="reel" role={label ? "group" : undefined} aria-label={label} className={`relative overflow-clip ${className ?? ""}`}>
       <motion.div
         className={`flex ${axis === "y" ? "w-full flex-col" : "h-full flex-row"}`}
-        style={{ [dim]: `${count * 100}%`, ...(progress && !reduced ? { [axis]: continuo } : {}) }}
+        style={{ [dim]: `${count * 100}%`, ...(progress ? { [axis]: continuo } : {}) }}
         initial={false}
         animate={progress ? undefined : { [axis]: alvo }}
-        transition={reduced ? { duration: 0 } : { type: "spring", ...SPRING.pilula }}
+        transition={{ type: "spring", ...SPRING.pilula }}
       >
         {children.map((c, i) => (
           <div

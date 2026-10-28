@@ -26,12 +26,11 @@ export default {
       },
       fontFamily: {
         sans: ['"Archivo Variable"', '"Archivo Fallback"', "Arial", "sans-serif"],
-        mono: ['"JetBrains Mono Variable"', "ui-monospace", "Consolas", "monospace"],
+        mono: ['"JetBrains Mono Variable"', '"JetBrains Mono Fallback"', "ui-monospace", "Consolas", "monospace"],
       },
       fontSize: {
-        "display-xxl": ["clamp(3.25rem, min(10.5vw, 17svh), 10.5rem)", { lineHeight: "0.86", letterSpacing: "-0.01em", fontWeight: "850" }],
-        "display-xl": ["clamp(2.75rem, min(7vw, 12svh), 8rem)", { lineHeight: "0.9", fontWeight: "800" }],
-        "display-l": ["clamp(2rem, 3.6vw, 3.5rem)", { lineHeight: "0.95", fontWeight: "750" }],
+        // títulos grandes: classes .display-xxl/.display-xl/.display-l de styles.css (com o teto da sobriedade §3);
+        // os tokens text-display-* daqui não eram usados e saíram
         titulo: ["clamp(1.375rem, 1.8vw, 1.75rem)", { lineHeight: "1.2", fontWeight: "600" }],
         "corpo-l": ["clamp(1.125rem, 1.3vw, 1.3125rem)", { lineHeight: "1.55" }],
         corpo: ["1rem", { lineHeight: "1.65" }],

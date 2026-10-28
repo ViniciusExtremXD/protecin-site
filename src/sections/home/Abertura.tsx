@@ -170,7 +170,7 @@ function Cena() {
     return Math.min(1, Math.max((1.75 * geo.d) / geo.lado, cobre));
   });
   const veu = useTransform(pFim, [...T.veu], [1, 0.35]);
-  const brilho = useTransform(pFim, [0.5, 0.85], [0, 0.7]);
+  const brilho = useTransform(pFim, [0.5, 0.85], [0, 0.55]);
   // o manifesto só aparece quando o símbolo já está saindo do centro (sem sobrepor a cantoneira)
   const manifOp = useTransform(pFim, [...T.manifesto], [0, 1]);
   const manifX = useTransform(pFim, [T.grupo[0] + 0.06, T.grupo[1]], ["2vw", "0vw"], { ease: curva });
@@ -264,8 +264,16 @@ function Cena() {
 
       {/* ------------------------------------------------ símbolo + manifesto (fim da cena; em fluxo, depois do hero, no estático) */}
       <div className="pointer-events-none absolute inset-0 z-[1] group-data-[pin=off]/pin:pointer-events-auto group-data-[pin=off]/pin:relative group-data-[pin=off]/pin:inset-auto">
-        <motion.div aria-hidden data-pin-layer="" className="absolute inset-x-0 bottom-0 h-2/3 bg-luz-brasa group-data-[pin=off]/pin:opacity-40" style={{ opacity: brilho }} />
-        <Container className="relative grid h-full grid-cols-1 content-center gap-y-8 pb-[4svh] pt-[8svh] group-data-[pin=off]/pin:py-20 lg:grid-cols-12 lg:gap-x-6 lg:py-0 lg:group-data-[pin=off]/pin:py-28">
+        {/* luz da marca, discreta; some antes da borda de baixo (sem degrau contra a seção seguinte) */}
+        <motion.div
+          aria-hidden
+          data-pin-layer=""
+          className="absolute inset-x-0 bottom-0 h-2/3 bg-luz-brasa [mask-image:linear-gradient(to_bottom,#000_35%,transparent_92%)] group-data-[pin=off]/pin:opacity-30"
+          style={{ opacity: brilho }}
+        />
+        {/* celular e tablet: o símbolo e o manifesto assentam na metade de baixo (acima da barra fixa de contato), sem
+            deixar um vão escuro grande até a Escala quando a cena solta */}
+        <Container className="relative grid h-full grid-cols-1 content-end gap-y-8 pb-[max(9svh,88px)] pt-[8svh] group-data-[pin=off]/pin:py-20 lg:grid-cols-12 lg:content-center lg:gap-x-6 lg:py-0 lg:group-data-[pin=off]/pin:py-28">
           <div className="flex justify-center lg:col-span-6 lg:self-center">
             {/* Com movimento completo, a cena fixa logo depois da hidratação e a gota salta do fluxo (abaixo do hero)
                 para cobrir a tela: com ela visível no estado estático, isso contava como deslocamento de layout

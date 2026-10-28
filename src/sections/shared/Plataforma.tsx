@@ -201,7 +201,7 @@ function Dispositivos({ pilar }: { pilar: number }) {
   });
 
   return (
-    <div ref={ref} aria-hidden>
+    <div ref={ref} aria-hidden data-motion="aparelhos">
       <CaixaEscalada w={EST.w} h={EST.h} max={1.08} className="mx-auto w-full max-w-[616px] lg:mr-0" fallbackClassName="[--k:0.61] sm:[--k:1] lg:[--k:0.8] xl:[--k:1.08]">
         {/* notebook (Web Master) */}
         <motion.div className="absolute" style={{ left: EST.note.left, top: EST.note.top, width: EST.note.w }} {...entra(0, { x: -24 })}>

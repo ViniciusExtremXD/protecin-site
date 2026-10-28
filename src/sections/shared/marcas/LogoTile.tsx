@@ -1,7 +1,7 @@
 import { useId, type CSSProperties } from "react";
 import { AUTORIZADAS, GRUPOS_MARCAS, type Marca } from "../../../data/site";
 import { IMAGENS } from "../../../data/imagens.gen";
-import { RevealGroup, RevealItem } from "../../../components/motion";
+import { Reveal, RevealGroup, RevealItem } from "../../../components/motion";
 import { Img } from "../../../components/ui/Img";
 
 /*
@@ -63,7 +63,7 @@ export function LogoTile({ marca = AUTORIZADAS[0], variante = "ladrilho", tom = 
     return (
       <span
         data-marca={marca.grupo}
-        className={`group flex h-[72px] items-center justify-center px-3 [--lb:40px] lg:h-[96px] lg:[--lb:50px] ${className ?? ""}`}
+        className={`group flex h-14 items-center justify-center px-1.5 [--lb:clamp(26px,8vw,34px)] sm:h-[72px] sm:px-3 sm:[--lb:40px] lg:h-[96px] lg:[--lb:50px] ${className ?? ""}`}
       >
         <Logo marca={marca} tom={tom} sizes={sizesDe(marca, BASE.fita)} />
       </span>
@@ -91,7 +91,7 @@ export interface FaixaMarcasProps {
 
 /**
  * Uma linha da tabela de marcas: o nome do grupo à esquerda (no celular, em cima) e os logos em 4 células iguais
- * (2 por linha no celular). As linhas se empilham separadas por régua fina; quem usa fecha a última com border-b.
+ * (também no celular, com o logo menor: uma linha por grupo). As linhas se empilham separadas por régua fina; quem usa fecha a última com border-b.
  * Parada: sem letreiro correndo, sem rótulo entre os logos (o nome do grupo já diz o que são).
  */
 export function FaixaMarcas({ grupo, itens, tom = "claro", titulo: Titulo = "h3" }: FaixaMarcasProps) {
@@ -101,12 +101,14 @@ export function FaixaMarcas({ grupo, itens, tom = "claro", titulo: Titulo = "h3"
     <div
       role="group"
       aria-labelledby={id}
-      className={`grid grid-cols-1 border-t py-5 lg:grid-cols-12 lg:items-center lg:gap-x-6 lg:py-0 ${claro ? "border-noite-950/10" : "border-papel-50/10"}`}
+      className={`grid grid-cols-1 border-t py-4 sm:py-5 lg:grid-cols-12 lg:items-center lg:gap-x-6 lg:py-0 ${claro ? "border-noite-950/10" : "border-papel-50/10"}`}
     >
-      <Titulo id={id} className={`text-[16px] font-semibold leading-snug lg:col-span-3 ${claro ? "text-noite-950" : "text-papel-50"}`}>
-        {GRUPOS_MARCAS[grupo].titulo}
-      </Titulo>
-      <RevealGroup as="ul" stagger={0.05} className="mt-2 grid grid-cols-2 md:grid-cols-4 lg:col-span-9 lg:mt-0">
+      <Reveal y={16} className="lg:col-span-3">
+        <Titulo id={id} className={`text-[16px] font-semibold leading-snug ${claro ? "text-noite-950" : "text-papel-50"}`}>
+          {GRUPOS_MARCAS[grupo].titulo}
+        </Titulo>
+      </Reveal>
+      <RevealGroup as="ul" stagger={0.05} className="mt-1 grid grid-cols-4 lg:col-span-9 lg:mt-0">
         {itens.map((m, i) => (
           <RevealItem key={m.id} as="li" index={i}>
             <LogoTile marca={m} variante="fita" tom={tom} />

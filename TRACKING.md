@@ -63,7 +63,6 @@ dataLayer.push({ event: "lead_click", lead_channel, lead_location, lead_detail, 
 | `menu_open` | — | menu aberto |
 | `map_load` / `map_directions_click` | — | mapa de /contato/ |
 | `video_play` | `video` | play manual de um vídeo |
-| `motion_toggle` | `mode` | troca de "Animações: ligadas/reduzidas" (rodapé, menu e aviso) |
 | `virtual_page_view` | `page_path`, `page_title` | toda troca de rota no navegador (o site não recarrega entre páginas) |
 
 ## Configuração sugerida no GTM

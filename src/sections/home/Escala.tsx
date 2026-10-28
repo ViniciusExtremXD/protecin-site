@@ -35,7 +35,7 @@ export default function Escala() {
   const [principal, ...linhas] = NUMEROS;
 
   return (
-    <section id="numeros" data-section="H1" className="grain relative bg-noite-950 py-16 lg:py-28">
+    <section id="numeros" data-section="H1" className="grain relative bg-noite-950 py-16 lg:py-24">
       <Container>
         <SectionLabel index={SECOES.escala.index} label={SECOES.escala.label} />
 

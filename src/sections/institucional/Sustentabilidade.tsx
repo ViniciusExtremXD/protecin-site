@@ -38,8 +38,8 @@ export default function Sustentabilidade() {
             </Reveal>
           </div>
 
-          <figure className="lg:col-span-6 lg:col-start-7">
-            <Reveal y={20} delay={0.1}>
+          <Reveal as="figure" y={20} delay={0.1} className="lg:col-span-6 lg:col-start-7">
+            <div>
               <div className="overflow-clip rounded-2xl bg-noite-900" style={{ aspectRatio: "3/2" }}>
                 <Img
                   id={s.fundo}
@@ -51,9 +51,9 @@ export default function Sustentabilidade() {
                   imgClassName="h-full w-full object-cover"
                 />
               </div>
-            </Reveal>
-            <figcaption className="rotulo mt-3 text-[12px] text-papel-500">{UI.imagemIlustrativa.toUpperCase()}</figcaption>
-          </figure>
+            </div>
+            <figcaption className="rotulo mt-3 text-papel-500">{UI.imagemIlustrativa.toUpperCase()}</figcaption>
+          </Reveal>
         </div>
       </Container>
     </section>

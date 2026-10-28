@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { motion, useInView, useMotionValue, useMotionValueEvent, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { SECOES, TIMELINE, linhasTexto, type Marco } from "../../data/site";
 import { EASE_OUT, PinStage, Reveal, ease, usePin } from "../../components/motion";
 import { Container } from "../../components/layout/Container";
@@ -14,10 +15,10 @@ import { H2 } from "./historia/estilo";
 /*
  * H7. 50 anos (design-final §9 H7, com qa/AJUSTES-SOBRIEDADE.md por cima). Linha do tempo de 1976 a 2026.
  * - Desktop (PinStage "pin" ativo): os 10 marcos correm na horizontal sobre um eixo com um nó por ano. A linha
- *   vermelha vai de 1976 a 2026 junto com a rolagem e acende cada nó que alcança. Rolagem presa de no máximo
- *   1,2 tela (altura da seção ≤ 220vh).
- * - Celular, tablet, tela baixa, SSR e sem JS: lista vertical compacta com o trilho à esquerda, que enche com a
- *   rolagem; o nó acende quando a linha chega nele. Sem cena presa.
+ *   vermelha vai de 1976 a 2026 junto com a rolagem e acende cada nó que alcança. Rolagem presa de 0,85 tela
+ *   (o comprimento da home tem teto, AJUSTES-SOBRIEDADE §2).
+ * - Celular, tablet, tela baixa, SSR e sem JS: os mesmos marcos num trilho que o dedo desliza (scroll-snap), com o
+ *   mesmo eixo: a linha enche conforme o trilho avança. Sem cena presa e com a altura de um marco.
  * Fora da rodada 1: odômetro do ano, mini-régua, carimbo e brilho dos nós, agulha com glow, anos em contorno,
  * símbolo e celular nos painéis, rótulos mono por marco (viraram títulos curtos) e o sobretítulo.
  */
@@ -27,7 +28,7 @@ export interface HistoriaProps {
   variant?: Variante;
 }
 
-const ROLAGEM_MAX = 1.2; // alturas de tela de rolagem presa
+const ROLAGEM_MAX = 0.85; // alturas de tela de rolagem presa
 const N = MARCOS.length;
 const CHAVE_SESSAO = "pt-timeline";
 const entrada = (delay = 0) => ({ duration: 0.6, ease: ease(EASE_OUT), delay });
@@ -212,7 +213,7 @@ function Painel({
   return (
     <li
       ref={registrar}
-      className="relative w-[clamp(320px,24vw,380px)] shrink-0 pr-10"
+      className="relative w-[clamp(300px,22vw,360px)] shrink-0 pr-10"
       onFocusCapture={(e) => {
         if (e.target instanceof HTMLElement && e.target.matches(":focus-visible")) irPara(i);
       }}
@@ -265,90 +266,104 @@ function Painel({
   );
 }
 
-// ---------------------------------------------------------------- versão vertical (celular, SSR, sem JS)
+// ---------------------------------------------------------------- trilho deslizante (celular, tablet, SSR, sem JS)
 
-function Vertical({ variant }: { variant: Variante }) {
+/**
+ * Os mesmos 10 marcos num trilho horizontal que o dedo desliza (scroll-snap nativo), com o mesmo eixo do desktop:
+ * a linha vermelha enche conforme o trilho avança e acende cada nó que alcança. Antes era uma lista vertical de
+ * ~2.100 px no celular; o trilho tem a altura de um marco. Nada fica invisível fora da tela: o trilho entra inteiro
+ * com um reveal só (cada cartão fora da área visível já está opaco). Setas para quem usa mouse ou teclado.
+ */
+function Deslizante({ variant }: { variant: Variante }) {
   const [montado, setMontado] = useState(false);
   useEffect(() => setMontado(true), []);
-  const lista = useRef<HTMLOListElement>(null);
-  const itens = useRef<(HTMLLIElement | null)[]>([]);
-  const fracoes = useRef<number[]>([]);
-  const [aceso, setAceso] = useState(-1);
-  const { scrollYProgress } = useScroll({ target: lista, offset: ["start 70%", "end 70%"] });
+  const trilho = useRef<HTMLOListElement>(null);
+  const { scrollXProgress } = useScroll({ container: trilho, axis: "x" });
+  const [aceso, setAceso] = useState(0);
+  const [pontas, setPontas] = useState({ ini: true, fim: false });
 
-  const atualizar = (v: number) => {
-    let k = -1;
-    fracoes.current.forEach((f, i) => {
-      if (v >= f - 0.0005) k = i;
-    });
-    setAceso((a) => (a === k ? a : k));
-    if (k === N - 1) avisarFim();
+  const atualizar = (p: number) => {
+    const a = Math.max(0, Math.min(N - 1, Math.floor(p * (N - 1) + 0.02)));
+    setAceso((v) => (v === a ? v : a));
+    if (a === N - 1) avisarFim();
+    const el = trilho.current;
+    const max = el ? el.scrollWidth - el.clientWidth : 0;
+    const ini = !el || el.scrollLeft <= 4;
+    const fim = !el || el.scrollLeft >= max - 4;
+    setPontas((v) => (v.ini === ini && v.fim === fim ? v : { ini, fim }));
   };
-  useMotionValueEvent(scrollYProgress, "change", atualizar);
+  useMotionValueEvent(scrollXProgress, "change", atualizar);
+  useEffect(() => atualizar(scrollXProgress.get()), []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // fração da lista em que fica o nó de cada item (o nó acende quando a linha vermelha chega nele)
-  useEffect(() => {
-    const medir = () => {
-      const ol = lista.current;
-      if (!ol || !ol.offsetHeight) return;
-      fracoes.current = itens.current.map((li) => ((li?.offsetTop ?? 0) + 14) / ol.offsetHeight);
-      atualizar(scrollYProgress.get());
-    };
-    medir();
-    const ro = new ResizeObserver(medir);
-    if (lista.current) ro.observe(lista.current);
-    return () => ro.disconnect();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  /** Um cartão para o lado (setas): a largura do 1º cartão é o passo do snap. */
+  const passar = (dir: 1 | -1) => {
+    const el = trilho.current;
+    const passo = el?.firstElementChild?.getBoundingClientRect().width ?? 0;
+    el?.scrollBy({ left: dir * passo, behavior: "smooth" });
+  };
 
   // SSR e sem JS: linha cheia e todos os nós acesos
   const acende = (i: number) => !montado || aceso >= i;
+  const seta =
+    "grid h-11 w-11 place-items-center rounded-full border border-papel-50/20 text-papel-50 transition-[border-color,opacity] duration-200 hover:border-papel-50/60 disabled:opacity-35 disabled:hover:border-papel-50/20";
 
   return (
     <div className="relative py-16 md:py-24 lg:py-28">
       <Container>
         <Cabecalho variant={variant} />
+      </Container>
 
-        <div className="relative mt-10 md:mt-14">
-          <div aria-hidden className="pointer-events-none absolute bottom-2 left-[4px] top-3.5 w-px bg-noite-600">
-            <motion.span className="absolute inset-0 block origin-top bg-brasa-500" style={montado ? { scaleY: scrollYProgress } : undefined} />
-          </div>
-          <ol ref={lista} className="relative">
-            {MARCOS.map((m, i) => {
-              const final = !!m.final;
-              return (
-                <li
-                  key={m.ano}
-                  ref={(el) => {
-                    itens.current[i] = el;
-                  }}
-                  className="relative pb-7 pl-7 last:pb-0 md:grid md:grid-cols-[9rem_minmax(0,1fr)] md:gap-x-8 md:pb-10 md:pl-10"
-                >
-                  {/* nó */}
-                  <span
-                    aria-hidden
-                    className={`absolute left-[4.5px] top-[14px] block h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-colors duration-300 md:top-[22px] ${
-                      acende(i) ? "border-brasa-500 bg-brasa-500" : "border-noite-500 bg-noite-900"
-                    }`}
-                  />
-                  <Reveal y={16} className="flex items-baseline gap-3 md:block">
-                    <h3 className="stretch-62 tnum text-[30px] font-[850] uppercase leading-none text-papel-50 md:text-[44px]">{m.ano}</h3>
-                    <p className="text-[15px] font-semibold leading-snug text-papel-50 md:mt-2 md:text-[16px] md:text-papel-300">{tituloMarco(m)}</p>
-                  </Reveal>
-                  <Reveal y={16} delay={0.06} className="mt-1.5 md:mt-0 md:pt-1">
-                    <p className="max-w-[62ch] text-[16px] leading-[1.55] text-papel-300 lg:text-[17px]">{m.texto}</p>
-                    {final && (
-                      <div className="mt-5">
-                        <Ctas variant={variant} />
-                      </div>
-                    )}
-                  </Reveal>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
+      <Reveal y={16} delay={0.1} className="mt-8 md:mt-12">
+        <ol
+          ref={trilho}
+          tabIndex={0}
+          aria-label={TIMELINE.trilho}
+          className="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-px-5 px-5 pb-2 outline-none [scrollbar-width:none] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-papel-50/40 md:scroll-px-8 md:px-8 lg:scroll-px-12 lg:px-12 [&::-webkit-scrollbar]:hidden"
+        >
+          {MARCOS.map((m, i) => (
+            <CartaoMarco key={m.ano} m={m} i={i} aceso={acende(i)} progress={scrollXProgress} vivo={montado} variant={variant} />
+          ))}
+        </ol>
+      </Reveal>
+
+      <Container className="mt-4 flex justify-end gap-2">
+        <button type="button" aria-label={TIMELINE.anterior} disabled={montado && pontas.ini} onClick={() => passar(-1)} className={seta}>
+          <ArrowLeft aria-hidden size={18} strokeWidth={1.5} />
+        </button>
+        <button type="button" aria-label={TIMELINE.proximo} disabled={montado && pontas.fim} onClick={() => passar(1)} className={seta}>
+          <ArrowRight aria-hidden size={18} strokeWidth={1.5} />
+        </button>
       </Container>
     </div>
+  );
+}
+
+function CartaoMarco({ m, i, aceso, progress, vivo, variant }: { m: Marco; i: number; aceso: boolean; progress: MotionValue<number>; vivo: boolean; variant: Variante }) {
+  const final = !!m.final;
+  // trecho do eixo entre este nó e o próximo (sem JS: cheio)
+  const enche = useTransform(progress, (p) => Math.min(1, Math.max(0, p * (N - 1) - i)));
+  return (
+    <li className="w-[min(80vw,21rem)] shrink-0 snap-start pr-6 md:w-[20rem] md:pr-8">
+      <h3 className="stretch-62 tnum text-[40px] font-[850] uppercase leading-[0.85] text-papel-50 md:text-[48px]">{m.ano}</h3>
+      <div className="relative -mr-6 my-3 h-2.5 md:-mr-8">
+        {!final && (
+          <span aria-hidden className="absolute left-0 right-0 top-1/2 block h-px bg-noite-600">
+            <motion.span className="absolute inset-0 block origin-left bg-brasa-500" style={vivo ? { scaleX: enche } : undefined} />
+          </span>
+        )}
+        <span
+          aria-hidden
+          className={`absolute left-0 top-0 block h-2.5 w-2.5 rounded-full border-2 transition-colors duration-300 ${aceso ? "border-brasa-500 bg-brasa-500" : "border-noite-500 bg-noite-900"}`}
+        />
+      </div>
+      <p className="text-[17px] font-semibold leading-snug text-papel-50">{tituloMarco(m)}</p>
+      <p className="mt-1.5 text-[16px] leading-[1.55] text-papel-300">{m.texto}</p>
+      {final && (
+        <div className="mt-5">
+          <Ctas variant={variant} coluna />
+        </div>
+      )}
+    </li>
   );
 }
 
@@ -356,7 +371,7 @@ function Vertical({ variant }: { variant: Variante }) {
 
 function Palco({ variant, definirAltura }: { variant: Variante; definirAltura: (h: number | null) => void }) {
   const { active } = usePin();
-  return active ? <Horizontal variant={variant} definirAltura={definirAltura} /> : <Vertical variant={variant} />;
+  return active ? <Horizontal variant={variant} definirAltura={definirAltura} /> : <Deslizante variant={variant} />;
 }
 
 /**

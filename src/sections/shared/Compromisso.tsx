@@ -41,8 +41,8 @@ const KIDS_TEXTO = SOCIAL.kids.texto.replace(
 function Colagem() {
   const k = SOCIAL.kids;
   return (
-    <figure>
-      <Reveal y={20}>
+    <Reveal as="figure" y={20}>
+      <div>
         <div className="overflow-clip rounded-2xl" style={{ aspectRatio: "1080/845" }}>
           <Img
             id={k.colagem}
@@ -53,12 +53,12 @@ function Colagem() {
             imgClassName="h-full w-full object-cover"
           />
         </div>
-      </Reveal>
+      </div>
       <figcaption className="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-grafite-600">
         <span className="text-[15px] leading-snug">{SOCIAL.kids.legendaColagem}</span>
-        <span className="rotulo text-[12px]">{UI.fotoAcervo.toUpperCase()}</span>
+        <span className="rotulo">{UI.fotoAcervo.toUpperCase()}</span>
       </figcaption>
-    </figure>
+    </Reveal>
   );
 }
 
@@ -102,7 +102,7 @@ export default function Compromisso({ variant }: CompromissoProps = {}) {
   const direita = "lg:col-span-6 lg:col-start-7";
 
   return (
-    <section id={home ? "social" : "kids-ong"} data-section="H9" className="tom-claro relative bg-papel-50 py-16 text-noite-950 md:py-24 lg:py-28">
+    <section id={home ? "social" : "kids-ong"} data-section="H9" className="tom-claro relative bg-papel-50 py-16 text-noite-950 md:py-24">
       <Container>
         <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-12 lg:grid-rows-[1fr_auto_auto_auto_1fr] lg:gap-x-6 lg:gap-y-0">
           <div className={`${direita} lg:row-start-2`}>

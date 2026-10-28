@@ -1,6 +1,6 @@
 import { SETORES, UI } from "../../data/site";
 import { IMAGENS } from "../../data/imagens.gen";
-import { RevealGroup, RevealItem } from "../../components/motion";
+import { Reveal, RevealGroup, RevealItem } from "../../components/motion";
 import { Container } from "../../components/layout/Container";
 import { Img } from "../../components/ui/Img";
 
@@ -46,7 +46,9 @@ export default function SetoresEmpilhados() {
             </RevealItem>
           ))}
         </RevealGroup>
-        <p className="rotulo mt-8 text-papel-500 lg:mt-10">{UI.imagemIlustrativa}</p>
+        <Reveal as="p" preset="fade" className="rotulo mt-8 text-papel-500 lg:mt-10">
+          {UI.imagemIlustrativa}
+        </Reveal>
       </Container>
     </section>
   );

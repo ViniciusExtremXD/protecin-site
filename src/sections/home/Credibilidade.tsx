@@ -15,7 +15,7 @@ import { FaixaMarcas } from "../shared/marcas/LogoTile";
 /** H2 da home (`#autorizacoes`). Sem props. A página insere `<ReservedSlot id="clientes" />` logo depois. */
 export default function Credibilidade() {
   return (
-    <section id="autorizacoes" data-section="H2" className="tom-claro relative bg-papel-50 py-16 text-noite-950 lg:py-28">
+    <section id="autorizacoes" data-section="H2" className="tom-claro relative bg-papel-50 py-16 text-noite-950 lg:py-24">
       <Container>
         <SectionLabel index={SECOES.credibilidade.index} label={SECOES.credibilidade.label} tone="claro" />
 

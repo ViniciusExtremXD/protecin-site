@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
-import { useMotionPref } from "../../lib/motion-pref";
 
 type Offset = NonNullable<Parameters<typeof useScroll>[0]>["offset"];
 
@@ -46,7 +45,6 @@ export function ScrollLitText({
 }: ScrollLitTextProps) {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: offset as Offset });
-  const reduced = useMotionPref() === "reduced";
   const palavras = separar(text);
   const limpo = palavras.map((p) => p.texto).join(" ");
   const fonte = progress ?? scrollYProgress;
@@ -56,15 +54,9 @@ export function ScrollLitText({
   return (
     <Tag ref={ref as never} className={className} aria-label={limpo} data-motion="acende">
       <span aria-hidden>
-        {palavras.map((p, i) =>
-          reduced ? (
-            <span key={i} className={p.destaque ? highlightClassName : undefined}>
-              {p.texto}{" "}
-            </span>
-          ) : (
-            <Palavra key={i} p={p} progress={fonte} range={[a + i * passo, a + (i + 1) * passo]} from={from} cls={highlightClassName} />
-          ),
-        )}
+        {palavras.map((p, i) => (
+          <Palavra key={i} p={p} progress={fonte} range={[a + i * passo, a + (i + 1) * passo]} from={from} cls={highlightClassName} />
+        ))}
       </span>
     </Tag>
   );

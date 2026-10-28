@@ -1,6 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { motion, useMotionValue, useScroll, useSpring, useTransform, useVelocity } from "framer-motion";
-import { useMotionPref } from "../../lib/motion-pref";
 
 export interface VelocityMarqueeProps {
   baseVelocity?: number; // -1.2 (% da faixa por segundo; negativo corre para a esquerda)
@@ -22,7 +21,6 @@ const wrap = (min: number, max: number, v: number) => {
  */
 export function VelocityMarquee({ baseVelocity = -1.2, pauseOnHover = true, className, trackClassName, ariaLabel, children }: VelocityMarqueeProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduced = useMotionPref() === "reduced";
   const baseX = useMotionValue(0);
   const { scrollY } = useScroll();
   const vel = useVelocity(scrollY);
@@ -35,7 +33,7 @@ export function VelocityMarquee({ baseVelocity = -1.2, pauseOnHover = true, clas
 
   useEffect(() => {
     const el = ref.current;
-    if (reduced || !el) return;
+    if (!el) return;
     let raf = 0;
     let ultimo = 0;
     const tick = (t: number) => {
@@ -65,17 +63,9 @@ export function VelocityMarquee({ baseVelocity = -1.2, pauseOnHover = true, clas
       io.disconnect();
       cancelAnimationFrame(raf);
     };
-  }, [reduced, baseVelocity, baseX, fatorVel, pausaSuave]);
+  }, [baseVelocity, baseX, fatorVel, pausaSuave]);
 
   const grupo = ariaLabel ? { role: "group", "aria-label": ariaLabel } : {};
-
-  if (reduced) {
-    return (
-      <div ref={ref} data-motion="fita" className={`flex flex-wrap items-center ${className ?? ""}`} {...grupo}>
-        <div className={`flex flex-wrap items-center ${trackClassName ?? ""}`}>{children}</div>
-      </div>
-    );
-  }
 
   return (
     <div

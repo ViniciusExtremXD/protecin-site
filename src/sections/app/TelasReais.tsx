@@ -27,22 +27,27 @@ export default function TelasReais() {
       <Container>
         <SectionLabel index={ROTULO.index} label={ROTULO.label} tone="claro" />
         <SplitLines as="h2" lines={[TR.titulo]} text={TR.titulo} className={`${H2} mt-5`} />
-        <div className="mt-10 grid grid-cols-2 gap-x-3 gap-y-8 lg:mt-14 lg:grid-cols-12 lg:items-end lg:gap-x-6">
-          {FIGURAS.map((f, i) => (
-            <Reveal as="figure" key={f.id} y={16} delay={i * 0.1} className={`m-0 ${f.classe}`}>
-              <Img
-                id={f.id}
-                alt={IMAGENS[f.id].alt}
-                sizes={f.sizes}
-                className={`block w-full ${f.altura}`}
-                imgClassName="h-full w-full object-contain object-bottom drop-shadow-[0_24px_28px_rgba(5,10,18,0.22)]"
-              />
+        {/* as três capturas são uma figura só, com a legenda real (crédito: telas do sistema, dados ocultos) */}
+        <figure className="m-0 mt-10 lg:mt-14">
+          <div className="grid grid-cols-2 gap-x-3 gap-y-8 lg:grid-cols-12 lg:items-end lg:gap-x-6">
+            {FIGURAS.map((f, i) => (
+              <Reveal key={f.id} y={16} delay={i * 0.1} className={f.classe}>
+                <Img
+                  id={f.id}
+                  alt={IMAGENS[f.id].alt}
+                  sizes={f.sizes}
+                  className={`block w-full ${f.altura}`}
+                  imgClassName="h-full w-full object-contain object-bottom drop-shadow-[0_24px_28px_rgba(5,10,18,0.22)]"
+                />
+              </Reveal>
+            ))}
+          </div>
+          <figcaption className="corpo mt-8 text-grafite-600 lg:mt-10">
+            <Reveal as="span" y={16} className="block">
+              {TR.legenda}
             </Reveal>
-          ))}
-        </div>
-        <Reveal as="p" y={16} className="corpo mt-8 text-grafite-600 lg:mt-10">
-          {TR.legenda}
-        </Reveal>
+          </figcaption>
+        </figure>
       </Container>
     </section>
   );

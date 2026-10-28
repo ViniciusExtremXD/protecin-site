@@ -724,6 +724,12 @@ video[data-lazy-video].is-playing {
   }
 }
 
+/* Acordeão dos pontos da foto (H4, celular): o texto do ponto que abre sobe 20 px em 0,5 s. Só no [open]: fechado,
+   o miolo não é desenhado e a animação ficaria parada no quadro inicial (opacidade 0). */
+html.motion-full details[open] > .na-pratica-corpo {
+  animation: e-sobe 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 /* ==========================================================================
    Cenas fixadas (PinStage): inativas (SSR, celular no modo "pin", tela baixa) viram fluxo normal.
    Cada seção define o seu layout estático pelo seletor [data-pin="off"].

@@ -1,6 +1,5 @@
 import { useRef, useState, type ReactNode } from "react";
 import { cubicBezier, motion, useMotionValueEvent, useTransform, type MotionValue } from "framer-motion";
-import { useMotionPref } from "../../lib/motion-pref";
 import { EASE_IN_OUT, useIsoLayoutEffect } from "./tokens";
 
 export interface DropWindowProps {
@@ -23,7 +22,6 @@ export function DropWindow({ progress, range = [0.08, 0.55], mode, from = 0.45, 
   const ref = useRef<HTMLDivElement>(null);
   const [s0, setS0] = useState(8);
   const [ativa, setAtiva] = useState(false);
-  const reduced = useMotionPref() === "reduced";
 
   // antes da pintura: a cena fixada nunca mostra a gota com a escala provisória
   useIsoLayoutEffect(() => {
@@ -46,9 +44,10 @@ export function DropWindow({ progress, range = [0.08, 0.55], mode, from = 0.45, 
       ref={ref}
       data-motion="gota"
       className={`relative overflow-clip rounded-gota ${className ?? ""}`}
-      style={{ width: "var(--gota)", height: "var(--gota)", scale: reduced ? 1 : s, willChange: ativa && !reduced ? "transform" : "auto" }}
+      style={{ width: "var(--gota)", height: "var(--gota)", scale: s, willChange: ativa ? "transform" : "auto" }}
     >
-      <motion.div className="absolute left-1/2 top-1/2 h-[100svh] w-screen" style={{ x: "-50%", y: "-50%", scale: reduced ? 1 : inversa }}>
+      {/* 8 px de sangria: um arredondamento de 1–2 px na posição da gota não deixa um fio escuro na borda da tela */}
+      <motion.div className="absolute left-1/2 top-1/2 h-[calc(100svh+8px)] w-[calc(100vw+8px)]" style={{ x: "-50%", y: "-50%", scale: inversa }}>
         {children}
       </motion.div>
     </motion.div>

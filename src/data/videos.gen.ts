@@ -18,7 +18,7 @@ export interface VideoInfo {
 }
 
 export const VIDEOS = {
-  hero: {"arquivo":"hero-supressao-1280.mp4","arquivoMobile":"hero-supressao-540v.mp4","w":1280,"h":720,"bytes":2707079,"bytesMobile":1476420,"duracao":8,"poster":"hero-poster","posterMobile":"hero-poster-v","fonte":"Pexels 34775769","autor":"Val А.","url":"https://www.pexels.com/video/industrial-red-valve-fire-safety-system-34775769/","licenca":"Licença Pexels"},
+  hero: {"arquivo":"hero-supressao-1920.mp4","arquivoMobile":"hero-supressao-608v.mp4","w":1920,"h":1080,"bytes":3083341,"bytesMobile":1622315,"duracao":8,"poster":"hero-poster","posterMobile":"hero-poster-v","fonte":"Pexels 34775769","autor":"Val А.","url":"https://www.pexels.com/video/industrial-red-valve-fire-safety-system-34775769/","licenca":"Licença Pexels"},
 } as const satisfies Record<string, VideoInfo>;
 
 export type VideoId = keyof typeof VIDEOS;

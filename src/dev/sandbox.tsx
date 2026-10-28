@@ -29,7 +29,6 @@ import {
   DrawIcon,
   DrawPath,
   DropWindow,
-  Embers,
   FocusBrackets,
   Magnetic,
   Odometer,
@@ -546,7 +545,6 @@ function Primitivas() {
 
       <SectionRise id="rise" className="bg-mundo-vermelho">
         <div className="relative isolate overflow-clip py-28 lg:py-40">
-          <Embers />
           <Container className="relative text-center">
             <SectionLabel index="10" label="Orçamento" />
             <SplitWords as="h2" text="Precisa de uma proposta, agendar uma visita ou tirar dúvidas?" className="display-xl mx-auto mt-6 block max-w-[16ch] text-papel-50" />

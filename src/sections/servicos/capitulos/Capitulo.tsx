@@ -10,7 +10,7 @@ import { fotoDoCapitulo } from "./util";
 /**
  * Um capítulo de /servicos/ (rodada de sobriedade, por cima de §10.2.2): <article id={slug}> em duas colunas no
  * desktop (texto em 6 colunas e foto 16:10 em 5, alternando o lado a cada capítulo; nunca mais alto que a tela),
- * empilhado no celular (foto, nome, resumo e CTAs; a descrição longa entra a partir do tablet). Um CTA por capítulo
+ * empilhado no celular (foto, nome, resumo, descrição e CTAs; a descrição também no celular, sem conteúdo a menos). Um CTA por capítulo
  * (orçamento deste serviço, que leva o serviço marcado para /contato/) e o WhatsApp do serviço em texto.
  * Avisa o pai quando cruza o meio da tela (margem -45%), para a barra de chips marcar o capítulo ativo.
  */
@@ -50,7 +50,7 @@ export function Capitulo({ servico, indice, onAtivo }: { servico: Servico; indic
           <p className="corpo-l text-pretty text-papel-50/90">{servico.resumo}</p>
         </RevealItem>
         {servico.descricao && (
-          <RevealItem className="mt-3 hidden md:block">
+          <RevealItem className="mt-3">
             <p className="corpo text-pretty text-papel-300">{servico.descricao}</p>
           </RevealItem>
         )}

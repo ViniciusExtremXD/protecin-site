@@ -29,12 +29,12 @@ Itens que dependem da Protecin (ou do Gabriel) antes da versão de produção. E
 
 ## Desempenho no celular (em aberto, técnico)
 
-Medido na prévia publicada, com CPU 4x e 4G simulado (rede 150 ms / 1,6 Mbps), sem o antivírus da máquina no meio. O Lighthouse não rodou (não está instalado e a cota anônima do PageSpeed Insights estava esgotada); os números são do `scripts/medir-desempenho.mjs` e de medições com o mesmo método:
-- **CLS:** a gota da abertura saltava do fluxo para a tela cheia quando a cena fixava depois da hidratação (CLS 1,0 no celular). Corrigido: até a cena ligar, a gota fica invisível (CLS da carga medido entre 0,001 e 0,005). Rolando a home no celular ainda soma cerca de 0,23 (não investigado).
-- **LCP e TBT:** a home tem cerca de 5.900 nós e 365 KB de HTML. Com a CPU 4x, análise do HTML, layout e hidratação do React somam cerca de 3 s de bloqueio (TBT aproximado de 2,9 s). O pôster do hero ocupa a tela inteira e o Chrome não conta imagem de tela cheia como LCP. O primeiro elemento grande que conta é a imagem da gota, pintada só depois da hidratação. Resultado no celular: FCP de cerca de 3 s e LCP de 7,4 a 7,9 s. No desktop sem limitação: LCP de 1,5 s e CLS 0.
-- **Rolagem:** CPU 4x no desktop, 36 fps (meta de 30 ou mais); no celular, 18 fps (meta de 40 ou mais).
-- **Próximos passos sugeridos:** dividir o JavaScript por rota e hidratar as seções abaixo da dobra só quando chegarem perto da tela; `content-visibility: auto` nas seções longas que não são cenas fixadas; enxugar o HTML pré-renderizado (letreiros repetidos e SVGs grandes); fazer a cena da abertura nascer fixada pelo CSS, sem esperar a hidratação.
-- Em aparelhos muito lentos a hidratação pode passar dos 4 s do seguro anti-invisível (`motion-failed`): o site fica legível, mas sem parte das entradas.
+Medido em 28/10/2026 na prévia publicada (rodada de sobriedade) com o `scripts/medir-desempenho.mjs` (o Lighthouse não está instalado). Celular: 390×844, rede e CPU do Lighthouse mobile (150 ms, 1,6 Mbps, CPU 4x) na carga e CPU 4x na rolagem. Desktop: 1440×900, rede local sem limitação na carga e CPU 4x na rolagem. O TBT é aproximado (soma do que passa de 50 ms em cada tarefa longa até o fim da medida da carga):
+- **Celular:** FCP 4,4 s, LCP 7,1 s, TBT 1,9 s, CLS 0 na carga e 0 depois de rolar a home inteira, 35 fps na rolagem, 379 KB na 1ª carga e 866 KB com a home rolada (sem vídeo). O mesmo build servido localmente deu FCP 3,7–4,0 s, LCP 6,5–6,7 s e TBT 2,0 s, igual ao build anterior da rodada (sem regressão).
+- **Desktop:** FCP 1,0 s, LCP 2,3 s, TBT 85 ms, CLS 0 e 0, 30 fps rolando com CPU 4x, 418 KB na 1ª carga e 1.052 KB rolada (vídeo do hero à parte: 3,0 MB no desktop, 1,6 MB no celular).
+- **LCP:** o elemento é o "50" do H1, que entra depois do preloader da 1ª visita (até 900 ms) e da entrada em CSS; com a CPU 4x, análise do HTML e hidratação do React ainda somam ~2 s de bloqueio no celular.
+- **Próximos passos sugeridos:** dividir o JavaScript por rota e hidratar as seções abaixo da dobra só quando chegarem perto da tela; `content-visibility: auto` nas seções longas que não são cenas fixadas; enxugar o HTML pré-renderizado (~230 KB na home); avaliar tirar o preloader da 1ª visita (adianta o LCP).
+- O seguro anti-invisível (`motion-failed`) só entra se o JS falhar: erro de script, JS ausente no `DOMContentLoaded` ou hidratação que não termina em 12 s depois de o JS começar a rodar. Num aparelho lento o site espera a hidratação (não há mais o prazo de 4 s nem modo reduzido); se o prazo estourar, tudo aparece parado e legível.
 
 ## Técnicas (registro)
 

@@ -98,7 +98,8 @@ export function servir(porta = 4195, base = "/protecin-site", pasta = "dist") {
       return res.end(corpo.subarray(ini, fim + 1));
     }
     if (TEXTO.test(tipo) && /gzip/.test(String(req.headers["accept-encoding"] ?? ""))) {
-      const chave = `${final}:${corpo.length}`;
+      // chave com a data de modificação: um rebuild com o servidor no ar troca os hashes sem mudar o tamanho do HTML
+      const chave = `${final}:${(await stat(final)).mtimeMs}:${corpo.length}`;
       if (!gz.has(chave)) gz.set(chave, gzipSync(corpo, { level: 9 }));
       res.writeHead(status, { "Content-Type": tipo, "Content-Encoding": "gzip", Vary: "Accept-Encoding", "Cache-Control": "no-cache" });
       return res.end(gz.get(chave));

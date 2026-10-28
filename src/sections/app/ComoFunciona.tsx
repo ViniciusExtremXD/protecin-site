@@ -75,6 +75,7 @@ export default function ComoFunciona() {
                 />
               )}
               <motion.div
+                data-motion="no-modulo"
                 initial={{ opacity: 0, y: 16 }}
                 animate={visto ? { opacity: 1, y: 0 } : undefined}
                 transition={{ duration: DUR.base, ease: ease(EASE_OUT), delay: 0.15 + i * 0.35 }}

@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { useScroll, useSpring, type MotionValue } from "framer-motion";
 import { useMediaQuery } from "../../lib/media";
-import { useMotionPref } from "../../lib/motion-pref";
 import { SPRING } from "./tokens";
 
 export interface PinStageProps {
@@ -9,7 +8,7 @@ export interface PinStageProps {
   className?: string;
   stageClassName?: string;
   heightClassName: string; // altura por CSS, ex.: "h-[220vh] lg:h-[260vh]"
-  mode?: "sempre" | "pin"; // "sempre": fixa em qualquer largura (exceto curto/reduzido); "pin": só no breakpoint pin:
+  mode?: "sempre" | "pin"; // "sempre": fixa em qualquer largura (exceto tela curta); "pin": só no breakpoint pin:
   smooth?: boolean; // suaviza com SPRING.rolagem (padrão true)
   label?: string; // aria-label da cena
   children: ReactNode;
@@ -25,16 +24,15 @@ const PinCtx = createContext<PinInfo | null>(null);
 
 /**
  * Cena fixada: seção alta com palco sticky de 100svh. SSR e inativo: data-pin="off" (cada seção define o
- * layout estático por esse seletor). Ativa depois de montar, com movimento completo e na largura do modo.
+ * layout estático por esse seletor). Ativa depois de montar, na largura do modo (o movimento é sempre ligado).
  */
 export function PinStage({ id, className, stageClassName, heightClassName, mode = "pin", smooth = true, label, children }: PinStageProps) {
   const ref = useRef<HTMLElement>(null);
-  const reduced = useMotionPref() === "reduced";
   const pinMq = useMediaQuery("(min-width: 1024px) and (min-height: 640px)");
   const curto = useMediaQuery("(max-height: 560px)");
   const [montado, setMontado] = useState(false);
   useEffect(() => setMontado(true), []);
-  const active = montado && !reduced && (mode === "sempre" ? !curto : pinMq);
+  const active = montado && (mode === "sempre" ? !curto : pinMq);
 
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const suave = useSpring(scrollYProgress, SPRING.rolagem);

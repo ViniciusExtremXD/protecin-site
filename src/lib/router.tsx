@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState, type AnchorHTMLAttributes, type MouseEvent, type ReactNode } from "react";
 import { COMPANY, NOT_FOUND, ROUTES, type Rota } from "../data/site";
-import { motionPrefAtual } from "./motion-pref";
 import { quandoLivre, resizeSmoothScroll, scrollToHash, scrollToY } from "./smooth-scroll";
 import { definirCaminhoAtual, pushEvent } from "./track";
 import { routeUrl } from "./urls";
@@ -87,9 +86,8 @@ export function RouterProvider({ initialPath, children, memory = false }: { init
         else if (empilhar) scrollToY(0);
         return;
       }
-      const reduzido = motionPrefAtual() === "reduced";
-      const tCobrir = reduzido ? 200 : 450;
-      const tSair = reduzido ? 200 : 550;
+      const tCobrir = 450;
+      const tSair = 550;
       setEstado({ ...atual.current, phase: "cobrindo", destino: path });
       timers.push(
         window.setTimeout(() => {

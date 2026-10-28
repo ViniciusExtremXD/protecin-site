@@ -98,8 +98,10 @@ export function LazyVideo({ id, label, className, fit = "cover", when = "near", 
     if (deve) {
       v.muted = true;
       registrar(v, hero);
-      v.play().catch(() => {
-        if (!manual) setBloqueado(true);
+      // só a recusa do navegador (NotAllowedError) conta como bloqueio; um play() interrompido por pause() (AbortError,
+      // ao rolar rápido) não mostra o botão Play
+      v.play().catch((e: unknown) => {
+        if (!manual && (e as { name?: string } | null)?.name === "NotAllowedError") setBloqueado(true);
       });
     } else if (!v.paused) v.pause();
   }, [carregar, manual, liberado, visivel, when, active, hero]);

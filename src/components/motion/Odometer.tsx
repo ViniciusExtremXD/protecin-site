@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { motionPrefAtual } from "../../lib/motion-pref";
 import { DUR, STAGGER, useIsoLayoutEffect } from "./tokens";
 
 export interface OdometerProps {
@@ -61,7 +60,7 @@ export function Odometer({
 
   // inView: fora da tela ao montar → salta em silêncio para o mesmo dígito no 1º ciclo e gira uma volta ao entrar.
   useEffect(() => {
-    if (trigger !== "inView" || motionPrefAtual() === "reduced") return;
+    if (trigger !== "inView") return;
     const el = raiz.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
@@ -86,7 +85,6 @@ export function Odometer({
     if (trigger !== "value") return;
     const antes = Array.from(anterior.current).filter((c) => /\d/.test(c)).map(Number);
     anterior.current = value;
-    if (motionPrefAtual() === "reduced") return;
     const n = digitos.length;
     digitos.forEach((d, j) => {
       const c = antes[j - (n - antes.length)] ?? 0; // alinha pela direita

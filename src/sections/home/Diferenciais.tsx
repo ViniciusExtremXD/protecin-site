@@ -17,7 +17,7 @@ const ROTULO = "Diferenciais";
 
 export default function Diferenciais() {
   return (
-    <section id="diferenciais" data-section="H6" className="tom-claro relative bg-papel-50 py-16 text-noite-950 md:py-24 lg:py-28">
+    <section id="diferenciais" data-section="H6" className="tom-claro relative bg-papel-50 py-16 text-noite-950 md:py-24">
       <Container>
         <div className="lg:grid lg:grid-cols-12 lg:gap-x-6">
           <div className="lg:col-span-4">

@@ -10,11 +10,12 @@ import { GlifoInstagram, GlifoLinkedIn, GlifoWhatsApp } from "../ui/glifos";
 import { Logo } from "../ui/Logo";
 import { Container } from "./Container";
 
-// links com alvo de 44 px no toque; no desktop a linha é baixa (py-1)
-const linkCls =
-  "group/l relative inline-flex min-h-11 items-center gap-2 text-[15px] text-papel-300 transition-colors duration-200 hover:text-papel-50 lg:min-h-0 lg:py-1";
+// links com alvo de 44 × 44 px no toque (min-w-11: "Início" é mais curto que isso) e sublinhado de texto, que fica
+// só sob as letras; no desktop a linha é baixa (py-1) e o sublinhado é o traço que corre no hover
+const sublinhadoToque = "underline decoration-papel-300/40 underline-offset-[6px] lg:no-underline";
+const linkCls = `group/l relative inline-flex min-h-11 min-w-11 items-center gap-2 text-[15px] text-papel-300 transition-colors duration-200 hover:text-papel-50 lg:min-h-0 lg:min-w-0 lg:py-1 ${sublinhadoToque}`;
 const sublinhado =
-  "pointer-events-none absolute bottom-2 left-0 h-px w-full origin-left scale-x-100 bg-current opacity-40 transition-transform duration-200 lg:bottom-0.5 lg:scale-x-0 lg:opacity-100 lg:group-hover/l:scale-x-100";
+  "pointer-events-none absolute bottom-0.5 left-0 hidden h-px w-full origin-left scale-x-0 bg-current transition-transform duration-200 group-hover/l:scale-x-100 lg:block";
 
 /** Título de coluna em texto (não mono: um rótulo mono por bloco, AJUSTES-SOBRIEDADE §3). */
 function Titulo({ children }: { children: string }) {
@@ -138,7 +139,7 @@ export function Footer() {
           className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-t border-noite-700 py-4 text-[14px] text-papel-500 lg:py-5"
         >
           <p className="w-full sm:w-auto">{FOOTER.direitos(ano)}</p>
-          <Link to="/creditos/" className="group/l relative inline-flex min-h-11 w-fit items-center text-papel-300 hover:text-papel-50 sm:ml-auto">
+          <Link to="/creditos/" className={`group/l relative inline-flex min-h-11 w-fit items-center text-papel-300 hover:text-papel-50 sm:ml-auto ${sublinhadoToque}`}>
             {FOOTER.creditos}
             <span aria-hidden className={sublinhado} />
           </Link>

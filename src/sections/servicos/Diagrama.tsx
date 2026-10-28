@@ -129,7 +129,7 @@ function LinksServicos({ slugs, tabIndex }: { slugs: readonly ServicoSlug[]; tab
             <Link
               to={`/servicos/#${slug}`}
               tabIndex={tabIndex}
-              className="inline-flex min-h-11 items-center font-semibold text-papel-50 underline decoration-papel-50/25 underline-offset-4 transition-[text-decoration-color] duration-200 hover:decoration-brasa-400 lg:min-h-9"
+              className="inline-flex min-h-11 min-w-11 items-center justify-center font-semibold text-papel-50 underline decoration-papel-50/25 underline-offset-4 transition-[text-decoration-color] duration-200 hover:decoration-brasa-400 lg:min-h-9 lg:min-w-0"
             >
               {s.nomeCurto}
             </Link>

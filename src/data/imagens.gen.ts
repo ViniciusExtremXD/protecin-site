@@ -15,8 +15,8 @@ export interface ImagemInfo {
 }
 
 export const IMAGENS = {
-  "hero-poster": {"w":1280,"h":720,"larguras":[828,1280],"alpha":false,"avif":true,"credito":"ilustrativa","alt":"Módulos vermelhos de sistema fixo de supressão de incêndio, com válvulas e tubulação"},
-  "hero-poster-v": {"w":540,"h":960,"larguras":[540],"alpha":false,"avif":true,"credito":"ilustrativa","alt":"Módulos vermelhos de sistema fixo de supressão de incêndio, com válvulas e tubulação"},
+  "hero-poster": {"w":1920,"h":1080,"larguras":[828,1280,1920],"alpha":false,"avif":true,"credito":"ilustrativa","alt":"Módulos vermelhos de sistema fixo de supressão de incêndio, com válvulas e tubulação"},
+  "hero-poster-v": {"w":608,"h":1080,"larguras":[540,608],"alpha":false,"avif":true,"credito":"ilustrativa","alt":"Módulos vermelhos de sistema fixo de supressão de incêndio, com válvulas e tubulação"},
   "obra-parede-sistemas": {"w":2592,"h":1944,"larguras":[640,960,1280,1600,1920,2400],"alpha":false,"avif":true,"credito":"acervo","alt":"Parede com tubulação vermelha, painel de alarme, extintor com etiqueta PROTECIN, abrigo de mangueira e placa de saída"},
   "obra-cilindros-supressao": {"w":3264,"h":1836,"larguras":[640,960,1280,1600,1920,2400],"alpha":false,"avif":true,"credito":"acervo","alt":"Bateria de cilindros vermelhos numerados de sistema fixo de supressão, com coletor, válvulas e mangueiras"},
   "app-splash": {"w":1080,"h":1920,"larguras":[360,540,720,1080],"alpha":true,"avif":true,"credito":"acervo","alt":"Tela de abertura do aplicativo Protecin, com o logo branco sobre azul-marinho"},

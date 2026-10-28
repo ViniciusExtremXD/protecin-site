@@ -215,8 +215,6 @@ export const HERO = {
   manifesto: "Protegemos seu maior patrimônio: *a vida.*",
   apoio:
     "Desde 1976, a Protecin oferece soluções técnicas em prevenção e combate a incêndios, protegendo vidas e patrimônios com tecnologia, equipe especializada e estrutura sólida.",
-  rotuloFinal: "SANTO ANDRÉ/SP · DESDE 1976",
-  selo: "50 ANOS · 1976–2026 · ",
   cta1: "Solicitar orçamento",
   cta2: "Falar no WhatsApp",
 } as const;
@@ -431,8 +429,6 @@ export const PLATAFORMA = {
       texto: "Redução de erros e retrabalho, relatórios rápidos, transparência total e rastreabilidade de ponta a ponta nas inspeções realizadas.",
     },
   ] satisfies Pilar[],
-  selo: "100% conforme NBR 12962 · NBR 12779",
-  beneficios: ["Menos erros e retrabalho", "Relatórios rápidos", "Transparência total", "Rastreabilidade de ponta a ponta"],
   /** Rótulos que existem nas telas reais (§1.7). Dados de cliente viram barras borradas. */
   telas: {
     rotulosOrdem: {
@@ -456,7 +452,6 @@ export const PLATAFORMA = {
     banner: "Nova ordem de serviço",
     chipOrdem: "Ordem de serviço",
     processador: "Processador de Coleta Online",
-    videoCredito: "IMAGEM ILUSTRATIVA",
   },
   modulos: [
     {
@@ -524,6 +519,9 @@ export const TIMELINE = {
     linhas: ["Nossa História:", "tradição e inovação", "que evoluem juntos"],
   } satisfies Titulo,
   pular: "Pular a linha do tempo",
+  trilho: "Linha do tempo de 1976 a 2026: deslize para o lado",
+  anterior: "Marco anterior",
+  proximo: "Próximo marco",
   marcos: [
     {
       ano: 1976, rotulo: "FUNDAÇÃO", simbolo: true,
@@ -706,7 +704,6 @@ export const DIAGRAMA = {
   } satisfies Titulo,
   corpo:
     "Da elaboração de projetos à gestão contínua dos equipamentos, oferecemos soluções completas para proteger pessoas, patrimônios e garantir a conformidade com normas técnicas e legais.",
-  carimbo: "PROJETO COM ART · ASSESSORIA AVCB",
   svgTitulo: "Diagrama em corte de uma edificação com os sistemas de proteção contra incêndio",
   camadas: [
     {
@@ -868,10 +865,7 @@ export const FAIXA_CTA = {
 export const FOOTER = {
   // caixa normal, como o manifesto do hero (rodada de sobriedade)
   slogan: ["Protegemos seu maior", "patrimônio: a vida."],
-  sloganCelular: ["Protegemos seu maior", "patrimônio: a vida."],
   sloganDestaque: ["a", "vida."],
-  texto:
-    "Com 50 anos de atuação, a Protecin é reconhecida pela confiabilidade e excelência em soluções de prevenção e combate a incêndio. Oferecemos projetos, instalações, manutenções e uma plataforma tecnológica completa, garantindo segurança, conformidade e tranquilidade para empresas em todo o país.",
   secoes: [
     { label: "Início", to: "/" },
     { label: "Institucional", to: "/institucional/" },

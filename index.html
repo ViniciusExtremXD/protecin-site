@@ -50,8 +50,8 @@
     <link rel="preload" as="font" type="font/woff2" href="%BASE_URL%fonts/archivo-latin-wdth-normal.woff2" crossorigin />
     <!--lcp:inicio (só a home; o prerender remove das outras rotas). imagesizes = o sizes que o Img do poster calcula
          (100vw com a densidade mínima de 1,5 em DPR baixo): o preload e a imagem escolhem o mesmo arquivo.-->
-    <link rel="preload" as="image" type="image/avif" media="(min-width: 768px)" imagesrcset="%BASE_URL%img/hero-poster-828.avif 828w, %BASE_URL%img/hero-poster-1280.avif 1280w" imagesizes="(max-resolution: 1.1dppx) calc(100vw * 1.5), (max-resolution: 1.4dppx) calc(100vw * 1.2), 100vw" fetchpriority="high" />
-    <link rel="preload" as="image" type="image/avif" media="(max-width: 767px)" imagesrcset="%BASE_URL%img/hero-poster-v-540.avif 540w" imagesizes="100vw" fetchpriority="high" />
+    <link rel="preload" as="image" type="image/avif" media="(min-width: 768px)" imagesrcset="%BASE_URL%img/hero-poster-828.avif 828w, %BASE_URL%img/hero-poster-1280.avif 1280w, %BASE_URL%img/hero-poster-1920.avif 1920w" imagesizes="(max-resolution: 1.1dppx) calc(100vw * 1.5), (max-resolution: 1.4dppx) calc(100vw * 1.2), 100vw" fetchpriority="high" />
+    <link rel="preload" as="image" type="image/avif" media="(max-width: 767px)" imagesrcset="%BASE_URL%img/hero-poster-v-540.avif 540w, %BASE_URL%img/hero-poster-v-608.avif 608w" imagesizes="100vw" fetchpriority="high" />
     <!--lcp:fim-->
     <style>
       /* Fontes (design-final §4.2): Archivo variável (wght 100–900, wdth 62–125) e JetBrains Mono variável. */

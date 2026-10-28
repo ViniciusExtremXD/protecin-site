@@ -57,7 +57,11 @@ export default function Servicos({ id = "servicos", rotulo = SECOES.servicos }: 
             <CartaoServico key={s.slug} servico={s} />
           ))}
         </RevealGroup>
-        {ilustrativas && <p className="mt-3 text-[13px] leading-none text-papel-500">{UI.imagemIlustrativa}</p>}
+        {ilustrativas && (
+          <Reveal as="p" preset="fade" className="mt-3 text-[13px] leading-none text-papel-500">
+            {UI.imagemIlustrativa}
+          </Reveal>
+        )}
 
         <div className="mt-8 flex flex-col gap-5 lg:mt-7 lg:flex-row lg:items-center lg:justify-between lg:gap-8 lg:border-t lg:border-noite-700 lg:pt-6">
           <Reveal y={20}>

@@ -20,8 +20,8 @@ export default function LinhaEquipamentos() {
     <section id="equipamentos" data-section="catalogo-linha" className="relative bg-noite-900 py-16 text-papel-50 md:py-24 lg:py-28">
       <Container>
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-6">
-          <figure className="lg:col-span-6">
-            <Reveal y={20}>
+          <Reveal as="figure" y={20} className="lg:col-span-6">
+            <div>
               <div className="overflow-clip rounded-2xl bg-noite-800" style={{ aspectRatio: `${info.w}/${info.h}` }}>
                 <Img
                   id={imagem}
@@ -32,9 +32,9 @@ export default function LinhaEquipamentos() {
                   imgClassName="h-full w-full object-cover"
                 />
               </div>
-            </Reveal>
-            <figcaption className="rotulo mt-3 text-[12px] text-papel-500">{UI.imagemIlustrativa.toUpperCase()}</figcaption>
-          </figure>
+            </div>
+            <figcaption className="rotulo mt-3 text-papel-500">{UI.imagemIlustrativa.toUpperCase()}</figcaption>
+          </Reveal>
 
           <div className="lg:col-span-5 lg:col-start-8">
             <Reveal y={20}>

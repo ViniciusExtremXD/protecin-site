@@ -4,7 +4,7 @@
 
 - Repositório: `https://github.com/ViniciusExtremXD/protecin-site` (branch `gh-pages`, pasta raiz).
 - Endereço: `https://viniciusextremxd.github.io/protecin-site/`
-- Para a apresentação: `https://viniciusextremxd.github.io/protecin-site/?motion=full` (muitos PCs com Windows pedem "menos animação" ao sistema). Acrescente `&proposta=1` para mostrar os espaços reservados (logos de clientes, obras, depoimentos e preço único).
+- O site anima sempre (também nos PCs com Windows que pedem "menos animação" ao sistema): não precisa de parâmetro. Acrescente `?proposta=1` para mostrar os espaços reservados (logos de clientes, obras, depoimentos e preço único).
 
 ```bash
 npm run deploy:gh       # build:gh (VITE_BASE=/protecin-site/) + scripts/deploy-gh.mjs
@@ -29,7 +29,7 @@ Antes de publicar:
 npm run build:gh
 node scripts/verify.mjs --estatico                 # serve dist/ em http://127.0.0.1:4195/protecin-site/
 node qa/capturar.mjs http://127.0.0.1:4195/protecin-site <pasta-fora-do-OneDrive> "/,/institucional/,/servicos/,/nossos-clientes/,/catalogo-digital/,/nosso-app/,/contato/,/creditos/"
-node scripts/medir-desempenho.mjs                  # home em ?motion=full, 1440 (use --mobile para 390)
+node scripts/medir-desempenho.mjs                  # home em 1440 com CPU 4x (use --mobile --4g para 390 com 4G)
 ```
 
 ## 2. Produção (protecin.com.br, Locaweb) — só depois da aprovação da Protecin

@@ -19,7 +19,7 @@ export default function ClientesEscala() {
     <section id="clientes-escala" data-section="clientes-escala" className="grain relative bg-noite-950 pb-12 pt-16 lg:pb-16 lg:pt-28">
       <Container className="grid grid-cols-1 gap-y-10 lg:grid-cols-12 lg:items-end lg:gap-x-6">
         <div className="lg:col-span-7">
-          <Reveal as="p" className="text-[17px] font-semibold leading-snug text-brasa-300">
+          <Reveal as="p" className="text-[17px] font-semibold leading-snug text-papel-300">
             {SETORES.sobretitulo}
           </Reveal>
           <SplitLines

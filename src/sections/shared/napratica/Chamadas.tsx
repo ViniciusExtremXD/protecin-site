@@ -49,11 +49,14 @@ export function BlocoCilindros() {
     <div data-bloco="cilindros" className="grid grid-cols-1 gap-y-6 lg:grid-cols-12 lg:items-center lg:gap-x-6">
       {/* número, legenda das chamadas e crédito */}
       <div className="lg:order-2 lg:col-span-5 lg:pl-8 xl:col-span-6 xl:pl-16">
-        <Odometer value={DADOS.numero} className="display-xl stretch-66 text-[clamp(3.5rem,7vw,7rem)] text-papel-50" ariaLabel={`${DADOS.numero} ${DADOS.rotulo}`} />
-        <Reveal as="p" y={16} className="corpo-l mt-2 max-w-[26ch] text-papel-300">
-          {DADOS.rotulo}
-        </Reveal>
-        <Reveal as="ol" y={16} delay={0.08} className="mt-6 grid grid-cols-1 gap-x-4 gap-y-2.5 sm:grid-cols-2 lg:mt-8 lg:grid-cols-1">
+        {/* no celular o número e o rótulo dividem a linha */}
+        <div className="flex items-center gap-5 lg:block">
+          <Odometer value={DADOS.numero} className="display-xl stretch-66 shrink-0 text-[clamp(3.5rem,7vw,7rem)] text-papel-50" ariaLabel={`${DADOS.numero} ${DADOS.rotulo}`} />
+          <Reveal as="p" y={16} className="corpo-l max-w-[26ch] text-papel-300 lg:mt-2">
+            {DADOS.rotulo}
+          </Reveal>
+        </div>
+        <Reveal as="ol" y={16} delay={0.08} className="mt-5 grid grid-cols-1 gap-x-4 gap-y-2.5 sm:grid-cols-2 lg:mt-8 lg:grid-cols-1">
           {DADOS.chamadas.map((c, i) => (
             <li
               key={c.rotulo}
@@ -71,8 +74,8 @@ export function BlocoCilindros() {
       </div>
 
       {/* foto 16:9 com os pontos */}
-      <figure className="m-0 lg:order-1 lg:col-span-7 xl:col-span-6">
-        <Reveal preset="fade">
+      <Reveal as="figure" preset="fade" className="m-0 lg:order-1 lg:col-span-7 xl:col-span-6">
+        <div>
           <div ref={caixa} className="relative aspect-[16/9] overflow-clip rounded-[14px] bg-noite-900 ring-1 ring-papel-50/10">
             <Img
               id={DADOS.imagem}
@@ -85,11 +88,11 @@ export function BlocoCilindros() {
               <Ponto key={i} i={i} ativo={ativo} foco={foco} />
             ))}
           </div>
-        </Reveal>
+        </div>
         <figcaption className="mt-3 text-[14px] leading-snug text-papel-500">
           {DADOS.legenda} {UI.fotoAcervo}.
         </figcaption>
-      </figure>
+      </Reveal>
     </div>
   );
 }

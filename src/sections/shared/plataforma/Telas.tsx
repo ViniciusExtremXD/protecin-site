@@ -196,9 +196,9 @@ export function TelaOffline({ checks, sinc }: TelaOfflineProps) {
         <motion.p
           className="mt-4 flex items-center justify-center gap-2 rounded-full border px-3 py-2.5 text-[13px] font-semibold leading-none"
           initial={false}
+          // antes de sincronizar: texto grafite (contraste AA sobre o papel-100) e borda clara, sem esmaecer
           animate={{
-            opacity: sinc ? 1 : 0.45,
-            borderColor: sinc ? "rgba(14,52,82,0.9)" : "rgba(14,52,82,0.25)",
+            borderColor: sinc ? "rgba(14,52,82,0.9)" : "rgba(14,52,82,0.22)",
             color: sinc ? "#0E3452" : "#4B5866",
           }}
           transition={{ duration: 0.35 }}
