@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { cubicBezier, motion, useMotionValueEvent, useTransform, type MotionValue } from "framer-motion";
 import { useMotionPref } from "../../lib/motion-pref";
-import { EASE_IN_OUT } from "./tokens";
+import { EASE_IN_OUT, useIsoLayoutEffect } from "./tokens";
 
 export interface DropWindowProps {
   progress: MotionValue<number>;
@@ -25,7 +25,8 @@ export function DropWindow({ progress, range = [0.08, 0.55], mode, from = 0.45, 
   const [ativa, setAtiva] = useState(false);
   const reduced = useMotionPref() === "reduced";
 
-  useEffect(() => {
+  // antes da pintura: a cena fixada nunca mostra a gota com a escala provisória
+  useIsoLayoutEffect(() => {
     const medir = () => {
       const d = ref.current?.offsetWidth || 1;
       setS0((Math.hypot(window.innerWidth, window.innerHeight) / d) * 1.04);

@@ -13,7 +13,9 @@ export interface OdometerProps {
   ariaLabel?: string;
 }
 
-const ROLO = Array.from({ length: 20 }, (_, i) => i % 10); // 0–9 duas vezes
+// 0–9 duas vezes, um dígito por linha num único nó de texto (white-space: pre; linha de 1em): o mesmo rolo com 1
+// nó em vez de 20 por coluna (a home tinha mais de mil nós só de dígitos dos odômetros)
+const ROLO_TEXTO = Array.from({ length: 20 }, (_, i) => i % 10).join("\n");
 const pos = (n: number) => `translate3d(0, -${n * 5}%, 0)`; // cada dígito = 5% do rolo de 20 itens
 const CURVA = "cubic-bezier(0.16, 1, 0.3, 1)";
 
@@ -119,11 +121,7 @@ export function Odometer({
                 }}
                 style={{ transform: pos(10 + Number(c)) }}
               >
-                {ROLO.map((n, x) => (
-                  <span key={x} className="odo-d">
-                    {n}
-                  </span>
-                ))}
+                {ROLO_TEXTO}
               </span>
             </span>
           );

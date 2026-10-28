@@ -2,7 +2,8 @@ import Lenis from "lenis";
 
 /*
  * Rolagem suave (Lenis, padrão do Extin Seven). Instância única, lerp 0.11, RAF próprio.
- * Com movimento reduzido o Lenis não é criado e as âncoras saltam sem animação.
+ * Com movimento reduzido o Lenis não é criado e as âncoras saltam sem animação. Em aparelho só de toque também não
+ * (a rolagem do dedo é nativa de qualquer forma): as âncoras usam o scroll suave do navegador.
  */
 let lenis: Lenis | null = null;
 
@@ -13,9 +14,11 @@ function folgaNav(): number {
 }
 
 const reduzido = () => typeof document !== "undefined" && document.documentElement.classList.contains("motion-reduced");
+/** Aparelho de toque (sem mouse): o Lenis só suaviza a roda do mouse; no toque ele só gastaria um quadro por frame. */
+const soToque = () => typeof window !== "undefined" && !!window.matchMedia?.("(hover: none) and (pointer: coarse)").matches;
 
 export function initSmoothScroll(): () => void {
-  if (lenis || reduzido()) return () => {};
+  if (lenis || reduzido() || soToque()) return () => {};
   lenis = new Lenis({ lerp: 0.11, smoothWheel: true, wheelMultiplier: 0.95 });
   // o preloader ou o menu podem ter travado a página antes do Lenis existir
   if (document.documentElement.style.overflow === "hidden") lenis.stop();

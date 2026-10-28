@@ -3,7 +3,7 @@ import { cubicBezier, motion, useMotionValue, useMotionValueEvent, useScroll, us
 import { Phone } from "lucide-react";
 import { COMPANY, HERO, UI } from "../../data/site";
 import { IMAGENS } from "../../data/imagens.gen";
-import { DropWindow, EASE_OUT, Embers, PinStage, ScrollLitText, comDestaque, usePin } from "../../components/motion";
+import { DropWindow, EASE_OUT, Embers, PinStage, ScrollLitText, comDestaque, useIsoLayoutEffect, usePin } from "../../components/motion";
 import { Container } from "../../components/layout/Container";
 import { OrcamentoCta, PhoneLink, WhatsAppCta } from "../../components/ui/cta";
 import { LazyVideo } from "../../components/ui/LazyVideo";
@@ -42,7 +42,7 @@ html.motion-full .ab-desce{animation:ab-desce 1.8s cubic-bezier(.65,0,.35,1) 3 b
 .ab-selo-sym [data-parte="br"]{transform:translate(9px,9px)}
 .ab-selo:hover .ab-selo-sym [data-parte]{transform:none}
 html.motion-reduced .ab-selo-sym [data-parte]{transform:none;transition:none}
-@media (min-height:561px){html.motion-full:not(.motion-failed) #topo[data-pin="off"] .ab-encaixe{visibility:hidden}}
+@media (min-height:561px){html.motion-full:not(.motion-failed) #topo .ab-encaixe:not([data-pronto]){visibility:hidden}}
 `;
 
 /** Atraso das entradas CSS (somado a --t0 em styles.css). */
@@ -124,8 +124,11 @@ function Cena() {
   // ---- distância do encaixe do símbolo até o centro do palco (medida sem transform)
   const palco = useRef<HTMLDivElement>(null);
   const encaixe = useRef<HTMLDivElement>(null);
-  const [delta, setDelta] = useState({ x: 0, y: 0 });
-  useEffect(() => {
+  // Medida antes da pintura (efeito de layout): no 1º quadro da cena fixada a gota já sai centrada e cobrindo a
+  // tela. Medida depois (useEffect), um quadro com a gota fora do centro chegava a pintar o poster recortado, e o
+  // Chrome contava esse quadro como o LCP (atrasado até a hidratação). Até medir, a gota fica invisível (CSS).
+  const [delta, setDelta] = useState<{ x: number; y: number } | null>(null);
+  useIsoLayoutEffect(() => {
     const medir = () => {
       const a = palco.current?.getBoundingClientRect();
       const b = encaixe.current?.getBoundingClientRect();
@@ -136,6 +139,7 @@ function Cena() {
     window.addEventListener("resize", medir);
     return () => window.removeEventListener("resize", medir);
   }, [active]);
+  const pronto = active && delta !== null;
 
   // ---- textos do hero (p 0 → 0,15) e chrome do hero (p 0 → 0,08)
   const tOp = useTransform(pTexto, [0, 0.15], [1, 0]);
@@ -147,8 +151,8 @@ function Cena() {
   useMotionValueEvent(pTexto, "change", (v) => setInterativo(v < 0.15));
 
   // ---- símbolo, véu, manifesto e brasas
-  const grupoX = useTransform(pFim, [0.6, 0.8], [delta.x, 0], { ease: curva });
-  const grupoY = useTransform(pFim, [0.6, 0.8], [delta.y, 0], { ease: curva });
+  const grupoX = useTransform(pFim, [0.6, 0.8], [delta?.x ?? 0, 0], { ease: curva });
+  const grupoY = useTransform(pFim, [0.6, 0.8], [delta?.y ?? 0, 0], { ease: curva });
   const midiaY = useTransform(pFim, [0, 0.55], ["0%", "-4%"]);
   const veu = useTransform(pFim, [0.1, 0.5], [1, 0.35]);
   const brilho = useTransform(pFim, [0.5, 0.85], [0, 1]);
@@ -285,9 +289,9 @@ function Cena() {
           <div className="flex justify-center lg:col-span-6 lg:self-center">
             {/* Com movimento completo, a cena fixa logo depois da hidratação e a gota salta do fluxo (abaixo do hero)
                 para cobrir a tela: com ela visível no estado estático, isso contava como deslocamento de layout
-                (CLS 1,0 no celular). Até a cena ligar ela fica invisível (só com motion-full e tela alta; sem JS,
-                no reduzido, em tela baixa e com o motor caído ela aparece). */}
-            <div ref={encaixe} className="ab-encaixe relative aspect-square w-[calc(var(--gota)*2)]">
+                (CLS 1,0 no celular). Até a cena ligar e a posição dela estar medida (data-pronto) ela fica invisível
+                (só com motion-full e tela alta; sem JS, no reduzido, em tela baixa e com o motor caído ela aparece). */}
+            <div ref={encaixe} data-pronto={pronto ? "" : undefined} className="ab-encaixe relative aspect-square w-[calc(var(--gota)*2)]">
               <motion.div data-pin-layer="" className="pointer-events-auto absolute inset-0" style={{ x: grupoX, y: grupoY }}>
                 <div className="absolute inset-[25%] group-data-[pin=off]/pin:[&_button]:hidden">
                   <DropWindow progress={pFim} range={[0.08, 0.55]} mode="fechar" className="[--gota:100%]">

@@ -487,7 +487,16 @@ html.intro.motion-full .pt-preloader.is-pulando {
 }
 .odo-rolo {
   display: block;
-  will-change: transform;
+  height: 20em;
+  line-height: 1em;
+  white-space: pre;
+}
+/* camada própria só com mouse (desktop, como sempre foi); no toque a camada sobe só durante o giro (transição),
+   sem dezenas de camadas paradas na página */
+@media (hover: hover) and (pointer: fine) {
+  .odo-rolo {
+    will-change: transform;
+  }
 }
 .odo-d,
 .odo-a {
