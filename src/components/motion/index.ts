@@ -1,0 +1,25 @@
+// Primitivas de motion (design-final §6). TextScramble ficou fora (corte do QA): rótulos usam o reveal normal.
+export * from "./tokens";
+export { Reveal, RevealGroup, RevealItem, variantesPreset, FADE_REDUZIDO, TRANSICAO_REDUZIDA, type RevealProps, type RevealGroupProps } from "./Reveal";
+export { SplitLines, comDestaque, type SplitLinesProps, type Linhas } from "./SplitLines";
+export { SplitWords, type SplitWordsProps } from "./SplitWords";
+export { ScrollLitText, type ScrollLitTextProps } from "./ScrollLitText";
+export { ClipReveal, type ClipRevealProps } from "./ClipReveal";
+export { ParallaxMedia, type ParallaxMediaProps } from "./ParallaxMedia";
+export { DrawIcon, type DrawIconProps } from "./DrawIcon";
+export { DrawPath, type DrawPathProps } from "./DrawPath";
+export { Rule } from "./Rule";
+export { Odometer, type OdometerProps } from "./Odometer";
+export { TextRoll } from "./TextRoll";
+export { WipeText } from "./WipeText";
+export { Magnetic } from "./Magnetic";
+export { TiltCard } from "./TiltCard";
+export { VelocityMarquee, type VelocityMarqueeProps } from "./VelocityMarquee";
+export { CursorPreview } from "./CursorPreview";
+export { PinStage, usePin, type PinStageProps } from "./PinStage";
+export { SectionRise } from "./SectionRise";
+export { DropWindow, type DropWindowProps } from "./DropWindow";
+export { Reel, type ReelProps } from "./Reel";
+export { FocusBrackets, type FocusBracketsProps } from "./FocusBrackets";
+export { StampBadge } from "./StampBadge";
+export { Embers } from "./Embers";

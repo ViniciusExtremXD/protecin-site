@@ -1,6 +1,7 @@
 node_modules/
 dist/
 dist-server/
+verificacao/
 .DS_Store
 *.log
 .env
@@ -8,3 +9,4 @@ dist-server/
 scratch/
 referencia/imagens-site-atual/
 qa/capturas-*/
+.claude/settings.local.json

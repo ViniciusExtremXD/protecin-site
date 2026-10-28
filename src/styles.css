@@ -1,0 +1,811 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Tokens (design-final §4 e §5.1). Os easings e tempos espelham components/motion/tokens.ts.
+   ========================================================================== */
+:root {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --t-micro: 200ms;
+  --t-curta: 350ms;
+  --t-base: 600ms;
+  --t-longa: 800ms;
+  --t-max: 900ms;
+  --foco: #ff6a4d;
+  color-scheme: dark;
+}
+/* atraso-base das entradas CSS: depois do preloader na 1ª visita, quase imediato nas outras */
+html.intro {
+  --t0: 600ms;
+}
+html:not(.intro) {
+  --t0: 80ms;
+}
+
+@layer base {
+  html {
+    /* contêiner de rolagem posicionado: o useScroll do framer mede os alvos a partir dele */
+    position: relative;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 84px;
+  }
+  body {
+    @apply bg-noite-950 font-sans text-papel-50 antialiased;
+    font-size: 16px;
+    line-height: 1.65;
+    font-stretch: 100%;
+    overflow-x: clip;
+    font-synthesis: none;
+  }
+  @media (min-width: 1024px) {
+    body {
+      font-size: 17px;
+    }
+  }
+  ::selection {
+    background: #be1e29;
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--foco);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  /* seções claras: foco e seleção em brasa-500 */
+  .tom-claro {
+    --foco: #be1e29;
+    color: #050a12;
+  }
+  img,
+  video,
+  svg {
+    max-width: none;
+  }
+  picture {
+    display: block;
+  }
+  /* corta o que transborda na horizontal (deslocamentos de entrada, letreiros) sem virar contêiner de rolagem:
+     o overflow do body propaga para a viewport e não segura o viewport de layout no celular */
+  #root {
+    overflow-x: clip;
+  }
+  button {
+    cursor: pointer;
+  }
+}
+
+/* ==========================================================================
+   Tipografia (§4.2): Archivo (títulos condensados e texto corrido) + JetBrains Mono (rótulos).
+   ========================================================================== */
+@layer components {
+  .display-xxl {
+    font-size: clamp(3.25rem, min(10.5vw, 17svh), 10.5rem);
+    font-stretch: 62%;
+    font-weight: 850;
+    line-height: 0.86;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    --od-w: 0.43em;
+  }
+  .display-xl {
+    font-size: clamp(2.75rem, min(7vw, 12svh), 8rem);
+    font-stretch: 66%;
+    font-weight: 800;
+    line-height: 0.9;
+    text-transform: uppercase;
+    --od-w: 0.45em;
+  }
+  .display-l {
+    font-size: clamp(2rem, 3.6vw, 3.5rem);
+    font-stretch: 75%;
+    font-weight: 750;
+    line-height: 0.95;
+    --od-w: 0.5em;
+  }
+  .titulo {
+    font-size: clamp(1.375rem, 1.8vw, 1.75rem);
+    font-stretch: 100%;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .corpo-l {
+    font-size: clamp(1.125rem, 1.3vw, 1.3125rem);
+    line-height: 1.55;
+  }
+  .corpo {
+    font-size: 16px;
+    line-height: 1.65;
+    max-width: 62ch;
+  }
+  @media (min-width: 1024px) {
+    .corpo {
+      font-size: 17px;
+    }
+  }
+  .rotulo {
+    font-family: "JetBrains Mono Variable", ui-monospace, Consolas, monospace;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .botao {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1;
+  }
+}
+
+@layer utilities {
+  .stretch-62 {
+    font-stretch: 62%;
+    --od-w: 0.43em;
+  }
+  .stretch-66 {
+    font-stretch: 66%;
+    --od-w: 0.45em;
+  }
+  .stretch-75 {
+    font-stretch: 75%;
+    --od-w: 0.5em;
+  }
+  .stretch-100 {
+    font-stretch: 100%;
+    --od-w: 0.62em;
+  }
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+  .text-outline {
+    -webkit-text-stroke: 1px rgba(243, 239, 233, 0.35);
+    color: transparent;
+  }
+  .text-outline-claro {
+    -webkit-text-stroke: 1px rgba(5, 10, 18, 0.35);
+    color: transparent;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Texturas (§4.1): grão estático só nas seções escuras; prancheta no mundo azul.
+   ========================================================================== */
+.grain {
+  position: relative;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.bg-blueprint,
+.bg-blueprint-claro {
+  position: relative;
+}
+.bg-blueprint::before,
+.bg-blueprint-claro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-size:
+    120px 120px,
+    120px 120px,
+    24px 24px,
+    24px 24px;
+}
+.bg-blueprint::before {
+  background-image:
+    linear-gradient(rgba(157, 184, 208, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(157, 184, 208, 0.16) 1px, transparent 1px),
+    linear-gradient(rgba(157, 184, 208, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(157, 184, 208, 0.07) 1px, transparent 1px);
+}
+.bg-blueprint-claro::before {
+  background-image:
+    linear-gradient(rgba(5, 10, 18, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(5, 10, 18, 0.09) 1px, transparent 1px),
+    linear-gradient(rgba(5, 10, 18, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(5, 10, 18, 0.05) 1px, transparent 1px);
+}
+
+/* ==========================================================================
+   Entradas acima da dobra em CSS (§5.3). Só animam sob html.motion-full; sem JS ou no reduzido,
+   aparecem paradas. Keyframes com valores literais.
+   ========================================================================== */
+@keyframes e-sobe {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+  }
+}
+@keyframes e-linha {
+  from {
+    transform: translate3d(0, 110%, 0) rotate(3deg);
+  }
+}
+@keyframes e-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes e-zoom {
+  from {
+    transform: scale(1.08);
+  }
+}
+@keyframes e-nav {
+  from {
+    transform: translate3d(0, -100%, 0);
+  }
+}
+@keyframes e-gota {
+  from {
+    transform: scale(0);
+  }
+}
+@keyframes e-cant-tl {
+  from {
+    opacity: 0;
+    transform: translate3d(-24px, -24px, 0);
+  }
+}
+@keyframes e-cant-tr {
+  from {
+    opacity: 0;
+    transform: translate3d(24px, -24px, 0);
+  }
+}
+@keyframes e-cant-bl {
+  from {
+    opacity: 0;
+    transform: translate3d(-24px, 24px, 0);
+  }
+}
+@keyframes e-cant-br {
+  from {
+    opacity: 0;
+    transform: translate3d(24px, 24px, 0);
+  }
+}
+
+html.motion-full .e-sobe {
+  animation: e-sobe var(--dur, 600ms) cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--t0) + var(--d, 0ms));
+}
+html.motion-full .e-fade {
+  animation: e-fade var(--dur, 600ms) cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--t0) + var(--d, 0ms));
+}
+html.motion-full .e-zoom {
+  animation: e-zoom var(--dur, 900ms) cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--t0) + var(--d, 0ms));
+}
+html.motion-full .e-linha-i {
+  animation: e-linha var(--dur, 800ms) cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--t0) + var(--d, 0ms));
+}
+html.motion-full .e-nav {
+  animation: e-nav 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--t0) + var(--d, 0ms));
+}
+html.motion-full .e-gota {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: e-gota var(--dur, 600ms) cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc(var(--t0) + var(--d, 0ms));
+}
+/* cantoneiras do PageHero: fecham de 24 px para fora até o lugar (600 ms a partir de --t0 + 200 ms) */
+html.motion-full .e-cant-tl {
+  animation: e-cant-tl 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--t0) + 200ms);
+}
+html.motion-full .e-cant-tr {
+  animation: e-cant-tr 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--t0) + 260ms);
+}
+html.motion-full .e-cant-bl {
+  animation: e-cant-bl 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--t0) + 320ms);
+}
+html.motion-full .e-cant-br {
+  animation: e-cant-br 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--t0) + 380ms);
+}
+
+/* Símbolo em CSS (preloader e 404): cantoneiras fecham e a gota cresce com EASE_BACK */
+html.motion-full .sym-css [data-parte="tl"] {
+  animation: e-cant-tl var(--sym-dur, 350ms) cubic-bezier(0.16, 1, 0.3, 1) var(--sym-d, 0ms) both;
+}
+html.motion-full .sym-css [data-parte="tr"] {
+  animation: e-cant-tr var(--sym-dur, 350ms) cubic-bezier(0.16, 1, 0.3, 1) var(--sym-d, 0ms) both;
+}
+html.motion-full .sym-css [data-parte="bl"] {
+  animation: e-cant-bl var(--sym-dur, 350ms) cubic-bezier(0.16, 1, 0.3, 1) var(--sym-d, 0ms) both;
+}
+html.motion-full .sym-css [data-parte="br"] {
+  animation: e-cant-br var(--sym-dur, 350ms) cubic-bezier(0.16, 1, 0.3, 1) var(--sym-d, 0ms) both;
+}
+html.motion-full .sym-css [data-parte="gota"] {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: e-gota 350ms cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--sym-d, 0ms) + 200ms) both;
+}
+
+/* ==========================================================================
+   Preloader (§7.2 + QA): ≤ 900 ms, só na 1ª entrada da sessão, pulável.
+   ========================================================================== */
+@property --ano {
+  syntax: "<integer>";
+  initial-value: 1976;
+  inherits: false;
+}
+@keyframes pre-sai {
+  to {
+    transform: translate3d(0, -100%, 0);
+  }
+}
+@keyframes pre-pula {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes ano {
+  from {
+    --ano: 1976;
+  }
+  to {
+    --ano: 2026;
+  }
+}
+@keyframes pre-linha {
+  from {
+    transform: scaleX(0);
+  }
+}
+.pt-preloader {
+  display: none;
+}
+html.intro.motion-full .pt-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  background: #050a12;
+  cursor: pointer;
+  animation: pre-sai 300ms cubic-bezier(0.65, 0, 0.35, 1) 600ms both;
+}
+html.intro.motion-full .pt-preloader.is-pulando {
+  animation: pre-pula 200ms ease-out both;
+}
+.pre-ano {
+  --ano: 1976;
+  counter-reset: ano var(--ano);
+  animation: ano 600ms steps(50) forwards;
+}
+.pre-ano::after {
+  content: counter(ano);
+}
+.pre-linha {
+  transform-origin: left;
+  animation: pre-linha 600ms linear both;
+}
+
+/* ==========================================================================
+   Primitivas
+   ========================================================================== */
+/* DrawIcon: sem data-ready (sem JS) o ícone aparece inteiro */
+.draw[data-ready] :is(path, line, circle, rect, polyline, polygon, ellipse) {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 700ms cubic-bezier(0.65, 0, 0.35, 1) calc(var(--i, 0) * 80ms + var(--dd, 0ms));
+}
+.draw.is-drawn :is(path, line, circle, rect, polyline, polygon, ellipse) {
+  stroke-dashoffset: 0;
+}
+.draw.draw-reset :is(path, line, circle, rect, polyline, polygon, ellipse) {
+  transition: none;
+}
+
+/* TextRoll: duas cópias; no hover do .group a de cima sobe */
+.roll {
+  position: relative;
+  display: inline-flex;
+  overflow: clip;
+  vertical-align: top;
+  line-height: 1.25;
+}
+.roll > span {
+  display: block;
+  transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.roll > span + span {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(0, 105%, 0);
+}
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .roll > span:first-child,
+  .group:focus-visible .roll > span:first-child {
+    transform: translate3d(0, -105%, 0);
+  }
+  .group:hover .roll > span + span,
+  .group:focus-visible .roll > span + span {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Odometer: colunas de largura fixa (sem CLS); a largura acompanha a largura da fonte (--od-w) */
+.odo {
+  display: inline-flex;
+  align-items: flex-start;
+  line-height: 1;
+}
+.odo-vis {
+  display: inline-flex;
+  align-items: flex-start;
+}
+.odo-col {
+  display: inline-block;
+  width: var(--od-w, 0.62em);
+  height: 1em;
+  overflow: clip;
+  text-align: center;
+  vertical-align: top;
+}
+.odo-rolo {
+  display: block;
+  will-change: transform;
+}
+.odo-d,
+.odo-a {
+  display: block;
+  height: 1em;
+  line-height: 1em;
+}
+.odo-a {
+  display: inline-block;
+  white-space: pre;
+}
+
+/* FocusBrackets: as cantoneiras como moldura de foco */
+.fb {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  --fb-c: #f3efe9;
+  --fb-c2: #e8442e;
+}
+.fb.fb-claro {
+  --fb-c: #0e3452;
+  --fb-c2: #be1e29;
+}
+.fb > i {
+  position: absolute;
+  width: var(--fb-s);
+  aspect-ratio: 1;
+  border: 0 solid var(--fb-c);
+  transition:
+    transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 250ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fb > i:nth-child(1) {
+  left: 0;
+  top: 0;
+  border-left-width: 2px;
+  border-top-width: 2px;
+  transform: translate3d(calc(var(--fb-off) * -1), calc(var(--fb-off) * -1), 0);
+}
+.fb > i:nth-child(2) {
+  right: 0;
+  top: 0;
+  border-right-width: 2px;
+  border-top-width: 2px;
+  border-color: var(--fb-c2);
+  transform: translate3d(var(--fb-off), calc(var(--fb-off) * -1), 0);
+}
+.fb > i:nth-child(3) {
+  left: 0;
+  bottom: 0;
+  border-left-width: 2px;
+  border-bottom-width: 2px;
+  transform: translate3d(calc(var(--fb-off) * -1), var(--fb-off), 0);
+}
+.fb > i:nth-child(4) {
+  right: 0;
+  bottom: 0;
+  border-right-width: 2px;
+  border-bottom-width: 2px;
+  transform: translate3d(var(--fb-off), var(--fb-off), 0);
+}
+.fb[data-mode="hover"] > i,
+.fb[data-mode="enter"] > i {
+  opacity: 0;
+}
+.fb[data-mode="locked"] > i,
+.fb.is-on > i,
+.group:hover .fb[data-mode="hover"] > i,
+.group:focus-within .fb[data-mode="hover"] > i {
+  opacity: 1;
+  transform: none;
+}
+
+/* Ponto do WhatsApp: pulsa uma vez no hover */
+@keyframes ponto-wa {
+  50% {
+    transform: scale(1.6);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .ponto-wa {
+    animation: ponto-wa 600ms cubic-bezier(0.16, 1, 0.3, 1) 1;
+  }
+}
+
+/* Pulsos que tocam no máximo 3 vezes (SectionLabel, botão flutuante) */
+@keyframes pulso {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+@keyframes anel {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+html.motion-full .pulso-3 {
+  animation: pulso 1.8s cubic-bezier(0.2, 0.6, 0.3, 1) 3 both;
+}
+.pulso-3 {
+  opacity: 0;
+}
+html.motion-full .anel-3 {
+  animation: anel 1.8s cubic-bezier(0.2, 0.6, 0.3, 1) 600ms 3 both;
+}
+.anel-3 {
+  opacity: 0;
+}
+
+/* Gota do símbolo no hover (rodapé) */
+@keyframes gota-pulso {
+  50% {
+    transform: scale(1.08);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  html.motion-full .simbolo-hover:hover [data-parte="gota"] {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: gota-pulso 400ms cubic-bezier(0.16, 1, 0.3, 1) 1;
+  }
+}
+
+/* Vídeo: invisível até "playing", depois crossfade de 600 ms */
+video[data-lazy-video] {
+  opacity: 0;
+  transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+video[data-lazy-video].is-playing {
+  opacity: 1;
+}
+
+/* Parallax por CSS scroll-driven (no compositor). Sem suporte, o ParallaxMedia usa useScroll. */
+@supports (animation-timeline: view()) {
+  @keyframes px-y-6 {
+    from {
+      transform: translate3d(0, -6%, 0) scale(1.12);
+    }
+    to {
+      transform: translate3d(0, 6%, 0) scale(1.12);
+    }
+  }
+  @keyframes px-y-8 {
+    from {
+      transform: translate3d(0, -8%, 0) scale(1.16);
+    }
+    to {
+      transform: translate3d(0, 8%, 0) scale(1.16);
+    }
+  }
+  @keyframes px-y-12 {
+    from {
+      transform: translate3d(0, -12%, 0) scale(1.24);
+    }
+    to {
+      transform: translate3d(0, 12%, 0) scale(1.24);
+    }
+  }
+  @keyframes px-x-6 {
+    from {
+      transform: translate3d(-6%, 0, 0) scale(1.12);
+    }
+    to {
+      transform: translate3d(6%, 0, 0) scale(1.12);
+    }
+  }
+  @keyframes px-x-8 {
+    from {
+      transform: translate3d(-8%, 0, 0) scale(1.16);
+    }
+    to {
+      transform: translate3d(8%, 0, 0) scale(1.16);
+    }
+  }
+  @keyframes px-x-12 {
+    from {
+      transform: translate3d(-12%, 0, 0) scale(1.24);
+    }
+    to {
+      transform: translate3d(12%, 0, 0) scale(1.24);
+    }
+  }
+  html.motion-full .px-y-6 {
+    animation: px-y-6 linear both;
+    animation-timeline: view();
+  }
+  html.motion-full .px-y-8 {
+    animation: px-y-8 linear both;
+    animation-timeline: view();
+  }
+  html.motion-full .px-y-12 {
+    animation: px-y-12 linear both;
+    animation-timeline: view();
+  }
+  html.motion-full .px-x-6 {
+    animation: px-x-6 linear both;
+    animation-timeline: view();
+  }
+  html.motion-full .px-x-8 {
+    animation: px-x-8 linear both;
+    animation-timeline: view();
+  }
+  html.motion-full .px-x-12 {
+    animation: px-x-12 linear both;
+    animation-timeline: view();
+  }
+}
+
+/* ==========================================================================
+   Cenas fixadas (PinStage): inativas (SSR, celular no modo "pin", reduzido, tela baixa) viram fluxo normal.
+   Cada seção define o seu layout estático pelo seletor [data-pin="off"].
+   ========================================================================== */
+[data-pin-stage][data-pin="off"] {
+  height: auto !important;
+}
+[data-pin-stage][data-pin="off"] > .pin-palco {
+  position: relative;
+  height: auto;
+  overflow: visible;
+}
+[data-pin-stage][data-pin="off"] [data-pin-layer] {
+  transform: none !important;
+}
+html.motion-reduced [data-pin-stage] {
+  height: auto !important;
+}
+html.motion-reduced [data-pin-stage] > .pin-palco {
+  position: relative;
+  height: auto;
+  overflow: visible;
+}
+html.motion-reduced [data-pin-stage] [data-pin-layer] {
+  transform: none !important;
+  opacity: 1 !important;
+}
+@media (max-height: 560px) {
+  [data-pin-stage][data-pin-mode="sempre"] {
+    height: auto !important;
+  }
+  [data-pin-stage][data-pin-mode="sempre"] > .pin-palco {
+    position: relative;
+    height: auto;
+    overflow: visible;
+  }
+  [data-pin-stage][data-pin-mode="sempre"] [data-pin-layer] {
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
+   Movimento reduzido (§14): tudo visível e legível, sem movimento.
+   ========================================================================== */
+html.motion-reduced .draw :is(path, line, circle, rect, polyline, polygon, ellipse) {
+  stroke-dashoffset: 0 !important;
+  transition: none !important;
+}
+html.motion-reduced .roll > span {
+  transform: none !important;
+}
+html.motion-reduced .roll > span + span {
+  display: none;
+}
+html.motion-reduced .fb > i {
+  transform: none !important;
+  transition: opacity 200ms ease-out;
+}
+html.motion-reduced .odo-rolo {
+  transition: none !important;
+}
+/* CTAs no reduzido: hover só com cor e borda (a varredura vira troca de cor; a seta fica parada) */
+html.motion-reduced .cta-varredura {
+  transform: none !important;
+  opacity: 0;
+  transition: opacity 200ms ease-out;
+}
+html.motion-reduced .group:hover .cta-varredura {
+  opacity: 1;
+}
+html.motion-reduced .cta-seta svg {
+  transition: none !important;
+  transform: none !important;
+}
+html.motion-reduced .cta-seta svg + svg {
+  display: none;
+}
+
+/* ==========================================================================
+   Seguro anti-invisível (§7.1): se o motor não subir em 4 s, tudo aparece.
+   (O mesmo CSS vai no <noscript> do index.html.)
+   ========================================================================== */
+html.motion-failed .pt-preloader {
+  display: none !important;
+}
+html.motion-failed [style*="opacity:0"],
+html.motion-failed [style*="opacity: 0"] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+html.motion-failed [style*="clip-path"] {
+  clip-path: none !important;
+}
+
+/* ==========================================================================
+   Lenis
+   ========================================================================== */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}

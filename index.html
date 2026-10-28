@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Preferência de movimento, modo proposta e intro (design-final §7.1). Síncrono e antes de qualquer CSS. -->
+    <script>
+      (function () {
+        var h = document.documentElement, pref = null, s = location.search;
+        try { pref = localStorage.getItem("pt-motion"); } catch (e) {}
+        var m = /[?&]motion=(full|reduced|1|0)\b/.exec(s);
+        if (m) { pref = (m[1] === "full" || m[1] === "1") ? "full" : "reduced"; try { localStorage.setItem("pt-motion", pref); } catch (e) {} }
+        var sys = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+        var reduced = pref ? pref === "reduced" : sys;
+        h.classList.add(reduced ? "motion-reduced" : "motion-full");
+        if (sys && !pref) h.classList.add("motion-reduced-sys");
+        try {
+          if (/[?&]proposta=1\b/.test(s)) sessionStorage.setItem("pt-proposta", "1");
+          if (/[?&]proposta=0\b/.test(s)) sessionStorage.removeItem("pt-proposta");
+          if (sessionStorage.getItem("pt-proposta") === "1") h.classList.add("proposta");
+        } catch (e) {}
+        var intro = false;
+        try { intro = !sessionStorage.getItem("pt-intro"); sessionStorage.setItem("pt-intro", "1"); } catch (e) {}
+        if (intro && !reduced) h.classList.add("intro");
+        setTimeout(function () { if (!h.classList.contains("motion-up")) h.classList.add("motion-failed"); }, 4000);
+      })();
+    </script>
+    <noscript><style>
+      .pt-preloader{display:none!important}
+      [style*="opacity:0"],[style*="opacity: 0"]{opacity:1!important;transform:none!important}
+      [style*="clip-path"]{clip-path:none!important}
+    </style></noscript>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!--head-->
+    <meta name="theme-color" content="#050A12" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="geo.region" content="BR-SP" />
+    <meta name="geo.placename" content="Santo André" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
+    <link rel="preload" as="font" type="font/woff2" href="%BASE_URL%fonts/archivo-latin-wdth-normal.woff2" crossorigin />
+    <!--lcp:inicio (só a home; o prerender remove das outras rotas)-->
+    <link rel="preload" as="image" type="image/avif" media="(min-width: 768px)" imagesrcset="%BASE_URL%img/hero-poster-828.avif 828w, %BASE_URL%img/hero-poster-1280.avif 1280w" imagesizes="100vw" fetchpriority="high" />
+    <link rel="preload" as="image" type="image/avif" media="(max-width: 767px)" imagesrcset="%BASE_URL%img/hero-poster-v-540.avif 540w" imagesizes="100vw" fetchpriority="high" />
+    <!--lcp:fim-->
+    <style>
+      /* Fontes (design-final §4.2): Archivo variável (wght 100–900, wdth 62–125) e JetBrains Mono variável. */
+      @font-face {
+        font-family: "Archivo Variable";
+        font-style: normal;
+        font-display: swap;
+        font-weight: 100 900;
+        font-stretch: 62% 125%;
+        src: url("%BASE_URL%fonts/archivo-latin-wdth-normal.woff2") format("woff2-variations"), url("%BASE_URL%fonts/archivo-latin-wdth-normal.woff2") format("woff2");
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      @font-face {
+        font-family: "JetBrains Mono Variable";
+        font-style: normal;
+        font-display: swap;
+        font-weight: 100 800;
+        src: url("%BASE_URL%fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2-variations"), url("%BASE_URL%fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2");
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      /* Fallback com as métricas da Archivo (medidas do woff2 com @capsizecss/unpack): sem salto de layout na troca. */
+      @font-face {
+        font-family: "Archivo Fallback";
+        src: local("Arial");
+        size-adjust: 102.29%;
+        ascent-override: 85.84%;
+        descent-override: 20.53%;
+        line-gap-override: 0%;
+      }
+    </style>
+    <!--structured-data-->
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
