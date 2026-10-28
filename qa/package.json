@@ -1,0 +1,9 @@
+{
+  "name": "protecin-qa",
+  "private": true,
+  "type": "module",
+  "description": "Ferramentas de QA visual e funcional (capturas e checagens com Chrome headless)",
+  "devDependencies": {
+    "puppeteer-core": "^24.43.1"
+  }
+}

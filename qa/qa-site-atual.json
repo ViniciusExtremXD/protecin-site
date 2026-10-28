@@ -1,0 +1,1742 @@
+{
+ "paginas": {
+  "/": {
+   "status": 200,
+   "final": "https://protecin.com.br/",
+   "tempo_s": 5.88,
+   "bytes_html": 121908,
+   "titulo": "Protecin",
+   "lang": "pt-BR",
+   "meta": {
+    "robots": "max-image-preview:large",
+    "generator": "Elementor 3.35.3; features: e_font_icon_svg, additional_custom_breakpoints; settings: css_print_method-external, google_font-enabled, font_display-swap",
+    "link:canonical": "https://protecin.com.br/",
+    "link:icon": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-192x192.png",
+    "link:apple-touch-icon": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-180x180.png",
+    "msapplication-tileimage": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-270x270.png",
+    "viewport": "width=device-width, initial-scale=1.0, viewport-fit=cover"
+   },
+   "h1": [
+    "PROTEGENDO",
+    "VIDAS E PATRIMÔNIOS HÁ 50 ANOS - INOVANDO COM RESPONSABILIDADE, CONSTRUINDO O AMANHÃ"
+   ],
+   "imgs_sem_alt": [
+    "https://protecin.com.br/wp-content/uploads/2025/08/Ativo-1-1024x191.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/Design_sem_nome-1024x789.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/atendimento-ao-cliente.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/definicoes.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/aperto-de-mao.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/polegar-para-cima.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/compromisso-1024x789.png",
+    "https://protecin.com.br/wp-content/uploads/2025/07/ABSPK-1024x421.png",
+    "https://protecin.com.br/wp-content/uploads/2025/07/NFPA-902x1024.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/ferramenta-de-reparacao.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/bombeiro.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/caderno.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/aviso.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/extintor-de-incendio.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/saida-de-emergencia.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/smartphone.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/computador-portatil.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/contexto.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/gostar.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/Ativo-1-1024x191.png"
+   ],
+   "imgs_total": 20,
+   "imgs_http": [],
+   "forms": [],
+   "links_externos_sem_noopener": [
+    "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+    "https://www.linkedin.com/company/protecin/",
+    "https://wa.me/5511945651751"
+   ],
+   "links": [
+    "https://protecin.com.br/catalogo-digital",
+    "https://protecin.com.br/catalogo-digital/",
+    "https://protecin.com.br/contato",
+    "https://protecin.com.br/contato/",
+    "https://protecin.com.br/home",
+    "https://protecin.com.br/institucional",
+    "https://protecin.com.br/institucional/",
+    "https://protecin.com.br/nosso-app",
+    "https://protecin.com.br/nosso-app/",
+    "https://protecin.com.br/nossos-clientes",
+    "https://protecin.com.br/nossos-clientes/",
+    "https://protecin.com.br/servicos",
+    "https://protecin.com.br/servicos/",
+    "https://wa.me/5511945651751",
+    "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+    "https://www.linkedin.com/company/protecin/"
+   ],
+   "n_scripts": 15,
+   "n_css": 30,
+   "cache_headers": {
+    "Server": "nginx/1.24.0",
+    "X-Cache": "MISS"
+   }
+  },
+  "/institucional/": {
+   "status": 200,
+   "final": "https://protecin.com.br/institucional/",
+   "tempo_s": 1.7,
+   "bytes_html": 108200,
+   "titulo": "Institucional – Protecin",
+   "lang": "pt-BR",
+   "meta": {
+    "robots": "max-image-preview:large",
+    "generator": "Elementor 3.35.3; features: e_font_icon_svg, additional_custom_breakpoints; settings: css_print_method-external, google_font-enabled, font_display-swap",
+    "link:canonical": "https://protecin.com.br/institucional/",
+    "link:icon": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-192x192.png",
+    "link:apple-touch-icon": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-180x180.png",
+    "msapplication-tileimage": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-270x270.png",
+    "viewport": "width=device-width, initial-scale=1.0, viewport-fit=cover"
+   },
+   "h1": [
+    "NOSSA HISTÓRIA",
+    "Responsabilidade e Sustentabilidade"
+   ],
+   "imgs_sem_alt": [
+    "https://protecin.com.br/wp-content/uploads/2025/08/Ativo-1-1024x191.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_1-1024x683.jpg",
+    "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_3-1024x789.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_2-1024x789.png",
+    "https://protecin.com.br/wp-content/uploads/2025/07/with-notepad-group-of-firefighters-in-protective-2021-09-03-03-42-44-utc-1.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_7-1024x1024.png",
+    "https://protecin.com.br/wp-content/uploads/2025/07/ecofriendly_logo.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_4-1024x801.png",
+    "https://protecin.com.br/wp-content/uploads/2025/07/logo_kids_ong.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/Ativo-1-1024x191.png"
+   ],
+   "imgs_total": 10,
+   "imgs_http": [],
+   "forms": [],
+   "links_externos_sem_noopener": [
+    "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+    "https://www.linkedin.com/company/protecin/",
+    "https://wa.me/5511945651751"
+   ],
+   "links": [
+    "https://protecin.com.br/catalogo-digital",
+    "https://protecin.com.br/catalogo-digital/",
+    "https://protecin.com.br/contato",
+    "https://protecin.com.br/contato/",
+    "https://protecin.com.br/home",
+    "https://protecin.com.br/institucional",
+    "https://protecin.com.br/institucional/",
+    "https://protecin.com.br/nosso-app",
+    "https://protecin.com.br/nosso-app/",
+    "https://protecin.com.br/nossos-clientes",
+    "https://protecin.com.br/nossos-clientes/",
+    "https://protecin.com.br/servicos",
+    "https://protecin.com.br/servicos/",
+    "https://wa.me/5511945651751",
+    "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+    "https://www.linkedin.com/company/protecin/"
+   ],
+   "n_scripts": 14,
+   "n_css": 28,
+   "cache_headers": {
+    "Server": "nginx/1.24.0",
+    "X-Cache": "MISS"
+   }
+  },
+  "/servicos/": {
+   "status": 200,
+   "final": "https://protecin.com.br/servicos/",
+   "tempo_s": 2.05,
+   "bytes_html": 90851,
+   "titulo": "Serviços – Protecin",
+   "lang": "pt-BR",
+   "meta": {
+    "robots": "max-image-preview:large",
+    "generator": "Elementor 3.35.3; features: e_font_icon_svg, additional_custom_breakpoints; settings: css_print_method-external, google_font-enabled, font_display-swap",
+    "link:canonical": "https://protecin.com.br/servicos/",
+    "link:icon": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-192x192.png",
+    "link:apple-touch-icon": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-180x180.png",
+    "msapplication-tileimage": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-270x270.png",
+    "viewport": "width=device-width, initial-scale=1.0, viewport-fit=cover"
+   },
+   "h1": [
+    "Soluções completas em combate e prevenção a incêndios"
+   ],
+   "imgs_sem_alt": [
+    "https://protecin.com.br/wp-content/uploads/2025/08/Ativo-1-1024x191.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/extintor-de-incendio.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/governante.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/ferramenta-de-reparacao.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/lista-de-afazeres.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/caderno.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/lupa.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/mangueira-de-agua.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/Ativo-1-1024x191.png"
+   ],
+   "imgs_total": 9,
+   "imgs_http": [],
+   "forms": [],
+   "links_externos_sem_noopener": [
+    "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+    "https://www.linkedin.com/company/protecin/",
+    "https://wa.me/5511945651751"
+   ],
+   "links": [
+    "https://protecin.com.br/catalogo-digital",
+    "https://protecin.com.br/catalogo-digital/",
+    "https://protecin.com.br/contato",
+    "https://protecin.com.br/contato/",
+    "https://protecin.com.br/documentacao-e-regularizacao",
+    "https://protecin.com.br/gestao-de-riscos-e-consultoria",
+    "https://protecin.com.br/home",
+    "https://protecin.com.br/inspecoes-e-manutencoes-preventivas",
+    "https://protecin.com.br/instalacao-de-sistemas-e-equipamentos",
+    "https://protecin.com.br/institucional",
+    "https://protecin.com.br/institucional/",
+    "https://protecin.com.br/manutencao-de-equipamentos",
+    "https://protecin.com.br/nosso-app",
+    "https://protecin.com.br/nosso-app/",
+    "https://protecin.com.br/nossos-clientes",
+    "https://protecin.com.br/nossos-clientes/",
+    "https://protecin.com.br/projetos-tecnicos",
+    "https://protecin.com.br/servicos",
+    "https://protecin.com.br/servicos/",
+    "https://protecin.com.br/venda-de-equipamentos",
+    "https://wa.me/5511945651751",
+    "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+    "https://www.linkedin.com/company/protecin/"
+   ],
+   "n_scripts": 14,
+   "n_css": 27,
+   "cache_headers": {
+    "Server": "nginx/1.24.0",
+    "X-Cache": "MISS"
+   }
+  },
+  "/nossos-clientes/": {
+   "status": 200,
+   "final": "https://protecin.com.br/nossos-clientes/",
+   "tempo_s": 1.89,
+   "bytes_html": 94056,
+   "titulo": "Nossos Clientes – Protecin",
+   "lang": "pt-BR",
+   "meta": {
+    "robots": "max-image-preview:large",
+    "generator": "Elementor 3.35.3; features: e_font_icon_svg, additional_custom_breakpoints; settings: css_print_method-external, google_font-enabled, font_display-swap",
+    "link:canonical": "https://protecin.com.br/nossos-clientes/",
+    "link:icon": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-192x192.png",
+    "link:apple-touch-icon": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-180x180.png",
+    "msapplication-tileimage": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-270x270.png",
+    "viewport": "width=device-width, initial-scale=1.0, viewport-fit=cover"
+   },
+   "h1": [
+    "Nossos Clientes"
+   ],
+   "imgs_sem_alt": [
+    "https://protecin.com.br/wp-content/uploads/2025/08/Ativo-1-1024x191.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/Clientes_1-1024x683.jpg",
+    "https://protecin.com.br/wp-content/uploads/2025/07/BOSCH-1024x242.png",
+    "https://protecin.com.br/wp-content/uploads/2025/07/5-1024x1024.png",
+    "https://protecin.com.br/wp-content/uploads/2025/07/LOGO-GRMK-AZUL-GERMEK-1024x233.png",
+    "https://protecin.com.br/wp-content/uploads/2025/07/6-1024x1024.png",
+    "https://protecin.com.br/wp-content/uploads/2025/07/FIREBEE-1024x367.png",
+    "https://protecin.com.br/wp-content/uploads/2025/07/Simplex-1024x1024.png",
+    "https://protecin.com.br/wp-content/uploads/2025/07/4-1024x1024.png",
+    "https://protecin.com.br/wp-content/uploads/2025/07/3-1024x1024.png",
+    "https://protecin.com.br/wp-content/uploads/2025/07/ABSPK-1024x421.png",
+    "https://protecin.com.br/wp-content/uploads/2025/07/NFPA-902x1024.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/Ativo-1-1024x191.png"
+   ],
+   "imgs_total": 13,
+   "imgs_http": [],
+   "forms": [],
+   "links_externos_sem_noopener": [
+    "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+    "https://www.linkedin.com/company/protecin/",
+    "https://wa.me/5511945651751"
+   ],
+   "links": [
+    "https://protecin.com.br/catalogo-digital",
+    "https://protecin.com.br/catalogo-digital/",
+    "https://protecin.com.br/contato",
+    "https://protecin.com.br/contato/",
+    "https://protecin.com.br/home",
+    "https://protecin.com.br/institucional",
+    "https://protecin.com.br/institucional/",
+    "https://protecin.com.br/nosso-app",
+    "https://protecin.com.br/nosso-app/",
+    "https://protecin.com.br/nossos-clientes",
+    "https://protecin.com.br/nossos-clientes/",
+    "https://protecin.com.br/servicos",
+    "https://protecin.com.br/servicos/",
+    "https://wa.me/5511945651751",
+    "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+    "https://www.linkedin.com/company/protecin/"
+   ],
+   "n_scripts": 14,
+   "n_css": 27,
+   "cache_headers": {
+    "Server": "nginx/1.24.0",
+    "X-Cache": "MISS"
+   }
+  },
+  "/catalogo-digital/": {
+   "status": 200,
+   "final": "https://protecin.com.br/catalogo-digital/",
+   "tempo_s": 1.56,
+   "bytes_html": 78426,
+   "titulo": "Catálogo Digital – Protecin",
+   "lang": "pt-BR",
+   "meta": {
+    "robots": "max-image-preview:large",
+    "generator": "Elementor 3.35.3; features: e_font_icon_svg, additional_custom_breakpoints; settings: css_print_method-external, google_font-enabled, font_display-swap",
+    "link:canonical": "https://protecin.com.br/catalogo-digital/",
+    "link:icon": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-192x192.png",
+    "link:apple-touch-icon": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-180x180.png",
+    "msapplication-tileimage": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-270x270.png",
+    "viewport": "width=device-width, initial-scale=1.0, viewport-fit=cover"
+   },
+   "h1": [],
+   "imgs_sem_alt": [
+    "https://protecin.com.br/wp-content/uploads/2025/08/Ativo-1-1024x191.png",
+    "https://protecin.com.br/wp-content/uploads/2025/07/Screenshot-2025-07-30-143726.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/Ativo-1-1024x191.png"
+   ],
+   "imgs_total": 3,
+   "imgs_http": [],
+   "forms": [],
+   "links_externos_sem_noopener": [
+    "https://protecin.com.br/wp-content/uploads/2025/07/Catalogo-Digital-Protecin.pdf",
+    "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+    "https://www.linkedin.com/company/protecin/",
+    "https://wa.me/5511945651751"
+   ],
+   "links": [
+    "https://protecin.com.br/catalogo-digital",
+    "https://protecin.com.br/catalogo-digital/",
+    "https://protecin.com.br/contato",
+    "https://protecin.com.br/contato/",
+    "https://protecin.com.br/home",
+    "https://protecin.com.br/institucional",
+    "https://protecin.com.br/institucional/",
+    "https://protecin.com.br/nosso-app",
+    "https://protecin.com.br/nosso-app/",
+    "https://protecin.com.br/nossos-clientes",
+    "https://protecin.com.br/nossos-clientes/",
+    "https://protecin.com.br/servicos",
+    "https://protecin.com.br/servicos/",
+    "https://protecin.com.br/wp-content/uploads/2025/07/Catalogo-Digital-Protecin.pdf",
+    "https://wa.me/5511945651751",
+    "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+    "https://www.linkedin.com/company/protecin/"
+   ],
+   "n_scripts": 14,
+   "n_css": 27,
+   "cache_headers": {
+    "Server": "nginx/1.24.0",
+    "X-Cache": "MISS"
+   }
+  },
+  "/nosso-app/": {
+   "status": 200,
+   "final": "https://protecin.com.br/nosso-app/",
+   "tempo_s": 1.67,
+   "bytes_html": 88134,
+   "titulo": "Nosso App – Protecin",
+   "lang": "pt-BR",
+   "meta": {
+    "robots": "max-image-preview:large",
+    "generator": "Elementor 3.35.3; features: e_font_icon_svg, additional_custom_breakpoints; settings: css_print_method-external, google_font-enabled, font_display-swap",
+    "link:canonical": "https://protecin.com.br/nosso-app/",
+    "link:icon": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-192x192.png",
+    "link:apple-touch-icon": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-180x180.png",
+    "msapplication-tileimage": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-270x270.png",
+    "viewport": "width=device-width, initial-scale=1.0, viewport-fit=cover"
+   },
+   "h1": [
+    "Protecin App:",
+    "Gestão inteligente de inspeções",
+    "Gestão inteligente de inspeções",
+    "RECURSOS QUE FAZEM A DIFERENÇA"
+   ],
+   "imgs_sem_alt": [
+    "https://protecin.com.br/wp-content/uploads/2025/08/Ativo-1-1024x191.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/App_3-e1754573956467-681x1024.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/App_2-e1754572418654-1024x669.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/Design_sem_nome_16-e1754583781738-757x1024.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/Ativo-1-1024x191.png"
+   ],
+   "imgs_total": 5,
+   "imgs_http": [],
+   "forms": [],
+   "links_externos_sem_noopener": [
+    "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+    "https://www.linkedin.com/company/protecin/",
+    "https://wa.me/5511945651751"
+   ],
+   "links": [
+    "https://protecin.com.br/catalogo-digital",
+    "https://protecin.com.br/catalogo-digital/",
+    "https://protecin.com.br/contato",
+    "https://protecin.com.br/contato/",
+    "https://protecin.com.br/home",
+    "https://protecin.com.br/institucional",
+    "https://protecin.com.br/institucional/",
+    "https://protecin.com.br/nosso-app",
+    "https://protecin.com.br/nosso-app/",
+    "https://protecin.com.br/nossos-clientes",
+    "https://protecin.com.br/nossos-clientes/",
+    "https://protecin.com.br/servicos",
+    "https://protecin.com.br/servicos/",
+    "https://wa.me/5511945651751",
+    "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+    "https://www.linkedin.com/company/protecin/"
+   ],
+   "n_scripts": 14,
+   "n_css": 27,
+   "cache_headers": {
+    "Server": "nginx/1.24.0",
+    "X-Cache": "MISS"
+   }
+  },
+  "/contato/": {
+   "status": 200,
+   "final": "https://protecin.com.br/contato/",
+   "tempo_s": 1.99,
+   "bytes_html": 97367,
+   "titulo": "Contato – Protecin",
+   "lang": "pt-BR",
+   "meta": {
+    "robots": "max-image-preview:large",
+    "generator": "Elementor 3.35.3; features: e_font_icon_svg, additional_custom_breakpoints; settings: css_print_method-external, google_font-enabled, font_display-swap",
+    "link:canonical": "https://protecin.com.br/contato/",
+    "link:icon": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-192x192.png",
+    "link:apple-touch-icon": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-180x180.png",
+    "msapplication-tileimage": "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-270x270.png",
+    "viewport": "width=device-width, initial-scale=1.0, viewport-fit=cover"
+   },
+   "h1": [
+    "Contate a Protecin"
+   ],
+   "imgs_sem_alt": [
+    "https://protecin.com.br/wp-content/uploads/2025/08/Ativo-1-1024x191.png",
+    "https://protecin.com.br/wp-content/uploads/2025/08/Ativo-1-1024x191.png"
+   ],
+   "imgs_total": 3,
+   "imgs_http": [],
+   "forms": [
+    {
+     "action": "/contato/",
+     "id": "wpforms-form-1847",
+     "class": "wpforms-validate wpforms-form wpforms-ajax-form"
+    }
+   ],
+   "links_externos_sem_noopener": [
+    "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+    "https://www.linkedin.com/company/protecin/",
+    "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+    "https://www.linkedin.com/company/protecin/",
+    "https://wa.me/5511945651751"
+   ],
+   "links": [
+    "https://protecin.com.br/catalogo-digital",
+    "https://protecin.com.br/catalogo-digital/",
+    "https://protecin.com.br/contato",
+    "https://protecin.com.br/contato/",
+    "https://protecin.com.br/home",
+    "https://protecin.com.br/institucional",
+    "https://protecin.com.br/institucional/",
+    "https://protecin.com.br/nosso-app",
+    "https://protecin.com.br/nosso-app/",
+    "https://protecin.com.br/nossos-clientes",
+    "https://protecin.com.br/nossos-clientes/",
+    "https://protecin.com.br/servicos",
+    "https://protecin.com.br/servicos/",
+    "https://wa.me/5511945651751",
+    "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+    "https://www.linkedin.com/company/protecin/"
+   ],
+   "n_scripts": 25,
+   "n_css": 28,
+   "cache_headers": {
+    "Server": "nginx/1.24.0",
+    "X-Cache": "MISS"
+   }
+  }
+ },
+ "urls_verificadas": 171,
+ "quebrados": [
+  [
+   "https://fonts.gstatic.com",
+   404,
+   "https://fonts.gstatic.com",
+   "1561",
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/chat-floating-button-by-xd/js/xdwhatsapp.min.js?ver=1.0",
+   404,
+   "https://protecin.com.br/wp-content/plugins/chat-floating-button-by-xd/js/xdwhatsapp.min.js?ver=1.0",
+   null,
+   "text/html; charset=UTF-8"
+  ]
+ ],
+ "maiores_imagens": [
+  [
+   1540173,
+   "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_4-1024x801.png"
+  ],
+  [
+   1537926,
+   "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_3-1024x789.png"
+  ],
+  [
+   1240450,
+   "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_2-1024x789.png"
+  ],
+  [
+   1019754,
+   "https://protecin.com.br/wp-content/uploads/2025/08/compromisso-1024x789.png"
+  ],
+  [
+   698009,
+   "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_7-1024x1024.png"
+  ],
+  [
+   627402,
+   "https://protecin.com.br/wp-content/uploads/2025/08/Design_sem_nome-1024x789.png"
+  ],
+  [
+   505937,
+   "https://protecin.com.br/wp-content/uploads/2025/07/Screenshot-2025-07-30-143726.png"
+  ],
+  [
+   298154,
+   "https://protecin.com.br/wp-content/uploads/2025/08/Design_sem_nome_16-e1754583781738-757x1024.png"
+  ],
+  [
+   224188,
+   "https://protecin.com.br/wp-content/uploads/2025/08/App_2-e1754572418654-1024x669.png"
+  ],
+  [
+   221290,
+   "https://protecin.com.br/wp-content/uploads/2025/07/with-notepad-group-of-firefighters-in-protective-2021-09-03-03-42-44-utc-1.png"
+  ],
+  [
+   219741,
+   "https://protecin.com.br/wp-content/uploads/2025/07/logo_kids_ong.png"
+  ],
+  [
+   176427,
+   "https://protecin.com.br/wp-content/uploads/2025/07/4-1024x1024.png"
+  ],
+  [
+   137841,
+   "https://protecin.com.br/wp-content/uploads/2025/07/6-1024x1024.png"
+  ],
+  [
+   119537,
+   "https://protecin.com.br/wp-content/uploads/2025/08/App_3-e1754573956467-681x1024.png"
+  ],
+  [
+   93816,
+   "https://protecin.com.br/wp-content/uploads/2025/07/ABSPK-1024x421.png"
+  ]
+ ],
+ "todos": [
+  [
+   "https://fonts.gstatic.com",
+   404,
+   "https://fonts.gstatic.com",
+   "1561",
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/",
+   200,
+   "https://protecin.com.br/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/?p=71",
+   200,
+   "https://protecin.com.br/catalogo-digital/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/?p=73",
+   200,
+   "https://protecin.com.br/servicos/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/?p=75",
+   200,
+   "https://protecin.com.br/nossos-clientes/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/?p=77",
+   200,
+   "https://protecin.com.br/nosso-app/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/?p=79",
+   200,
+   "https://protecin.com.br/contato/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/?p=87",
+   200,
+   "https://protecin.com.br/institucional/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/catalogo-digital",
+   200,
+   "https://protecin.com.br/catalogo-digital/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/catalogo-digital/",
+   200,
+   "https://protecin.com.br/catalogo-digital/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/comments/feed/",
+   200,
+   "https://protecin.com.br/comments/feed/",
+   null,
+   "application/rss+xml; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/contato",
+   200,
+   "https://protecin.com.br/contato/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/contato/",
+   200,
+   "https://protecin.com.br/contato/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/documentacao-e-regularizacao",
+   200,
+   "https://protecin.com.br/documentacao-e-regularizacao/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/feed/",
+   200,
+   "https://protecin.com.br/feed/",
+   null,
+   "application/rss+xml; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/gestao-de-riscos-e-consultoria",
+   200,
+   "https://protecin.com.br/gestao-de-riscos-e-consultoria/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/home",
+   200,
+   "https://protecin.com.br/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/inspecoes-e-manutencoes-preventivas",
+   200,
+   "https://protecin.com.br/inspecoes-e-manutencoes-preventivas/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/instalacao-de-sistemas-e-equipamentos",
+   200,
+   "https://protecin.com.br/instalacao-de-sistemas-e-equipamentos/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/institucional",
+   200,
+   "https://protecin.com.br/institucional/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/institucional/",
+   200,
+   "https://protecin.com.br/institucional/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/manutencao-de-equipamentos",
+   200,
+   "https://protecin.com.br/manutencao-de-equipamentos/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/nosso-app",
+   200,
+   "https://protecin.com.br/nosso-app/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/nosso-app/",
+   200,
+   "https://protecin.com.br/nosso-app/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/nossos-clientes",
+   200,
+   "https://protecin.com.br/nossos-clientes/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/nossos-clientes/",
+   200,
+   "https://protecin.com.br/nossos-clientes/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/projetos-tecnicos",
+   200,
+   "https://protecin.com.br/projetos-tecnicos/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/servicos",
+   200,
+   "https://protecin.com.br/servicos/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/servicos/",
+   200,
+   "https://protecin.com.br/servicos/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/venda-de-equipamentos",
+   200,
+   "https://protecin.com.br/venda-de-equipamentos/",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/chat-floating-button-by-xd/css/xdwhatsapp.min.css?ver=1.0",
+   200,
+   "https://protecin.com.br/wp-content/plugins/chat-floating-button-by-xd/css/xdwhatsapp.min.css?ver=1.0",
+   "676",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/chat-floating-button-by-xd/js/xdwhatsapp.min.js?ver=1.0",
+   404,
+   "https://protecin.com.br/wp-content/plugins/chat-floating-button-by-xd/js/xdwhatsapp.min.js?ver=1.0",
+   null,
+   "text/html; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/conditionals/apple-webkit.min.css?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/conditionals/apple-webkit.min.css?ver=3.35.3",
+   "6713",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/conditionals/shapes.min.css?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/conditionals/shapes.min.css?ver=3.35.3",
+   "645",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/frontend.min.css?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/frontend.min.css?ver=3.35.3",
+   "54666",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-counter.min.css?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-counter.min.css?ver=3.35.3",
+   "753",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-divider.min.css?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-divider.min.css?ver=3.35.3",
+   "4258",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-google_maps.min.css?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-google_maps.min.css?ver=3.35.3",
+   "261",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-heading.min.css?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-heading.min.css?ver=3.35.3",
+   "560",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-icon-box.min.css?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-icon-box.min.css?ver=3.35.3",
+   "4726",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-icon-list.min.css?ver=3.24.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-icon-list.min.css?ver=3.24.3",
+   "10255",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-icon-list.min.css?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-icon-list.min.css?ver=3.35.3",
+   "10255",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-image.min.css?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-image.min.css?ver=3.35.3",
+   "214",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-nested-tabs.min.css?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-nested-tabs.min.css?ver=3.35.3",
+   "14818",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-social-icons.min.css?ver=3.24.0",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-social-icons.min.css?ver=3.24.0",
+   "5110",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-social-icons.min.css?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/css/widget-social-icons.min.css?ver=3.35.3",
+   "5110",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/js/frontend-modules.min.js?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/js/frontend-modules.min.js?ver=3.35.3",
+   "50503",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/js/frontend.min.js?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/js/frontend.min.js?ver=3.35.3",
+   "31880",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/js/webpack.runtime.min.js?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/js/webpack.runtime.min.js?ver=3.35.3",
+   "5677",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/lib/animations/styles/e-animation-grow.min.css?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/lib/animations/styles/e-animation-grow.min.css?ver=3.35.3",
+   "198",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/lib/animations/styles/e-animation-shrink.min.css?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/lib/animations/styles/e-animation-shrink.min.css?ver=3.35.3",
+   "205",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/lib/animations/styles/fadeIn.min.css?ver=3.35.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/lib/animations/styles/fadeIn.min.css?ver=3.35.3",
+   "77",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/lib/eicons/css/elementor-icons.min.css?ver=5.34.0",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/lib/eicons/css/elementor-icons.min.css?ver=5.34.0",
+   "21641",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/lib/font-awesome/css/brands.css?ver=5.15.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/lib/font-awesome/css/brands.css?ver=5.15.3",
+   "732",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/lib/font-awesome/css/fontawesome.css?ver=5.15.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/lib/font-awesome/css/fontawesome.css?ver=5.15.3",
+   "72184",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/lib/font-awesome/css/solid.css?ver=5.15.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/lib/font-awesome/css/solid.css?ver=5.15.3",
+   "727",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/lib/jquery-numerator/jquery-numerator.min.js?ver=0.2.1",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementor/assets/lib/jquery-numerator/jquery-numerator.min.js?ver=0.2.1",
+   "1801",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementskit-lite/libs/framework/assets/js/frontend-script.js?ver=3.7.9",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementskit-lite/libs/framework/assets/js/frontend-script.js?ver=3.7.9",
+   "40",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementskit-lite/modules/elementskit-icon-pack/assets/css/ekiticons.css?ver=3.7.9",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementskit-lite/modules/elementskit-icon-pack/assets/css/ekiticons.css?ver=3.7.9",
+   "82586",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementskit-lite/widgets/init/assets/css/responsive.css?ver=3.7.9",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementskit-lite/widgets/init/assets/css/responsive.css?ver=3.7.9",
+   "30348",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementskit-lite/widgets/init/assets/css/widget-styles.css?ver=3.7.9",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementskit-lite/widgets/init/assets/css/widget-styles.css?ver=3.7.9",
+   "465966",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementskit-lite/widgets/init/assets/js/animate-circle.min.js?ver=3.7.9",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementskit-lite/widgets/init/assets/js/animate-circle.min.js?ver=3.7.9",
+   "681",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementskit-lite/widgets/init/assets/js/elementor.js?ver=3.7.9",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementskit-lite/widgets/init/assets/js/elementor.js?ver=3.7.9",
+   "20773",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/elementskit-lite/widgets/init/assets/js/widget-scripts.js?ver=3.7.9",
+   200,
+   "https://protecin.com.br/wp-content/plugins/elementskit-lite/widgets/init/assets/js/widget-scripts.js?ver=3.7.9",
+   "137522",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/header-footer-elementor/assets/css/header-footer-elementor.css?ver=2.8.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/header-footer-elementor/assets/css/header-footer-elementor.css?ver=2.8.3",
+   "776",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/header-footer-elementor/inc/js/frontend.js?ver=2.8.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/header-footer-elementor/inc/js/frontend.js?ver=2.8.3",
+   "31555",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/header-footer-elementor/inc/widgets-css/frontend.css?ver=2.8.3",
+   200,
+   "https://protecin.com.br/wp-content/plugins/header-footer-elementor/inc/widgets-css/frontend.css?ver=2.8.3",
+   "83015",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/css/frontend/modern/wpforms-full.min.css?ver=1.9.9.2",
+   200,
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/css/frontend/modern/wpforms-full.min.css?ver=1.9.9.2",
+   "167246",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/images/submit-spin.svg",
+   200,
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/images/submit-spin.svg",
+   "509",
+   "image/svg+xml"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/js/frontend/fields/address.min.js?ver=1.9.9.2",
+   200,
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/js/frontend/fields/address.min.js?ver=1.9.9.2",
+   "1057",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/js/frontend/wpforms-modern.min.js?ver=1.9.9.2",
+   200,
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/js/frontend/wpforms-modern.min.js?ver=1.9.9.2",
+   "6005",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/js/frontend/wpforms.min.js?ver=1.9.9.2",
+   200,
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/js/frontend/wpforms.min.js?ver=1.9.9.2",
+   "52361",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/js/integrations/elementor/frontend.min.js?ver=1.9.9.2",
+   200,
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/js/integrations/elementor/frontend.min.js?ver=1.9.9.2",
+   "1485",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/js/share/utils.min.js?ver=1.9.9.2",
+   200,
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/js/share/utils.min.js?ver=1.9.9.2",
+   "1490",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/lib/jquery.inputmask.min.js?ver=5.0.9",
+   200,
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/lib/jquery.inputmask.min.js?ver=5.0.9",
+   "117412",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/lib/jquery.validate.min.js?ver=1.21.0",
+   200,
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/lib/jquery.validate.min.js?ver=1.21.0",
+   "25308",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/lib/mailcheck.min.js?ver=1.1.2",
+   200,
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/lib/mailcheck.min.js?ver=1.1.2",
+   "4014",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/lib/punycode.min.js?ver=1.0.0",
+   200,
+   "https://protecin.com.br/wp-content/plugins/wpforms-lite/assets/lib/punycode.min.js?ver=1.0.0",
+   "1713",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/plugins/wpfront-scroll-top/includes/assets/wpfront-scroll-top.min.js?ver=3.0.1.09211",
+   200,
+   "https://protecin.com.br/wp-content/plugins/wpfront-scroll-top/includes/assets/wpfront-scroll-top.min.js?ver=3.0.1.09211",
+   "1490",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/themes/hello-elementor/assets/css/header-footer.css?ver=3.4.6",
+   200,
+   "https://protecin.com.br/wp-content/themes/hello-elementor/assets/css/header-footer.css?ver=3.4.6",
+   "7182",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/themes/hello-elementor/assets/css/reset.css?ver=3.4.6",
+   200,
+   "https://protecin.com.br/wp-content/themes/hello-elementor/assets/css/reset.css?ver=3.4.6",
+   "5456",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/themes/hello-elementor/assets/css/theme.css?ver=3.4.6",
+   200,
+   "https://protecin.com.br/wp-content/themes/hello-elementor/assets/css/theme.css?ver=3.4.6",
+   "5097",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/themes/hello-elementor/assets/js/hello-frontend.js?ver=3.4.6",
+   200,
+   "https://protecin.com.br/wp-content/themes/hello-elementor/assets/js/hello-frontend.js?ver=3.4.6",
+   "1830",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/07/3-1024x1024.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/07/3-1024x1024.png",
+   "71661",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/07/4-1024x1024.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/07/4-1024x1024.png",
+   "176427",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/07/5-1024x1024.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/07/5-1024x1024.png",
+   "71133",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/07/6-1024x1024.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/07/6-1024x1024.png",
+   "137841",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/07/ABSPK-1024x421.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/07/ABSPK-1024x421.png",
+   "93816",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/07/BOSCH-1024x242.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/07/BOSCH-1024x242.png",
+   "78099",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/07/Catalogo-Digital-Protecin.pdf",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/07/Catalogo-Digital-Protecin.pdf",
+   "1197859",
+   "application/pdf"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/07/FIREBEE-1024x367.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/07/FIREBEE-1024x367.png",
+   "17073",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/07/LOGO-GRMK-AZUL-GERMEK-1024x233.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/07/LOGO-GRMK-AZUL-GERMEK-1024x233.png",
+   "42606",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/07/NFPA-902x1024.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/07/NFPA-902x1024.png",
+   "66712",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/07/Screenshot-2025-07-30-143726.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/07/Screenshot-2025-07-30-143726.png",
+   "505937",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/07/Simplex-1024x1024.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/07/Simplex-1024x1024.png",
+   "53174",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/07/ecofriendly_logo.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/07/ecofriendly_logo.png",
+   "65814",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/07/logo_kids_ong.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/07/logo_kids_ong.png",
+   "219741",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/07/with-notepad-group-of-firefighters-in-protective-2021-09-03-03-42-44-utc-1.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/07/with-notepad-group-of-firefighters-in-protective-2021-09-03-03-42-44-utc-1.png",
+   "221290",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/App_2-e1754572418654-1024x669.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/App_2-e1754572418654-1024x669.png",
+   "224188",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/App_3-e1754573956467-681x1024.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/App_3-e1754573956467-681x1024.png",
+   "119537",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/Ativo-1-1024x191.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/Ativo-1-1024x191.png",
+   "16774",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/Clientes_1-1024x683.jpg",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/Clientes_1-1024x683.jpg",
+   "57037",
+   "image/jpeg"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/Design_sem_nome-1024x789.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/Design_sem_nome-1024x789.png",
+   "627402",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/Design_sem_nome_16-e1754583781738-757x1024.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/Design_sem_nome_16-e1754583781738-757x1024.png",
+   "298154",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_1-1024x683.jpg",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_1-1024x683.jpg",
+   "43493",
+   "image/jpeg"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_2-1024x789.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_2-1024x789.png",
+   "1240450",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_3-1024x789.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_3-1024x789.png",
+   "1537926",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_4-1024x801.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_4-1024x801.png",
+   "1540173",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_7-1024x1024.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/Institucional_7-1024x1024.png",
+   "698009",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/aperto-de-mao.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/aperto-de-mao.png",
+   "5145",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/atendimento-ao-cliente.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/atendimento-ao-cliente.png",
+   "5024",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/aviso.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/aviso.png",
+   "4315",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/bombeiro.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/bombeiro.png",
+   "3525",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/caderno.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/caderno.png",
+   "3332",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/compromisso-1024x789.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/compromisso-1024x789.png",
+   "1019754",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/computador-portatil.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/computador-portatil.png",
+   "2414",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/contexto.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/contexto.png",
+   "5576",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-180x180.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-180x180.png",
+   "2672",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-192x192.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-192x192.png",
+   "2822",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-32x32.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/cropped-Ativo-2-32x32.png",
+   "616",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/definicoes.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/definicoes.png",
+   "4138",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/extintor-de-incendio.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/extintor-de-incendio.png",
+   "3154",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/ferramenta-de-reparacao.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/ferramenta-de-reparacao.png",
+   "5096",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/gostar.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/gostar.png",
+   "3473",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/governante.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/governante.png",
+   "1685",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/lista-de-afazeres.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/lista-de-afazeres.png",
+   "2545",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/lupa.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/lupa.png",
+   "3543",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/mangueira-de-agua.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/mangueira-de-agua.png",
+   "5072",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/polegar-para-cima.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/polegar-para-cima.png",
+   "4718",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/saida-de-emergencia.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/saida-de-emergencia.png",
+   "3527",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/2025/08/smartphone.png",
+   200,
+   "https://protecin.com.br/wp-content/uploads/2025/08/smartphone.png",
+   "4129",
+   "image/png"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/elementor/css/post-12.css?ver=1793133894",
+   200,
+   "https://protecin.com.br/wp-content/uploads/elementor/css/post-12.css?ver=1793133894",
+   "7446",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/elementor/css/post-71.css?ver=1793133908",
+   200,
+   "https://protecin.com.br/wp-content/uploads/elementor/css/post-71.css?ver=1793133908",
+   "33179",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/elementor/css/post-73.css?ver=1793133902",
+   200,
+   "https://protecin.com.br/wp-content/uploads/elementor/css/post-73.css?ver=1793133902",
+   "63698",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/elementor/css/post-75.css?ver=1793133905",
+   200,
+   "https://protecin.com.br/wp-content/uploads/elementor/css/post-75.css?ver=1793133905",
+   "50757",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/elementor/css/post-77.css?ver=1793133911",
+   200,
+   "https://protecin.com.br/wp-content/uploads/elementor/css/post-77.css?ver=1793133911",
+   "47758",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/elementor/css/post-79.css?ver=1793133897",
+   200,
+   "https://protecin.com.br/wp-content/uploads/elementor/css/post-79.css?ver=1793133897",
+   "43703",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/elementor/css/post-8.css?ver=1793133894",
+   200,
+   "https://protecin.com.br/wp-content/uploads/elementor/css/post-8.css?ver=1793133894",
+   "100202",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/elementor/css/post-87.css?ver=1793133900",
+   200,
+   "https://protecin.com.br/wp-content/uploads/elementor/css/post-87.css?ver=1793133900",
+   "68890",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-content/uploads/elementor/google-fonts/css/oswald.css?ver=1753450920",
+   200,
+   "https://protecin.com.br/wp-content/uploads/elementor/google-fonts/css/oswald.css?ver=1753450920",
+   "12486",
+   "text/css"
+  ],
+  [
+   "https://protecin.com.br/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1",
+   200,
+   "https://protecin.com.br/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1",
+   "13577",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-includes/js/jquery/jquery.min.js?ver=3.7.1",
+   200,
+   "https://protecin.com.br/wp-includes/js/jquery/jquery.min.js?ver=3.7.1",
+   "87553",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-includes/js/jquery/ui/core.min.js?ver=1.14.2",
+   200,
+   "https://protecin.com.br/wp-includes/js/jquery/ui/core.min.js?ver=1.14.2",
+   "18674",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-includes/js/underscore.min.js?ver=1.13.8",
+   200,
+   "https://protecin.com.br/wp-includes/js/underscore.min.js?ver=1.13.8",
+   "19012",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-includes/js/wp-util.min.js?ver=7.1.3",
+   200,
+   "https://protecin.com.br/wp-includes/js/wp-util.min.js?ver=7.1.3",
+   "1431",
+   "application/javascript"
+  ],
+  [
+   "https://protecin.com.br/wp-json/",
+   200,
+   "https://protecin.com.br/wp-json/",
+   null,
+   "application/json; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2F",
+   200,
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2F",
+   null,
+   "application/json; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2F&format=xml",
+   200,
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2F&format=xml",
+   null,
+   "text/xml; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fcatalogo-digital%2F",
+   200,
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fcatalogo-digital%2F",
+   null,
+   "application/json; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fcatalogo-digital%2F&format=xml",
+   200,
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fcatalogo-digital%2F&format=xml",
+   null,
+   "text/xml; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fcontato%2F",
+   200,
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fcontato%2F",
+   null,
+   "application/json; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fcontato%2F&format=xml",
+   200,
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fcontato%2F&format=xml",
+   null,
+   "text/xml; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Finstitucional%2F",
+   200,
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Finstitucional%2F",
+   null,
+   "application/json; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Finstitucional%2F&format=xml",
+   200,
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Finstitucional%2F&format=xml",
+   null,
+   "text/xml; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fnosso-app%2F",
+   200,
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fnosso-app%2F",
+   null,
+   "application/json; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fnosso-app%2F&format=xml",
+   200,
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fnosso-app%2F&format=xml",
+   null,
+   "text/xml; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fnossos-clientes%2F",
+   200,
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fnossos-clientes%2F",
+   null,
+   "application/json; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fnossos-clientes%2F&format=xml",
+   200,
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fnossos-clientes%2F&format=xml",
+   null,
+   "text/xml; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fservicos%2F",
+   200,
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fservicos%2F",
+   null,
+   "application/json; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fservicos%2F&format=xml",
+   200,
+   "https://protecin.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fprotecin.com.br%2Fservicos%2F&format=xml",
+   null,
+   "text/xml; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/wp/v2/pages/71",
+   200,
+   "https://protecin.com.br/wp-json/wp/v2/pages/71",
+   null,
+   "application/json; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/wp/v2/pages/73",
+   200,
+   "https://protecin.com.br/wp-json/wp/v2/pages/73",
+   null,
+   "application/json; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/wp/v2/pages/75",
+   200,
+   "https://protecin.com.br/wp-json/wp/v2/pages/75",
+   null,
+   "application/json; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/wp/v2/pages/77",
+   200,
+   "https://protecin.com.br/wp-json/wp/v2/pages/77",
+   null,
+   "application/json; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/wp/v2/pages/79",
+   200,
+   "https://protecin.com.br/wp-json/wp/v2/pages/79",
+   null,
+   "application/json; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/wp/v2/pages/8",
+   200,
+   "https://protecin.com.br/wp-json/wp/v2/pages/8",
+   null,
+   "application/json; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/wp-json/wp/v2/pages/87",
+   200,
+   "https://protecin.com.br/wp-json/wp/v2/pages/87",
+   null,
+   "application/json; charset=UTF-8"
+  ],
+  [
+   "https://protecin.com.br/xmlrpc.php?rsd",
+   200,
+   "https://protecin.com.br/xmlrpc.php?rsd",
+   null,
+   "text/xml; charset=UTF-8"
+  ],
+  [
+   "https://wa.me/5511945651751",
+   200,
+   "https://api.whatsapp.com/send/?phone=5511945651751&text&type=phone_number&app_absent=0",
+   null,
+   "text/html; charset=\"utf-8\""
+  ],
+  [
+   "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+   200,
+   "https://www.instagram.com/protecin_ltda?igsh=YW5yNHByZGs4cWV0&utm_source=qr",
+   null,
+   "text/html; charset=\"utf-8\""
+  ],
+  [
+   "https://www.linkedin.com/company/protecin/",
+   200,
+   "https://www.linkedin.com/company/protecin/",
+   null,
+   "text/html; charset=utf-8"
+  ]
+ ]
+}
