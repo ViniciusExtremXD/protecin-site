@@ -15,7 +15,7 @@ export interface SplitLinesProps {
   delay?: number;
   stagger?: number;
   css?: boolean; // true: entrada CSS .e-linha (acima da dobra, antes da hidratação)
-  text?: string; // aria-label; padrão = linhas unidas por espaço
+  text?: string; // texto acessível (.sr-only); padrão = linhas unidas por espaço
 }
 
 const limpa = (w: string) => w.replace(/[.,:;!?…]/g, "");
@@ -81,7 +81,9 @@ export function SplitLines({
   );
 
   return (
-    <Tag ref={ref as never} className={`${css ? "e-linha" : ""} ${className ?? ""}`} aria-label={label} data-motion={css ? "css" : "linha"}>
+    <Tag ref={ref as never} className={`${css ? "e-linha" : ""} ${className ?? ""}`} data-motion={css ? "css" : "linha"}>
+      {/* texto acessível num .sr-only (aria-label em <span>/<p> é proibido pela ARIA); as linhas visuais são aria-hidden */}
+      <span className="sr-only">{label}</span>
       {"desktop" in lines ? (
         <>
           {conjunto(lines.desktop, "hidden md:block")}

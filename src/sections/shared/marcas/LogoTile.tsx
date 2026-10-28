@@ -52,7 +52,7 @@ function LogoParallax({ marca, tom, sizes }: { marca: Marca; tom: "claro" | "esc
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], ["4%", "-4%"]);
   return (
-    <motion.div ref={ref} data-motion="parallax" className="grid h-full w-full place-items-center" style={reduced ? undefined : { y }}>
+    <motion.div ref={ref} data-motion="parallax" className="grid h-full w-full place-items-center" style={reduced ? { y: 0 } : { y }}>
       <Logo marca={marca} tom={tom} sizes={sizes} />
     </motion.div>
   );

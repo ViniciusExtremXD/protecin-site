@@ -37,7 +37,7 @@ export default function AppHero() {
 
   return (
     <section ref={ref} id="topo" data-section="APP-HERO" className="relative isolate overflow-clip bg-marinho-900">
-      <style>{ENTRADA}</style>
+      <style dangerouslySetInnerHTML={{ __html: ENTRADA }} />
       <div aria-hidden className="absolute inset-0 -z-10 bg-mundo-azul" />
       <div aria-hidden data-motion="css" className="e-fade absolute inset-0 -z-10" style={d(100)}>
         <div className="bg-blueprint h-full w-full" />

@@ -87,11 +87,13 @@ export function Menu({ open, onClose, returnFocusRef }: { open: boolean; onClose
           exit={reduced ? { opacity: 0 } : { clipPath: CIRCULO("0%") }}
           transition={reduced ? { duration: 0.2 } : { duration: 0.6, ease: ease(EASE_IN_OUT) }}
           onClick={(e) => {
-            if (e.target === e.currentTarget) onClose();
+            // área vazia: o próprio painel, o contêiner e as faixas de layout marcadas com data-menu-vazio
+            const alvo = e.target as HTMLElement;
+            if (alvo === e.currentTarget || alvo.parentElement === e.currentTarget || alvo.hasAttribute("data-menu-vazio")) onClose();
           }}
         >
           <Container className="flex min-h-full flex-col" >
-            <div className="flex h-16 shrink-0 items-center justify-between lg:h-[76px]">
+            <div data-menu-vazio="" className="flex h-16 shrink-0 items-center justify-between lg:h-[76px]">
               <Logo tone="escuro" />
               <button
                 ref={fechar}
@@ -104,7 +106,7 @@ export function Menu({ open, onClose, returnFocusRef }: { open: boolean; onClose
               </button>
             </div>
 
-            <div className="grid flex-1 grid-cols-1 items-center gap-10 py-8 lg:grid-cols-12 lg:py-10" onClick={(e) => e.target === e.currentTarget && onClose()}>
+            <div data-menu-vazio="" className="grid flex-1 grid-cols-1 items-center gap-10 py-8 lg:grid-cols-12 lg:py-10">
               <nav aria-label={UI.menuNavegacao} className="lg:col-span-7">
                 <ol className="flex flex-col">
                   {MENU.map((m, i) => {
@@ -154,6 +156,7 @@ export function Menu({ open, onClose, returnFocusRef }: { open: boolean; onClose
             </div>
 
             <motion.div
+              data-menu-vazio=""
               className="flex shrink-0 flex-col gap-4 border-t border-noite-700 py-6 text-[15px] text-papel-300 md:flex-row md:flex-wrap md:items-center md:justify-between"
               initial={reduced ? { opacity: 0 } : { opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}

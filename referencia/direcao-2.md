@@ -1,7 +1,7 @@
 # Direção 2: "Engenharia de precisão"
 
 Direção de arte e de motion do site novo da Protecin (demo de redesign no GitHub Pages).
-Data: 28/10/2026. Fontes: `conteudo-estruturado.md`, `pesquisa-mercado.md`, `padroes-codigo.md`, `videos.md` e as imagens de `imagens-site-atual/` (logo, `4.jpg`, `Bradesco-024.jpg`, `Home_BG_1-1.jpg`, `Design_sem_nome.png`, `App_2.png` e `Design_sem_nome_16.png` foram abertos para tirar paleta, coordenadas e rótulos).
+Data: 28/10/2026. Fontes: `conteudo-estruturado.md`, `pesquisa-mercado.md`, `padroes-codigo.md`, `videos.md` e as imagens de `imagens-site-atual/` (logo, `4.jpg`, `024-original.jpg`, `Home_BG_1-1.jpg`, `Design_sem_nome.png`, `App_2.png` e `Design_sem_nome_16.png` foram abertos para tirar paleta, coordenadas e rótulos).
 
 Regras que valem para o documento inteiro:
 - **Conteúdo:** todo texto entre aspas é literal do site atual. Onde houve ajuste, ele está marcado como **[ajuste]**. Nada de número, cliente, certificação, depoimento ou estado inventado.
@@ -585,7 +585,7 @@ São fotos reais do acervo da Protecin com chamadas técnicas que se desenham.
     5. Acionador manual (80%, 58%)
     6. Sinalização: SAÍDA, EXTINTOR, HIDRANTE, ALARME DE INCÊNDIO (57%, 41%)
     7. Rede de tubulação (45%, 30%)
-- **Prancha B** (`Bradesco-024.jpg`, servido como `acervo-supressao-cilindros`; **o nome original nunca vai para a URL, o alt ou o texto**):
+- **Prancha B** (`024-original.jpg`, servido como `acervo-supressao-cilindros`; **o nome original nunca vai para a URL, o alt ou o texto**):
   - Legenda: "Sistema fixo de supressão por gás. Foto do acervo Protecin."
   - Chamadas:
     1. Cilindros numerados (72,5%, 80%)
@@ -1111,7 +1111,7 @@ O build (`scripts/imagens.mjs`, com `sharp` 0.35.5) gera AVIF e WebP em 640, 102
 | `Home_BG_1-1.jpg` | `hero-poster` | poster do vídeo do S1 (LCP) |
 | `Design_sem_nome.png` | `hero-valvulas` (WebP com alfa) | recorte flutuante do S1 |
 | `4.jpg` | `acervo-parede-tecnica` | S5, Prancha A |
-| `Bradesco-024.jpg` | `acervo-supressao-cilindros` | S5, Prancha B (**sem o nome original em URL, alt ou texto**) |
+| `024-original.jpg` | `acervo-supressao-cilindros` | S5, Prancha B (**sem o nome original em URL, alt ou texto**) |
 | `Instalacao_1.jpg`, `Servicos_2.jpg`, `architect-...-1-1.jpg`, `Inspecao_2.jpg`, `Manutencao_1.jpg`, `Riscos_2.jpg`, `Venda_2.jpg`, `Riscos_1.jpg` | `servico-01` a `servico-08` | S4 e páginas de serviço |
 | `Inspecao_1.jpg`, `Servicos_1.jpg`, `Manutencao_2.jpg`, `Institucional_2.png` | `servico-0X-b` | imagem secundária das páginas de serviço |
 | `App_1.png`, `App_2.png`, `App_3.png`, `Design_sem_nome_16.png` | `tela-splash`, `tela-login-web`, `tela-login-app`, `tela-ordens` | galeria de `/nosso-app/` (o S6 recria as telas em HTML) |
@@ -1278,7 +1278,7 @@ O framer fica com `MotionConfig reducedMotion="never"`. Quem decide é cada prim
   - nenhuma legenda de estoque como "nossa equipe";
   - nenhuma pessoa de vídeo apresentada como funcionária ou cliente.
 - **Nomes e marcas:**
-  - "Bradesco" não aparece em URL, alt ou texto;
+  - o nome do banco não aparece em URL, alt ou texto;
   - Bosch, VESDA, Firebee e Germek não são chamadas de "autorizadas";
   - "Eco Friendly" não é certificação.
 - **Dados:**

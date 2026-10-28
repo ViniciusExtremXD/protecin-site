@@ -36,7 +36,7 @@ O símbolo da Protecin (a gota protegida por quatro cantoneiras) vira a janela p
 
 ### 1.4 O que esta direção não faz
 - Não usa foto de bombeiro como equipe, nem `Team-*`, `Testi-*`, `Icon-*`, logoipsum ou `teste-1.png`.
-- Não cita cliente nenhum. O arquivo `Bradesco-024.jpg` é renomeado e publicado sem nome nem local.
+- Não cita cliente nenhum. O arquivo `024-original.jpg` é renomeado e publicado sem nome nem local.
 - Não inventa telas de dashboard com números. As telas do app são recriadas só com os rótulos das capturas reais, e os dados ficam borrados como no original.
 - Não usa "orçamento gratuito", "diagnóstico gratuito" nem mapa com estados marcados.
 - Nada pisca. A única animação infinita é a dos marquees, que pausam fora da tela e no hover.
@@ -665,7 +665,7 @@ Linha final: "Precisa de mais de um serviço? Monte sua solicitação." + `Prima
 | 4 | Abrigo de mangueira e hidrante (75,9; 74,0) | Hidrantes e mangueiras | "Equipamentos homologados e manutenção certificada pelo INMETRO, com rastreabilidade e garantia." |
 | 5 | Tubulação vermelha (50,0; 30,3) | Sistemas fixos | "Soluções completas e personalizadas para implantação de sistemas fixos e equipamentos de combate a incêndio, com segurança e rastreabilidade." |
 
-Depois da cena fixada (sem pin), vem um bloco com `obra-cilindros-supressao` (a partir de `Bradesco-024.jpg`, renomeado) em largura total, 16:7, raio de 28 px. Sobre ele:
+Depois da cena fixada (sem pin), vem um bloco com `obra-cilindros-supressao` (a partir de `024-original.jpg`, renomeado) em largura total, 16:7, raio de 28 px. Sobre ele:
 - "250+" (`Odometer`, `display-xl`) e "obras de médio e grande porte realizadas"
 - Legenda: "Bateria de cilindros de sistema fixo de supressão. Foto do acervo Protecin."
 
@@ -1152,7 +1152,7 @@ Cada origem gera AVIF e WebP em 3 larguras (828, 1440, 2200; os cartões em 640 
 |---|---|---|---|
 | `hero-poster` | poster do Pexels 34775810 (w=1920 e w=828) | banco | H0 (LCP) e menu |
 | `obra-parede-sistemas` | `4.jpg` | **real** | H4, menu (Contato) |
-| `obra-cilindros-supressao` | `Bradesco-024.jpg` | **real** | H4, bloco dos cilindros |
+| `obra-cilindros-supressao` | `024-original.jpg` | **real** | H4, bloco dos cilindros |
 | `app-splash` | `App_1.png` | **real** | tela 1 do `PhoneMock` |
 | `app-webmaster-notebook` | `App_2.png` (WebP com alfa) | **real** | H5, A0, menu |
 | `app-login-celular` | `App_3.png` (WebP com alfa) | **real** | A0, H7 (2021) |

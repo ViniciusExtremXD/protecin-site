@@ -89,8 +89,8 @@ O símbolo da Protecin (a gota protegida por quatro cantoneiras) é a janela por
 | Tema | Regra |
 |---|---|
 | Clientes | Nenhum cliente é citado. Os logos são de **fabricantes e entidades**. "Autorizada" só para Kidde Brasil, Everlux, Notifier e Simplex. VESDA, Bosch, Firebee e Germek são "Marcas com que trabalhamos". ABSpk e NFPA são "Filiações técnicas" |
-| `Bradesco-024.jpg` | Vira `obra-cilindros-supressao`. O nome original nunca aparece em URL, `alt`, texto ou código publicado |
-| Fotos | Reais (`4.jpg`, `Bradesco-024.jpg`, telas do app, colagem da Kids ONG): crédito "Foto do acervo Protecin". Banco: crédito "Imagem ilustrativa", nunca legendada como equipe, obra ou cliente |
+| `024-original.jpg` | Vira `obra-cilindros-supressao`. O nome original nunca aparece em URL, `alt`, texto ou código publicado |
+| Fotos | Reais (`4.jpg`, `024-original.jpg`, telas do app, colagem da Kids ONG): crédito "Foto do acervo Protecin". Banco: crédito "Imagem ilustrativa", nunca legendada como equipe, obra ou cliente |
 | Proibidas | `Team-*`, `Testi-*`, `Icon-*`, `Image-1.jpg`, `Image-2.jpg`, `Logo-1..4.png`, `Logo-Fire-01.png`, `teste-1*.png`, `placeholder*.png`, todas as fotos de bombeiro (`*firefighter*`, `with-notepad-*`), `ecofriendly_logo.png` (não é certificação) e `Design_sem_nome_16.png` (a tela é recriada em HTML) |
 | Vídeos | Todos de banco, com crédito "Imagem ilustrativa". Ninguém dos vídeos é apresentado como equipe ou cliente |
 | Mockups | Só rótulos que existem nas telas reais. Dados de cliente viram barras borradas. Gráfico sem eixo e sem número |
@@ -1747,7 +1747,7 @@ Pipeline: `scripts/imagens.mjs` com `sharp`.
 | `hero-poster-v` | quadro do recorte vertical (540×960) | 540 | ≤ 60 KB | ilustrativa | H0 no celular |
 | `poster-tablet`, `poster-extintor`, `poster-fogo` | quadro de 0,5 s de cada vídeo | 640, 1280 | — | ilustrativa | posters |
 | `obra-parede-sistemas` | `4.jpg` | 828, 1440, 2200 | `modulate({saturation:.92})`, `gamma(1.05)`, `sharpen` leve | **acervo** | H4, capítulo 08, menu |
-| `obra-cilindros-supressao` | `Bradesco-024.jpg` | 828, 1440, 2200 | idem | **acervo** | H4 (bloco dos cilindros) |
+| `obra-cilindros-supressao` | `024-original.jpg` | 828, 1440, 2200 | idem | **acervo** | H4 (bloco dos cilindros) |
 | `app-splash` | `App_1.png` | 360, 720 | — | **acervo** | PhoneMock, TelasReais, AppHero |
 | `app-webmaster-notebook` | `App_2.png` | 760, 1520 | alfa | **acervo** | H5, AppHero, TelasReais, menu |
 | `app-login-celular` | `App_3.png` | 360, 720 | alfa | **acervo** | AppHero, H7 (2021), TelasReais |
@@ -1931,7 +1931,7 @@ Valem junto com `qa/REGUA-SITE-NOVO.md`. Ferramentas:
 
 **Conteúdo e credibilidade**
 - AC-01: todo número exibido está em `{50, 20.000+, 3M+, 5M+, 250+, 10 estados, 1976, 2026, os anos da linha do tempo}`. Verificação: o verify procura dígitos no texto e compara com a lista.
-- AC-02: nenhuma ocorrência de "Bradesco", "gratuito", "transformando o setor", "elevar o padrão", "jornada", "sinergia", "parceiro de confiança", "no coração de" ou "o futuro da segurança" no HTML de nenhuma rota (verify).
+- AC-02: nenhuma ocorrência de o nome do banco, "gratuito", "transformando o setor", "elevar o padrão", "jornada", "sinergia", "parceiro de confiança", "no coração de" ou "o futuro da segurança" no HTML de nenhuma rota (verify).
 - AC-03: "Autorizada" ou "AUTORIZADA" aparece só junto de Kidde, Everlux, Notifier e Simplex (verify confere o grupo do `data-marca`).
 - AC-04: toda `<figure>` tem `figcaption` ou crédito com "ACERVO PROTECIN" ou "IMAGEM ILUSTRATIVA" (verify). Nenhum arquivo da lista proibida de §2 em `public/img`.
 - AC-05: nenhum espaço reservado nem texto "Espaço reservado" sem `?proposta=1`. Com `?proposta=1`, os 4 aparecem (verify).

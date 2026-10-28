@@ -6,7 +6,7 @@
  * Acrescente &motion=full, &motion=reduced ou &proposta=1 para os outros modos.
  */
 import { StrictMode, useEffect, useRef, useState, type ComponentType, type ReactNode } from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, type Root } from "react-dom/client";
 import "../styles.css";
 import {
   AUTORIZADAS,
@@ -616,7 +616,10 @@ function Sandbox() {
   );
 }
 
-createRoot(document.getElementById("root")!).render(
+// HMR: reaproveita a raiz (recriar com createRoot no mesmo contêiner gera aviso e monta tudo duas vezes)
+const raiz: Root = (import.meta.hot?.data.raiz as Root | undefined) ?? createRoot(document.getElementById("root")!);
+if (import.meta.hot) import.meta.hot.data.raiz = raiz;
+raiz.render(
   <StrictMode>
     <Sandbox />
   </StrictMode>,

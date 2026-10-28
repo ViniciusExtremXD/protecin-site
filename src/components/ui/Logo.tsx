@@ -24,7 +24,7 @@ export function Logo({ tone, className, animate = false, asLink = false }: { ton
   const cls = `inline-flex items-center gap-2.5 sm:gap-3 ${className ?? ""}`;
   if (asLink)
     return (
-      <Link to="/" className={`${cls} rounded-[6px]`} aria-label={`${COMPANY.nome}, página inicial`}>
+      <Link to="/" className={`${cls} min-h-11 rounded-[6px]`} aria-label={`${COMPANY.nome}, página inicial`}>
         {conteudo}
       </Link>
     );

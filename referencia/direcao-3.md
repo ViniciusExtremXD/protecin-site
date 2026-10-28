@@ -89,7 +89,7 @@ O motion é o "virar de página". Nada pisca, nada pega fogo. O movimento revela
 |---|---|---|
 | Parede de clientes em marquee | Nenhum cliente citado por nome (§1.9). Os logos de "Nossos Clientes" são de fabricantes e entidades | **Parede de setores**: marquee tipográfico com Financeiro, Tecnologia, Saúde, Industrial, Agronegócio, Energia e Transporte. Mais o **marquee de marcas**, rotulado "Marcas com que trabalhamos", nunca "clientes". O componente `ClientWall` fica pronto com `CLIENTS = []` e só aparece no modo proposta (abaixo) |
 | Depoimento visual da equipe | Nenhuma foto da equipe e nenhum depoimento. `Team-*` e `Testi-*` são template | **"A voz da Protecin"**: 3 painéis empilhados com as frases da própria empresa (missão e visão, sustentabilidade, Kids ONG). O slot `TeamVoices` (vídeo vertical da equipe) fica pronto com `TEAM_VOICES = []` e só aparece no modo proposta |
-| Fotografia em parallax | 2 fotos reais de obra (`4.jpg`, `Bradesco-024.jpg`), telas reais do app, colagem do Kids ONG e fotos de banco | Todas as fotos em `CaptionedFigure`, com `credit: "acervo" \| "ilustrativa"` obrigatório no tipo. O TypeScript não compila uma figura sem crédito. Foto de banco nunca recebe legenda de "nossa equipe" ou "nossa obra" |
+| Fotografia em parallax | 2 fotos reais de obra (`4.jpg`, `024-original.jpg`), telas reais do app, colagem do Kids ONG e fotos de banco | Todas as fotos em `CaptionedFigure`, com `credit: "acervo" \| "ilustrativa"` obrigatório no tipo. O TypeScript não compila uma figura sem crédito. Foto de banco nunca recebe legenda de "nossa equipe" ou "nossa obra" |
 | Linha do tempo de 50 anos | 9 marcos reais (1976 a 2024), sem nenhuma foto histórica | Numerais gigantes como protagonistas, com foto ilustrativa legendada por marco. O cartão 2026 é derivado ("50 anos" = 1976 + 50) e usa o símbolo da marca, não foto |
 | Autorizações de fabricantes | Kidde Brasil, Everlux, Notifier e Simplex (texto da home) | "Autorizada" só nessas 4. VESDA, Bosch, Firebee e Germek ficam como "Marcas com que trabalhamos". ABSpk e NFPA como "Filiações técnicas" (§1.4) |
 
@@ -598,7 +598,7 @@ Mensagem do WhatsApp por serviço: "Olá! Vim pelo site da Protecin e gostaria d
 
 **Desktop:**
 - Fólio "06 · Em campo", H2 e texto nas colunas 1 a 5.
-- Figura A: `Bradesco-024.jpg`, 16:9, colunas 4 a 12, no topo.
+- Figura A: `024-original.jpg`, 16:9, colunas 4 a 12, no topo.
 - Figura B: `4.jpg`, 4:3, colunas 1 a 5, 120 px abaixo do topo de A.
 - O resultado é uma composição em escada.
 
@@ -1184,7 +1184,7 @@ Pipeline: `scripts/imagens.mjs` com `sharp`.
 | Arquivo | Onde | Foco / recorte | Crédito |
 |---|---|---|---|
 | `Home_BG_1-1.jpg` | H02 (fundo) | `50% 60%` | Ilustrativa |
-| `Bradesco-024.jpg` | H06 A | `40% 50%`, 16:9 | **Acervo** (sem nome de cliente) |
+| `024-original.jpg` | H06 A | `40% 50%`, 16:9 | **Acervo** (sem nome de cliente) |
 | `4.jpg` | H06 B; S02-8 | B: `55% 45%`, 4:3; S02-8: `60% 35%` | **Acervo** |
 | `App_1.png`, `App_3.png`, `App_2.png` | H04-8, H08, A01, A02 | Recorte transparente | **Acervo** (telas reais) |
 | `Institucional_4.png` | H10 C, I06 | Inteira | **Acervo**, rostos borrados |
@@ -1389,7 +1389,7 @@ scripts/
 
 ## 19. Pendências [confirmar com a Protecin]
 
-1. **Fotos de obra:** confirmar que `4.jpg` e `Bradesco-024.jpg` são obras da Protecin e podem ser publicadas como "Acervo Protecin", sem nome de cliente.
+1. **Fotos de obra:** confirmar que `4.jpg` e `024-original.jpg` são obras da Protecin e podem ser publicadas como "Acervo Protecin", sem nome de cliente.
 2. **Clientes:** logos com autorização (liga a `ClientWall`).
 3. **Equipe:** depoimentos e vídeos (liga `TeamVoices`); fotos reais de sede, frota, oficina e obras (substituem as ilustrativas da linha do tempo, uma a uma).
 4. **Filiações:** se é formal a filiação à ABSpk e à NFPA (o site só mostra os logos).

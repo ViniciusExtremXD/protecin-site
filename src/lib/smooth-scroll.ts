@@ -5,7 +5,12 @@ import Lenis from "lenis";
  * Com movimento reduzido o Lenis não é criado e as âncoras saltam sem animação.
  */
 let lenis: Lenis | null = null;
-const NAV_OFFSET = -84;
+
+/** Folga da nav fixa = scroll-padding-top do <html> (styles.css). Uma fonte só para os dois caminhos de rolagem. */
+function folgaNav(): number {
+  const v = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop);
+  return Number.isFinite(v) ? v : 0;
+}
 
 const reduzido = () => typeof document !== "undefined" && document.documentElement.classList.contains("motion-reduced");
 
@@ -40,10 +45,11 @@ export function scrollToHash(hash: string): void {
   const target = alvoDe(hash);
   if (target === null) return;
   if (lenis) {
-    lenis.scrollTo(target, { offset: target === 0 ? 0 : NAV_OFFSET, duration: 1.4 });
+    // o Lenis 1.3 já desconta o scroll-padding-top (e o scroll-margin) do alvo: sem offset extra
+    lenis.scrollTo(target, { duration: 1.4 });
     return;
   }
-  const top = target === 0 ? 0 : target.getBoundingClientRect().top + window.scrollY + NAV_OFFSET;
+  const top = target === 0 ? 0 : target.getBoundingClientRect().top + window.scrollY - folgaNav();
   window.scrollTo({ top, behavior: reduzido() ? "auto" : "smooth" });
 }
 

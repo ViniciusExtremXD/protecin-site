@@ -42,6 +42,7 @@ html.motion-full .ab-desce{animation:ab-desce 1.8s cubic-bezier(.65,0,.35,1) 3 b
 .ab-selo-sym [data-parte="br"]{transform:translate(9px,9px)}
 .ab-selo:hover .ab-selo-sym [data-parte]{transform:none}
 html.motion-reduced .ab-selo-sym [data-parte]{transform:none;transition:none}
+@media (min-height:561px){html.motion-full:not(.motion-failed) #topo[data-pin="off"] .ab-encaixe{visibility:hidden}}
 `;
 
 /** Atraso das entradas CSS (somado a --t0 em styles.css). */
@@ -168,7 +169,7 @@ function Cena() {
       ref={palco}
       className="relative h-[100svh] [--gota:min(30vw,14svh)] group-data-[pin=off]/pin:h-auto md:[--gota:min(24vw,13svh)] lg:[--gota:min(34vh,22vw)]"
     >
-      <style>{CSS}</style>
+      <style dangerouslySetInnerHTML={{ __html: CSS }} />
 
       {/* ------------------------------------------------ hero (começo da cena) */}
       <div className="absolute inset-0 z-[2] group-data-[pin=off]/pin:relative group-data-[pin=off]/pin:inset-auto group-data-[pin=off]/pin:min-h-[100svh] group-data-[pin=on]/pin:pointer-events-none">
@@ -282,7 +283,11 @@ function Cena() {
         )}
         <Container className="relative grid h-full grid-cols-1 content-center gap-y-6 pb-[4svh] pt-[8svh] group-data-[pin=off]/pin:py-24 lg:grid-cols-12 lg:gap-x-6 lg:py-0 lg:group-data-[pin=off]/pin:py-36">
           <div className="flex justify-center lg:col-span-6 lg:self-center">
-            <div ref={encaixe} className="relative aspect-square w-[calc(var(--gota)*2)]">
+            {/* Com movimento completo, a cena fixa logo depois da hidratação e a gota salta do fluxo (abaixo do hero)
+                para cobrir a tela: com ela visível no estado estático, isso contava como deslocamento de layout
+                (CLS 1,0 no celular). Até a cena ligar ela fica invisível (só com motion-full e tela alta; sem JS,
+                no reduzido, em tela baixa e com o motor caído ela aparece). */}
+            <div ref={encaixe} className="ab-encaixe relative aspect-square w-[calc(var(--gota)*2)]">
               <motion.div data-pin-layer="" className="pointer-events-auto absolute inset-0" style={{ x: grupoX, y: grupoY }}>
                 <div className="absolute inset-[25%] group-data-[pin=off]/pin:[&_button]:hidden">
                   <DropWindow progress={pFim} range={[0.08, 0.55]} mode="fechar" className="[--gota:100%]">

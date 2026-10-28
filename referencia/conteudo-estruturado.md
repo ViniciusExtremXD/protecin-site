@@ -111,7 +111,7 @@ Itens de catálogo citados (para chips/marquee de produtos): extintores, manguei
 ### 1.9 Clientes
 - **Nenhum cliente é citado por nome no site.** Não há logos de clientes (os logos da página "Nossos Clientes" são de fabricantes e entidades).
 - Setores atendidos (texto): **Financeiro, Tecnologia e Saúde**; **Industrial e Agronegócio**; **Energia e Transporte**.
-- O arquivo `Bradesco-024.jpg` tem nome de banco, mas o site não cita esse cliente em lugar nenhum. **Não usar o nome na demo** sem autorização da Protecin.
+- O arquivo `024-original.jpg` tem nome de banco, mas o site não cita esse cliente em lugar nenhum. **Não usar o nome na demo** sem autorização da Protecin.
 
 ### 1.10 Responsabilidade social e ambiental
 - Política de Preservação Ambiental desde 2004; programa de armazenamento e descarte responsável de resíduos conforme a legislação ambiental.
@@ -286,7 +286,7 @@ Não há versão vetorial (SVG) nem PNG do logo em branco isolado. Para a demo: 
 | Arquivo | O que mostra | Onde usar | Qualidade |
 |---|---|---|---|
 | `4.jpg` | Parede de subsolo/garagem com sistema completo: tubulação vermelha, painel de alarme, extintor com **etiqueta PROTECIN**, abrigo de mangueira, acionador manual, sinalização "SAÍDA", "EXTINTOR", "HIDRANTE", "ALARME DE INCÊNDIO" | Seção "Na prática / obras", bloco Sinalização, prova real | 2592×1944, foto amadora com flash; aplicar duotone/grade |
-| `Bradesco-024.jpg` | Bateria longa de cilindros vermelhos numerados de sistema de supressão por gás, com manifold e válvulas | Seção "Obras", Instalação de sistemas fixos, fundo de contador "250+ obras" | 3264×1836, celular, boa |
+| `024-original.jpg` | Bateria longa de cilindros vermelhos numerados de sistema de supressão por gás, com manifold e válvulas | Seção "Obras", Instalação de sistemas fixos, fundo de contador "250+ obras" | 3264×1836, celular, boa |
 | `teste-1.png` | Abrigo duplo de hidrante em inox numa mureta de pastilha, tubulação vermelha, placa vermelha com "H" | Só como ilustração | 1536×1024. Nome "teste" e tamanho típico de imagem gerada por IA: **origem incerta, não usar como prova de obra** |
 | `Institucional_4.png` | Colagem de 3 fotos de eventos da Kids ONG (crianças com rosto borrado, voluntárias, personagens fantasiados) | Seção social Kids ONG | 1080×845, rostos já borrados; manter borrado (ECA/LGPD) |
 | `App_2.png` | Notebook com tela de login do **Web Master** ("Faça login", e-mail, senha, Entrar) | Seção Plataforma, módulo Web Master | 2048×1578, ótimo |
@@ -388,7 +388,7 @@ O que falta, e como tratar na demo.
 |---|---|---|
 | Depoimentos de clientes | Não existem (os `Testi-*` são template) | **Fora da demo.** No máximo um bloco claramente marcado "Espaço para depoimentos reais (a coletar)" |
 | Nomes e logos de clientes | Nenhum citado | Usar os 3 grupos de setores com ícones animados. Sem parede de clientes. Placeholder marcado só se o Vinicius quiser mostrar a ideia ao cliente |
-| Cases / fotos de obras (250+ obras) | Só 2 fotos reais confiáveis (`4.jpg`, `Bradesco-024.jpg`) | Galeria pequena com essas duas + espaço marcado "Portfólio de obras: fotos a enviar pela Protecin". Sem nome de cliente nem local |
+| Cases / fotos de obras (250+ obras) | Só 2 fotos reais confiáveis (`4.jpg`, `024-original.jpg`) | Galeria pequena com essas duas + espaço marcado "Portfólio de obras: fotos a enviar pela Protecin". Sem nome de cliente nem local |
 | Fotos reais da equipe, sede (2004), frota (2009/2012), laboratório de recarga | Não existem | Fora da demo; usar fotos de estoque de técnicos em campo (`Manutencao_*`, `Servicos_1`). Nunca legendar estoque como "nossa equipe" |
 | Vídeos | Nenhum | Se usar vídeo de fundo, só de banco gratuito (Pexels/Coverr etc.), tema neutro (sprinkler, extintor, indústria), sem logos de terceiros; marcar internamente como ilustrativo. Alternativa sem vídeo: Ken Burns em `Home_BG_1-1.jpg` + partículas/brasas em canvas |
 | Logo vetorial (SVG) e versão branca | Só PNG colorido | Vetorizar o símbolo para a demo (forma simples); pedir o arquivo oficial à Protecin antes de produção |
@@ -414,7 +414,7 @@ Sugestão. Todos os textos saem das seções 1 e 2.
 3. **Diferenciais (4 cards)** com ícones de traço desenhados.
 4. **Autorizadas + marcas (marquee)** e filiações ABSpk/NFPA.
 5. **Serviços (8)** em grid com reveal por máscara; foto por serviço conforme 3.3.
-6. **Na prática:** `4.jpg` + `Bradesco-024.jpg` em comparação/zoom, sem nomes de cliente.
+6. **Na prática:** `4.jpg` + `024-original.jpg` em comparação/zoom, sem nomes de cliente.
 7. **Plataforma Protecin App:** mockups `App_2` / `App_3` + tela de ordens recriada em HTML animado; 3 módulos, 4 pilares e 8 recursos; selo NBR 12962 e NBR 12779.
 8. **Linha do tempo 1976 a 2024** com scroll horizontal.
 9. **Setores atendidos** (Financeiro, Tecnologia, Saúde, Industrial, Agronegócio, Energia, Transporte).

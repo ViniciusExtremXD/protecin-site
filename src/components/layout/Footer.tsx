@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 import { COMPANY, FOOTER, UI } from "../../data/site";
+import { useMotionPref } from "../../lib/motion-pref";
 import { Link } from "../../lib/router";
 import { scrollToY } from "../../lib/smooth-scroll";
 import { Magnetic } from "../motion/Magnetic";
-import { Reveal, RevealGroup, RevealItem } from "../motion/Reveal";
+import { FADE_REDUZIDO, Reveal, RevealGroup, RevealItem, variantesPreset } from "../motion/Reveal";
 import { WipeText } from "../motion/WipeText";
 import { MotionToggle } from "../chrome/MotionToggle";
 import { EmailLink, OrcamentoCta, PhoneLink, WhatsAppCta, WhatsAppLink } from "../ui/cta";
@@ -14,7 +16,7 @@ import { Symbol } from "../ui/Symbol";
 import { Container } from "./Container";
 
 const linkCls =
-  "group/l relative inline-flex min-h-11 items-center gap-2 py-3 text-[15px] text-papel-300 transition-colors duration-200 hover:text-papel-50 lg:min-h-0 lg:py-1.5";
+  "group/l relative inline-flex min-h-11 min-w-11 items-center gap-2 py-3 text-[15px] text-papel-300 transition-colors duration-200 hover:text-papel-50 lg:min-h-0 lg:py-1.5";
 const sublinhado =
   "pointer-events-none absolute bottom-2 left-0 h-px w-full origin-left scale-x-100 bg-current opacity-40 transition-transform duration-200 lg:bottom-0.5 lg:scale-x-0 lg:opacity-100 lg:group-hover/l:scale-x-100";
 
@@ -25,6 +27,7 @@ function Titulo({ children }: { children: string }) {
 /** Rodapé (§7.8): slogan que "limpa" com a rolagem, linha de CTA, 4 colunas e linha final. */
 export function Footer() {
   const [ano, setAno] = useState(__ANO_BUILD__);
+  const reduced = useMotionPref() === "reduced";
   useEffect(() => setAno(new Date().getFullYear()), []);
 
   return (
@@ -57,7 +60,7 @@ export function Footer() {
             <p className="mt-6 max-w-[42ch] text-[15px] leading-relaxed text-papel-300">{FOOTER.texto}</p>
           </RevealItem>
 
-          <RevealItem className="lg:col-span-2 lg:col-start-6">
+          <RevealItem className="lg:col-span-2 lg:col-start-5">
             <Titulo>{FOOTER.colunas.secoes}</Titulo>
             <ul className="flex flex-col">
               {FOOTER.secoes.map((s) => (
@@ -127,14 +130,20 @@ export function Footer() {
           </RevealItem>
         </RevealGroup>
 
-        <Reveal preset="fade" className="flex flex-col gap-5 border-t border-noite-700 py-8 text-[14px] text-papel-500 lg:flex-row lg:items-center lg:justify-between">
+        {/* última faixa da página: margem 0 (a faixa de -12% do fim da página nunca entra na tela) */}
+        <Reveal
+          preset="fade"
+          viewport={{ once: true, margin: "0px" }}
+          className="flex flex-col gap-5 border-t border-noite-700 py-8 text-[14px] text-papel-500 lg:flex-row lg:items-center lg:justify-between"
+        >
           <p>{FOOTER.direitos(ano)}</p>
           <Link to="/creditos/" className="group/l relative inline-flex min-h-11 w-fit items-center text-papel-300 hover:text-papel-50 lg:min-h-0">
             {FOOTER.creditos}
             <span aria-hidden className={sublinhado} />
           </Link>
           <MotionToggle />
-          <Reveal preset="carimbo" className="w-fit">
+          {/* carimbo como filho de variante da faixa (dispara junto dela) */}
+          <motion.div className="w-fit" data-motion="carimbo" variants={reduced ? FADE_REDUZIDO : variantesPreset("carimbo")}>
             <Magnetic strength={0.3}>
               <button
                 type="button"
@@ -145,7 +154,7 @@ export function Footer() {
                 <ArrowUp size={20} strokeWidth={1.5} className="transition-transform duration-200 ease-out group-hover:-translate-y-1" />
               </button>
             </Magnetic>
-          </Reveal>
+          </motion.div>
         </Reveal>
       </Container>
     </footer>

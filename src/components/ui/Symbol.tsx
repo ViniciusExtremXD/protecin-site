@@ -1,4 +1,4 @@
-import { useRef, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { motion, useInView, type MotionStyle } from "framer-motion";
 import { useMotionPref } from "../../lib/motion-pref";
 import { EASE_BACK, EASE_IN_OUT, EASE_OUT, VIEWPORT, ease } from "../motion/tokens";
@@ -43,12 +43,20 @@ export function Symbol({ size = 48, tone = "escuro", title, className, partStyle
   const dim = typeof size === "number" ? `${size}px` : size;
   const a11y = title ? { role: "img", "aria-label": title } : { "aria-hidden": true };
 
-  // no reduzido o símbolo aparece montado (o 1º render é sempre "full", então o estado final é aplicado na hora)
+  // "montar" e "desenhar" saem do SSR (e do 1º render do cliente) com o símbolo completo e parado: sem JS, com o
+  // motor caído ou no reduzido ele aparece inteiro. Depois de montar, com movimento completo, os caminhos remontam
+  // (key) no estado inicial da animação e entram quando o símbolo chega à tela.
+  const animado = mode === "montar" || mode === "desenhar";
+  const [vivo, setVivo] = useState(false);
+  useEffect(() => {
+    if (animado && !document.documentElement.classList.contains("motion-reduced")) setVivo(true);
+  }, [animado]);
+  const modo = animado && (!vivo || reduced) ? "estatico" : mode;
   const mostrar = inView || reduced;
   const instante = { duration: 0 };
   const pathProps = (p: ParteSimbolo, i: number) => {
     const cor = corDe(p);
-    if (mode === "montar") {
+    if (modo === "montar") {
       if (p === "gota")
         return {
           initial: { scale: 0 },
@@ -66,7 +74,7 @@ export function Symbol({ size = 48, tone = "escuro", title, className, partStyle
         fill: cor,
       };
     }
-    if (mode === "desenhar") {
+    if (modo === "desenhar") {
       return {
         initial: { pathLength: 0, fillOpacity: 0 },
         animate: mostrar ? { pathLength: 1, fillOpacity: 1 } : undefined,
@@ -82,7 +90,8 @@ export function Symbol({ size = 48, tone = "escuro", title, className, partStyle
         strokeWidth: 1,
       };
     }
-    return { style: partStyle?.[p], fill: cor };
+    // parado: no "desenhar" leva o mesmo contorno do estado final, para a troca não mudar o desenho
+    return mode === "desenhar" ? { style: partStyle?.[p], fill: cor, stroke: cor, strokeWidth: 1 } : { style: partStyle?.[p], fill: cor };
   };
 
   return (
@@ -98,7 +107,7 @@ export function Symbol({ size = 48, tone = "escuro", title, className, partStyle
     >
       {title && <title>{title}</title>}
       {PARTES.map(({ parte, d }, i) => (
-        <motion.path key={parte} data-parte={parte} d={d} {...pathProps(parte, i)} />
+        <motion.path key={`${parte}-${modo}`} data-parte={parte} d={d} {...pathProps(parte, i)} />
       ))}
     </svg>
   );

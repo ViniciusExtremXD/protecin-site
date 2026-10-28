@@ -24,8 +24,10 @@ export function DrawPath({ d, progress, range = [0, 1], className, strokeWidth =
   const pl = useTransform(progress ?? reserva, range, [0, 1]);
   const id = `dp${useId().replace(/[^a-zA-Z0-9]/g, "")}`;
 
+  // reduzido: o 1º render é sempre "full" (casa com o SSR); quando o modo reduzido chega, o caminho remonta (key)
+  // já desenhado. Sem a remontagem, o pathLength ficava preso no 0 do `initial` e o traço sumia.
   const animacao = reduced
-    ? { initial: false as const, style: { pathLength: 1 } }
+    ? { initial: { pathLength: 1 } }
     : progress
       ? { initial: false as const, style: { pathLength: pl } }
       : {
@@ -38,6 +40,7 @@ export function DrawPath({ d, progress, range = [0, 1], className, strokeWidth =
   if (!dashed) {
     return (
       <motion.path
+        key={reduced ? "r" : "m"}
         data-motion="traco"
         d={d}
         className={className}
@@ -53,7 +56,7 @@ export function DrawPath({ d, progress, range = [0, 1], className, strokeWidth =
   return (
     <g data-motion="traco">
       <mask id={id} maskUnits="userSpaceOnUse">
-        <motion.path d={d} fill="none" stroke="#fff" strokeWidth={strokeWidth + 3} strokeLinecap="round" {...animacao} />
+        <motion.path key={reduced ? "r" : "m"} d={d} fill="none" stroke="#fff" strokeWidth={strokeWidth + 3} strokeLinecap="round" {...animacao} />
       </mask>
       <path d={d} className={className} fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeDasharray="4 3" mask={`url(#${id})`} />
     </g>

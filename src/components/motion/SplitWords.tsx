@@ -41,7 +41,9 @@ export function SplitWords({
   const palavras = text.split(" ");
 
   return (
-    <Tag ref={ref as never} className={className} aria-label={text} data-motion="palavra">
+    <Tag ref={ref as never} className={className} data-motion="palavra">
+      {/* texto acessível num .sr-only (aria-label em <span>/<p> é proibido pela ARIA); as palavras visuais são aria-hidden */}
+      <span className="sr-only">{text}</span>
       <Fragment key={replayKey}>
         {palavras.map((w, i) => (
           <span key={`${w}-${i}`} aria-hidden className="-mb-[0.08em] -mt-[0.2em] inline-block overflow-clip pb-[0.08em] pt-[0.2em] align-bottom">

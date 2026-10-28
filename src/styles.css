@@ -187,48 +187,51 @@ html:not(.intro) {
 
 /* ==========================================================================
    Texturas (§4.1): grão estático só nas seções escuras; prancheta no mundo azul.
+   Na camada components: o position:relative daqui não anula os utilitários (absolute, sticky, fixed).
    ========================================================================== */
-.grain {
-  position: relative;
-}
-.grain::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 60;
-  pointer-events: none;
-  opacity: 0.045;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-}
-.bg-blueprint,
-.bg-blueprint-claro {
-  position: relative;
-}
-.bg-blueprint::before,
-.bg-blueprint-claro::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-size:
-    120px 120px,
-    120px 120px,
-    24px 24px,
-    24px 24px;
-}
-.bg-blueprint::before {
-  background-image:
-    linear-gradient(rgba(157, 184, 208, 0.16) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(157, 184, 208, 0.16) 1px, transparent 1px),
-    linear-gradient(rgba(157, 184, 208, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(157, 184, 208, 0.07) 1px, transparent 1px);
-}
-.bg-blueprint-claro::before {
-  background-image:
-    linear-gradient(rgba(5, 10, 18, 0.09) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(5, 10, 18, 0.09) 1px, transparent 1px),
-    linear-gradient(rgba(5, 10, 18, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(5, 10, 18, 0.05) 1px, transparent 1px);
+@layer components {
+  .grain {
+    position: relative;
+  }
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  .bg-blueprint,
+  .bg-blueprint-claro {
+    position: relative;
+  }
+  .bg-blueprint::before,
+  .bg-blueprint-claro::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-size:
+      120px 120px,
+      120px 120px,
+      24px 24px,
+      24px 24px;
+  }
+  .bg-blueprint::before {
+    background-image:
+      linear-gradient(rgba(157, 184, 208, 0.16) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(157, 184, 208, 0.16) 1px, transparent 1px),
+      linear-gradient(rgba(157, 184, 208, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(157, 184, 208, 0.07) 1px, transparent 1px);
+  }
+  .bg-blueprint-claro::before {
+    background-image:
+      linear-gradient(rgba(5, 10, 18, 0.09) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(5, 10, 18, 0.09) 1px, transparent 1px),
+      linear-gradient(rgba(5, 10, 18, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(5, 10, 18, 0.05) 1px, transparent 1px);
+  }
 }
 
 /* ==========================================================================
@@ -337,21 +340,26 @@ html.motion-full .e-cant-br {
 
 /* Símbolo em CSS (preloader e 404): cantoneiras fecham e a gota cresce com EASE_BACK */
 html.motion-full .sym-css [data-parte="tl"] {
-  animation: e-cant-tl var(--sym-dur, 350ms) cubic-bezier(0.16, 1, 0.3, 1) var(--sym-d, 0ms) both;
+  animation: e-cant-tl var(--sym-dur, 350ms) cubic-bezier(0.16, 1, 0.3, 1)
+    var(--sym-d, 0ms) both;
 }
 html.motion-full .sym-css [data-parte="tr"] {
-  animation: e-cant-tr var(--sym-dur, 350ms) cubic-bezier(0.16, 1, 0.3, 1) var(--sym-d, 0ms) both;
+  animation: e-cant-tr var(--sym-dur, 350ms) cubic-bezier(0.16, 1, 0.3, 1)
+    var(--sym-d, 0ms) both;
 }
 html.motion-full .sym-css [data-parte="bl"] {
-  animation: e-cant-bl var(--sym-dur, 350ms) cubic-bezier(0.16, 1, 0.3, 1) var(--sym-d, 0ms) both;
+  animation: e-cant-bl var(--sym-dur, 350ms) cubic-bezier(0.16, 1, 0.3, 1)
+    var(--sym-d, 0ms) both;
 }
 html.motion-full .sym-css [data-parte="br"] {
-  animation: e-cant-br var(--sym-dur, 350ms) cubic-bezier(0.16, 1, 0.3, 1) var(--sym-d, 0ms) both;
+  animation: e-cant-br var(--sym-dur, 350ms) cubic-bezier(0.16, 1, 0.3, 1)
+    var(--sym-d, 0ms) both;
 }
 html.motion-full .sym-css [data-parte="gota"] {
   transform-box: fill-box;
   transform-origin: center;
-  animation: e-gota 350ms cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--sym-d, 0ms) + 200ms) both;
+  animation: e-gota 350ms cubic-bezier(0.34, 1.56, 0.64, 1)
+    calc(var(--sym-d, 0ms) + 200ms) both;
 }
 
 /* ==========================================================================
@@ -421,7 +429,8 @@ html.intro.motion-full .pt-preloader.is-pulando {
 .draw[data-ready] :is(path, line, circle, rect, polyline, polygon, ellipse) {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  transition: stroke-dashoffset 700ms cubic-bezier(0.65, 0, 0.35, 1) calc(var(--i, 0) * 80ms + var(--dd, 0ms));
+  transition: stroke-dashoffset 700ms cubic-bezier(0.65, 0, 0.35, 1)
+    calc(var(--i, 0) * 80ms + var(--dd, 0ms));
 }
 .draw.is-drawn :is(path, line, circle, rect, polyline, polygon, ellipse) {
   stroke-dashoffset: 0;
@@ -743,7 +752,9 @@ html.motion-reduced [data-pin-stage] [data-pin-layer] {
 /* ==========================================================================
    Movimento reduzido (§14): tudo visível e legível, sem movimento.
    ========================================================================== */
-html.motion-reduced .draw :is(path, line, circle, rect, polyline, polygon, ellipse) {
+html.motion-reduced
+  .draw
+  :is(path, line, circle, rect, polyline, polygon, ellipse) {
   stroke-dashoffset: 0 !important;
   transition: none !important;
 }
@@ -791,6 +802,16 @@ html.motion-failed [style*="opacity: 0"] {
 }
 html.motion-failed [style*="clip-path"] {
   clip-path: none !important;
+}
+/* títulos em máscara (SplitLines/SplitWords) saem do SSR com o texto em translateY(110%) dentro da máscara */
+html.motion-failed [data-motion="linha"] span,
+html.motion-failed [data-motion="palavra"] span {
+  transform: none !important;
+}
+/* traços do DrawPath saem do SSR com pathLength 0 (stroke-dasharray "0px 1px") */
+html.motion-failed path[data-motion="traco"],
+html.motion-failed [data-motion="traco"] mask path {
+  stroke-dasharray: none !important;
 }
 
 /* ==========================================================================

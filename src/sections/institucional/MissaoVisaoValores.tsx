@@ -26,7 +26,7 @@ function Valor({ numero, texto }: { numero: string; texto: string }) {
   const aceso = reduced || passou;
 
   return (
-    <li ref={ref} className="group relative">
+    <li ref={ref} data-motion="acende" className="group relative">
       <div className={`grid grid-cols-[3.25rem_minmax(0,1fr)] items-baseline gap-x-4 py-5 transition-opacity duration-[400ms] ease-out lg:py-6 ${aceso ? "opacity-100" : "opacity-[0.62]"}`}>
         <span className="font-mono text-[15px] font-medium tracking-[0.08em] text-brasa-500">{numero}</span>
         <span className="titulo text-noite-950">

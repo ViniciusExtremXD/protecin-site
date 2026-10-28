@@ -42,7 +42,7 @@ const RECUO = ["0%", "22%", "8%", "40%"];
 function Palavra({ texto, destaque, progress, faixa, reduced }: { texto: string; destaque: boolean; progress: MotionValue<number>; faixa: [number, number]; reduced: boolean }) {
   const opacity = useTransform(progress, faixa, [0.16, 1]);
   return (
-    <motion.span className={destaque ? "text-brasa-500" : undefined} style={reduced ? undefined : { opacity }}>
+    <motion.span className={destaque ? "text-brasa-500" : undefined} style={reduced ? { opacity: 1 } : { opacity }}>
       {texto}
     </motion.span>
   );

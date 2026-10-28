@@ -75,7 +75,7 @@ function Linha({ setor, i, aberto, alternar, aoEntrar }: { setor: Setor; i: numb
           onClick={alternar}
           className="group flex w-full items-center justify-between gap-6 py-6 text-left lg:py-9"
         >
-          <motion.span className="block min-w-0" style={reduced ? undefined : { x: deriva }}>
+          <motion.span className="block min-w-0" style={reduced ? { x: 0 } : { x: deriva }}>
             <span className={`block transition-[transform,color] duration-200 ease-out lg:group-hover:translate-x-6 lg:group-hover:text-brasa-400 ${aberto ? "text-brasa-400" : "text-papel-50"}`}>
               <LinhaMascara className="display-l stretch-66 uppercase lg:text-[clamp(3rem,5.2vw,6.25rem)] lg:leading-[0.9]">{setor.nome}</LinhaMascara>
             </span>

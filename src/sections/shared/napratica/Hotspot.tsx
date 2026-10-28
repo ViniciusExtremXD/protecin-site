@@ -32,13 +32,12 @@ export function Hotspot({
   const reduced = useMotionPref() === "reduced";
   const ativo = estado === "ativo";
   const anima = ativo && !reduced;
-  const numero = numeroPonto(ponto.id);
 
   return (
     <button
       type="button"
       data-hotspot={ponto.id}
-      aria-label={`${numero}: ${ponto.nome}. ${ponto.titulo}`}
+      aria-label={`Ponto ${ponto.id}: ${ponto.nome}. ${ponto.titulo}`}
       aria-current={ativo ? "step" : undefined}
       onClick={() => onSelect?.(ponto)}
       onFocus={() => onFocus?.(ponto)}

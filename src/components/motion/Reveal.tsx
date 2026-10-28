@@ -13,13 +13,22 @@ export interface RevealProps {
   index?: number; // posição para "monta"
   className?: string;
   id?: string;
+  /** padrão VIEWPORT (once, margem de baixo -12%). O fim da página nunca entra nessa faixa: use margem 0 ali. */
+  viewport?: { once?: boolean; margin?: string; amount?: number | "some" | "all" };
   children: ReactNode;
 }
 
-/** Ruído determinístico em [-1, 1] (posições espalhadas do preset "monta", iguais no SSR e no cliente). */
+/**
+ * Ruído determinístico em [-1, 1] (posições espalhadas do preset "monta", iguais no SSR e no cliente).
+ * Hash inteiro (Math.imul): o Math.sin do Node e o do Chrome diferem na última casa, e o fator gigante do truque
+ * "fract(sin(x) * 43758)" levava a diferença para o estilo, com aviso de hidratação.
+ */
 function ruido(i: number, semente: number): number {
-  const x = Math.sin(i * 12.9898 + semente * 78.233) * 43758.5453;
-  return (x - Math.floor(x)) * 2 - 1;
+  let h = Math.imul(i + 1, 0x9e3779b1) ^ Math.imul(semente + 1, 0x85ebca77);
+  h = Math.imul(h ^ (h >>> 15), 0x2c1b3c6d);
+  h = Math.imul(h ^ (h >>> 12), 0x297a2d39);
+  h ^= h >>> 15;
+  return Math.round(((h >>> 0) / 4294967295) * 2000) / 1000 - 1;
 }
 
 /** Transição do modo reduzido: opacidade em 200 ms e qualquer transform instantâneo. */
@@ -70,10 +79,10 @@ export function variantesPreset(preset: Preset, y = 28, delay = 0): Variants {
 const ORIGEM: Partial<Record<Preset, string>> = { virada: "50% 100%" };
 
 /** Entrada única quando o elemento entra 12% na tela. */
-export function Reveal({ as = "div", preset = "sobe", delay = 0, y = 28, index = 0, className, id, children }: RevealProps) {
+export function Reveal({ as = "div", preset = "sobe", delay = 0, y = 28, index = 0, className, id, viewport = VIEWPORT, children }: RevealProps) {
   const reduced = useMotionPref() === "reduced";
   const Comp = motion[as] as typeof motion.div;
-  const gatilho = reduced ? { animate: "show" } : { whileInView: "show", viewport: VIEWPORT };
+  const gatilho = reduced ? { animate: "show" } : { whileInView: "show", viewport };
   return (
     <Comp
       id={id}

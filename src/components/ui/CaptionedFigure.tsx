@@ -68,13 +68,18 @@ export function CaptionedFigure({
         </div>
         {brackets && <FocusBrackets mode="hover" tone={tone} />}
         {creditPosition === "sobre" && (
-          <span className="rotulo absolute bottom-3 left-3 z-[1] rounded-[6px] bg-noite-950/70 px-2.5 py-1.5 text-papel-50">{textoCredito}</span>
+          <Reveal as="span" preset="fade" delay={0.35} className="rotulo absolute bottom-3 left-3 z-[1] rounded-[6px] bg-noite-950/70 px-2.5 py-1.5 text-papel-50">
+            {textoCredito}
+          </Reveal>
         )}
       </div>
       {(caption || creditPosition === "abaixo") && (
-        <figcaption className={`mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 ${corLegenda}`}>
-          {caption && <span className="text-[15px] leading-snug">{caption}</span>}
-          {creditPosition === "abaixo" && <span className="rotulo">{textoCredito}</span>}
+        <figcaption className="mt-3">
+          {/* a legenda entra junto da figura (sobe curto, depois da cortina) */}
+          <Reveal as="span" y={10} delay={0.25} className={`flex flex-wrap items-baseline gap-x-4 gap-y-1 ${corLegenda}`}>
+            {caption && <span className="text-[15px] leading-snug">{caption}</span>}
+            {creditPosition === "abaixo" && <span className="rotulo">{textoCredito}</span>}
+          </Reveal>
         </figcaption>
       )}
     </figure>

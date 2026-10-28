@@ -87,7 +87,7 @@ export default function Escala() {
 
   return (
     <SectionRise id="numeros" className="grain bg-noite-950">
-      <style>{CSS}</style>
+      <style dangerouslySetInnerHTML={{ __html: CSS }} />
       <div ref={secao} className="relative isolate py-24 lg:py-40">
         {/* luz-brasa no canto inferior esquerdo: entra com fade e respira com a rolagem */}
         <motion.div
@@ -107,7 +107,7 @@ export default function Escala() {
 
           <div className="mt-10 grid grid-cols-1 gap-y-16 lg:mt-14 lg:grid-cols-12 lg:gap-x-6">
             <div className="lg:col-span-7 lg:self-center">
-              <motion.div style={reduced ? undefined : { y: numY }}>
+              <motion.div style={reduced ? { y: 0 } : { y: numY }}>
                 <h2 ref={titulo} aria-label={principal.ariaLabel}>
                   <span className="display-xxl stretch-62 block text-[30vw] text-papel-50 md:text-[22vw] lg:text-[min(18vw,260px)]">
                     <span className="inline-flex items-start">

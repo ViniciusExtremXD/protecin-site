@@ -25,9 +25,20 @@ export function ClipReveal({ from = "bottom", radius = 28, delay = 0, scaleFrom 
   }[from];
   const aberto = `inset(0% 0% 0% 0% ${r})`;
 
+  // Fechada só por opacidade, e a cortina (clip-path) começa no disparo. O IntersectionObserver do Chrome aplica o
+  // clip-path do próprio alvo: com inset(100% …) desde o início, a cortina só era "vista" quando a borda de baixo
+  // entrava na tela, e nunca disparava ao chegar nela por salto ou rolando de baixo para cima (o cartão do
+  // formulário ficava vazio).
   const externo: Variants = reduced
     ? { hidden: { opacity: 0 }, show: { opacity: 1, clipPath: aberto, transition: { duration: 0.2, clipPath: { duration: 0 } } } }
-    : { hidden: { clipPath: fechado }, show: { clipPath: aberto, transition: { duration: DUR.max, ease: ease(EASE_IN_OUT), delay } } };
+    : {
+        hidden: { opacity: 0 },
+        show: {
+          opacity: 1,
+          clipPath: [fechado, aberto],
+          transition: { opacity: { duration: 0, delay }, clipPath: { duration: DUR.max, ease: ease(EASE_IN_OUT), delay } },
+        },
+      };
   const interno: Variants = reduced
     ? { hidden: {}, show: { scale: 1, transition: { duration: 0 } } }
     : { hidden: { scale: scaleFrom }, show: { scale: 1, transition: { duration: DUR.max, ease: ease(EASE_OUT), delay } } };

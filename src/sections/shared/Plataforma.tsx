@@ -411,7 +411,7 @@ function Dispositivos({ p, estado, entrou }: { p: MotionValue<number>; estado: E
         transition={{ duration: DUR.curta }}
       >
         <Server size={20} strokeWidth={1.5} className={`shrink-0 transition-colors duration-[350ms] ${aceso ? "text-brasa-300" : "text-marinho-300"}`} />
-        <span className="rotulo text-[12px] leading-[1.25] tracking-[0.12em] text-papel-50">{T.processador}</span>
+        <span className="rotulo text-[13px] leading-[1.25] tracking-[0.1em] text-papel-50">{T.processador}</span>
       </motion.div>
 
       {/* chip "Ordem de serviço" andando pela linha */}
@@ -622,7 +622,7 @@ function DispositivosEstaticos() {
           <Reveal preset="carimbo" className="h-full w-full">
             <div className="flex h-full w-full items-center gap-3 rounded-[10px] border border-brasa-400/80 bg-marinho-900 px-3.5 shadow-[0_0_0_4px_rgba(232,68,46,0.12)]">
               <Server size={20} strokeWidth={1.5} className="shrink-0 text-brasa-300" />
-              <span className="rotulo text-[12px] leading-[1.25] tracking-[0.12em] text-papel-50">{T.processador}</span>
+              <span className="rotulo text-[13px] leading-[1.25] tracking-[0.1em] text-papel-50">{T.processador}</span>
             </div>
           </Reveal>
         </div>
