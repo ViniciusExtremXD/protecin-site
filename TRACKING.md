@@ -1,8 +1,25 @@
-# Rastreamento do site novo da Protecin (para o Gabriel)
+# Rastreamento da Protecin (para o Gabriel)
+
+## Site atual (WordPress), no ar desde 05/11/2026
+
+Contêiner **GTM-KGW8GCB8**, versão 2 (conta GTM "Protecin"), instalado pelo plugin GTM4WP. Google Ads 905-545-2748, `AW-17654682370`. Tudo só dispara em `protecin.com.br`, com ou sem `www`. O JSON do contêiner sai de `scripts/build_gtm_container.py`.
+
+| Conversão no Ads | Rótulo | Quando dispara |
+|---|---|---|
+| Lead Whatsapp | `dnFdCJDujcAbEIKmtOJB` | clique em link com `wa.me` |
+| Lead - Ligação site | `MunOCI-C4rIdEIKmtOJB` | clique em link `tel:` |
+| FORMS - Protecin | `o9O3COfSiNYcEIKmtOJB` | aparece `.wpforms-confirmation-container-full` (formulário 1847 enviado) |
+
+- **Fale conosco** conta visita a `/contato` como conversão, pela tag do Google. Foi para secundária em 05/11/2026 para não inflar os números.
+- **Formulario preenchido** (`VwUjCO_BkcAbEIKmtOJB`) não é usada neste site. Só o contêiner da landing page a usa.
+- `lp.protecin.com.br` usa outro contêiner, `GTM-THH796DB`, sem acesso nosso. Lá a conversão de WhatsApp dispara em qualquer clique em link, e a de formulário em qualquer envio.
+- O GA4 não está instalado, porque ainda não temos o ID.
+
+## Site novo (proposta)
 
 Padrão do Extin Seven (design-final §13). O site empurra eventos para o `dataLayer`; o Google Tag Manager só entra quando o build recebe `VITE_GTM_ID` e só carrega no domínio `protecin.com.br` (ou na prévia com `?gtm_debug=x` ou `?track=1`). Na prévia do GitHub Pages o GTM está desligado: o `dataLayer` existe e recebe os eventos, mas nada é enviado.
 
-**Pendências com o Gabriel:** o ID do contêiner GTM (`VITE_GTM_ID`) e as conversões do Google Ads.
+Na virada, o build usa `VITE_GTM_ID=GTM-KGW8GCB8`. O acionador do formulário precisa trocar para o `form_lead` ou para a `.msg-sucesso`, porque o site novo não usa WPForms.
 
 ## Como ligar
 
