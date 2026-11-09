@@ -1,11 +1,14 @@
 import { useEffect, type ReactNode } from "react";
-import { MotionConfig } from "framer-motion";
+import { LazyMotion, MotionConfig, domAnimation } from "framer-motion";
 import { bindAnchorLinks, initSmoothScroll } from "../../lib/smooth-scroll";
 
 /**
  * Raiz do motion: avisa o seguro anti-invisível que o motor subiu (html.motion-up) e liga o Lenis e as âncoras
  * internas. O movimento fica sempre ligado (AJUSTES-SOBRIEDADE §1): MotionConfig em reducedMotion="never", para o
  * framer-motion animar mesmo com prefers-reduced-motion: reduce no sistema.
+ *
+ * LazyMotion com domAnimation: o site importa `m as motion`, sem os recursos de layout e drag, que ninguém usa. Importar
+ * `motion` direto traria tudo de volta, e cada componente criaria um nó de projeção na hidratação (verify, AC-25).
  */
 export function MotionRoot({ children }: { children: ReactNode }) {
   useEffect(() => {
@@ -39,5 +42,9 @@ export function MotionRoot({ children }: { children: ReactNode }) {
       cancelAnimationFrame(raf);
     };
   }, []);
-  return <MotionConfig reducedMotion="never">{children}</MotionConfig>;
+  return (
+    <LazyMotion features={domAnimation}>
+      <MotionConfig reducedMotion="never">{children}</MotionConfig>
+    </LazyMotion>
+  );
 }

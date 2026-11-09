@@ -1,5 +1,5 @@
 import { useRef, type CSSProperties, type ReactNode } from "react";
-import { motion, useInView } from "framer-motion";
+import { m as motion, useInView } from "framer-motion";
 import { DESLOCAMENTO, EASE_OUT, STAGGER, VIEWPORT, ease } from "./tokens";
 
 export type Linhas = readonly string[] | { readonly desktop: readonly string[]; readonly celular: readonly string[] };

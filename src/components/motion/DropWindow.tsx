@@ -1,5 +1,5 @@
 import { useRef, useState, type ReactNode } from "react";
-import { cubicBezier, motion, useMotionValueEvent, useTransform, type MotionValue } from "framer-motion";
+import { cubicBezier, m as motion, useMotionValueEvent, useTransform, type MotionValue } from "framer-motion";
 import { EASE_IN_OUT, useIsoLayoutEffect } from "./tokens";
 
 export interface DropWindowProps {

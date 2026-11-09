@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { m as motion, useInView } from "framer-motion";
 import { NA_PRATICA, UI } from "../../../data/site";
 import { IMAGENS } from "../../../data/imagens.gen";
 import { DUR, EASE_OUT, Odometer, Reveal, ease } from "../../../components/motion";

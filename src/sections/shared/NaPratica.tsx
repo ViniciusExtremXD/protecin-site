@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { animate, motion, useMotionValue, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { animate, m as motion, useMotionValue, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Plus } from "lucide-react";
 import { NA_PRATICA, SECOES, linhasTexto, servicoPorSlug, type Hotspot as PontoFoto, type ServicoSlug } from "../../data/site";
 import { IMAGENS } from "../../data/imagens.gen";

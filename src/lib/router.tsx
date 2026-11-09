@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState, type AnchorHTMLAttributes, type MouseEvent, type ReactNode } from "react";
 import { COMPANY, NOT_FOUND, ROUTES, type Rota } from "../data/site";
-import { quandoLivre, resizeSmoothScroll, scrollToHash, scrollToY } from "./smooth-scroll";
+import { quandoLivre, resizeSmoothScroll, scrollToHash, scrollToY, voltarEstimativaSecoes } from "./smooth-scroll";
 import { definirCaminhoAtual, pushEvent } from "./track";
 import { routeUrl } from "./urls";
 
@@ -96,6 +96,7 @@ export function RouterProvider({ initialPath, children, memory = false }: { init
             if (opts.replace) history.replaceState(null, "", url);
             else history.pushState(null, "", url);
           }
+          voltarEstimativaSecoes();
           setEstado({ path, phase: "saindo", destino: path });
           scrollToY(0, { immediate: true });
           requestAnimationFrame(() => resizeSmoothScroll());

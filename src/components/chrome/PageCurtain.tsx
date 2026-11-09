@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m as motion } from "framer-motion";
 import { useRouteTransition } from "../../lib/router";
 import { EASE_IN_OUT, EASE_OUT, ease } from "../motion/tokens";
 import { PARTES } from "../ui/Symbol";

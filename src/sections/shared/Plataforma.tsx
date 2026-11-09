@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { animate, motion, useInView, useMotionValue, useTransform } from "framer-motion";
+import { animate, m as motion, useInView, useMotionValue, useTransform } from "framer-motion";
 import { Server } from "lucide-react";
 import { IMAGENS } from "../../data/imagens.gen";
 import { PLATAFORMA, SECOES, WA } from "../../data/site";

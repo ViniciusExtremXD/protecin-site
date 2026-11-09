@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { motion, type Variants } from "framer-motion";
+import { m as motion, type Variants } from "framer-motion";
 import { DUR, EASE_IN_OUT, EASE_OUT, VIEWPORT, ease } from "./tokens";
 
 export interface ClipRevealProps {

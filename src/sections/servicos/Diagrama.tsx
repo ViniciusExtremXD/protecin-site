@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode, type SyntheticEvent } from "react";
-import { animate, motion, useInView, useMotionValue, useMotionValueEvent, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { animate, m as motion, useInView, useMotionValue, useMotionValueEvent, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { DIAGRAMA, linhasTexto, servicoPorSlug, type Camada, type ServicoSlug } from "../../data/site";
 import { Link } from "../../lib/router";

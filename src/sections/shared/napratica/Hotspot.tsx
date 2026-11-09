@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import type { Hotspot as PontoFoto } from "../../../data/site";
 import { EASE_IN_OUT, EASE_OUT, ease } from "../../../components/motion";
 

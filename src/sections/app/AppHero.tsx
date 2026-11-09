@@ -1,5 +1,5 @@
 import { useRef, type CSSProperties } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { m as motion, useScroll, useTransform } from "framer-motion";
 import { IMAGENS } from "../../data/imagens.gen";
 import { APP_HERO, PLATAFORMA, UI, WA, linhasTexto } from "../../data/site";
 import { SplitLines } from "../../components/motion";

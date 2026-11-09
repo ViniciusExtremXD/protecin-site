@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { motion, useInView, useMotionValue, useMotionValueEvent, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { m as motion, useInView, useMotionValue, useMotionValueEvent, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { SECOES, TIMELINE, linhasTexto, type Marco } from "../../data/site";
 import { EASE_OUT, PinStage, Reveal, ease, usePin } from "../../components/motion";
@@ -293,7 +293,21 @@ function Deslizante({ variant }: { variant: Variante }) {
     setPontas((v) => (v.ini === ini && v.fim === fim ? v : { ini, fim }));
   };
   useMotionValueEvent(scrollXProgress, "change", atualizar);
-  useEffect(() => atualizar(scrollXProgress.get()), []); // eslint-disable-line react-hooks/exhaustive-deps
+  // estado inicial das setas: lê a largura do trilho quando a seção chega perto da tela, não na hidratação
+  useEffect(() => {
+    const el = trilho.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        atualizar(scrollXProgress.get());
+      },
+      { rootMargin: "100% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   /** Um cartão para o lado (setas): a largura do 1º cartão é o passo do snap. */
   const passar = (dir: 1 | -1) => {

@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { m as motion, useInView } from "framer-motion";
 import { Check } from "lucide-react";
 import { PLATAFORMA, type Modulo } from "../../data/site";
 import { DUR, EASE_IN_OUT, EASE_OUT, Reveal, RevealGroup, RevealItem, SplitLines, ease } from "../../components/motion";

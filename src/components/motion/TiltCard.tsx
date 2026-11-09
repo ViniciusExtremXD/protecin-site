@@ -1,5 +1,5 @@
 import { useRef, type PointerEvent, type ReactNode } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { m as motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { SPRING, TILT_MAX } from "./tokens";
 
 /**

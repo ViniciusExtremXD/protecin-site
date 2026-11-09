@@ -59,25 +59,33 @@ export function Odometer({
   const passo = Math.round(stagger * 1000);
 
   // inView: fora da tela ao montar → salta em silêncio para o mesmo dígito no 1º ciclo e gira uma volta ao entrar.
+  // A 1ª resposta do observer diz se já estava na tela, sem forçar o layout da seção (content-visibility).
   useEffect(() => {
     if (trigger !== "inView") return;
     const el = raiz.current;
     if (!el) return;
-    const r = el.getBoundingClientRect();
-    if (r.top < window.innerHeight && r.bottom > 0) return; // já estava na tela: não anima
-    const lista = rolos.current.slice(0, digitos.length);
-    lista.forEach((c, j) => c && colocar(c, digitos[j]));
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (!e.isIntersecting) return;
-        io.disconnect();
-        const n = lista.length;
-        lista.forEach((c, j) => c && girar(c, 10 + digitos[j], dur, (n - 1 - j) * passo));
-      },
-      { rootMargin: "0px 0px -12% 0px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
+    let entrada: IntersectionObserver | null = null;
+    const inicial = new IntersectionObserver(([e]) => {
+      inicial.disconnect();
+      if (e.isIntersecting) return; // já estava na tela: não anima
+      const lista = rolos.current.slice(0, digitos.length);
+      lista.forEach((c, j) => c && colocar(c, digitos[j]));
+      entrada = new IntersectionObserver(
+        ([d]) => {
+          if (!d.isIntersecting) return;
+          entrada?.disconnect();
+          const n = lista.length;
+          lista.forEach((c, j) => c && girar(c, 10 + digitos[j], dur, (n - 1 - j) * passo));
+        },
+        { rootMargin: "0px 0px -12% 0px" },
+      );
+      entrada.observe(el);
+    });
+    inicial.observe(el);
+    return () => {
+      inicial.disconnect();
+      entrada?.disconnect();
+    };
   }, []); // só na montagem
 
   // value: gira para a frente até o novo dígito e normaliza a posição em silêncio.

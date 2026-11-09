@@ -7,7 +7,10 @@
  * Uso: node scripts/servir-estatico.mjs [porta] [--base /protecin-site]
  * Também exporta servir(porta, base) para os outros scripts.
  */
+import { execFileSync } from "node:child_process";
+import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import { createServer } from "node:http";
+import { createSecureServer } from "node:http2";
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -52,10 +55,11 @@ async function ehArquivo(p) {
 const TEXTO = /^(text\/|application\/(json|xml)|image\/svg)/;
 const gz = new Map();
 
-export function servir(porta = 4195, base = "/protecin-site", pasta = "dist") {
+/** Atende uma requisição (a mesma lógica para HTTP/1.1 e HTTP/2). */
+function manipulador(base, pasta) {
   const raizDist = path.resolve(pasta); // normaliza barras e torna absoluto (o teste "dentro da pasta" compara texto)
   const BASE = base.replace(/\/$/, "");
-  const servidor = createServer(async (req, res) => {
+  return async (req, res) => {
     const [cru, query = ""] = (req.url ?? "/").split("?");
     let url;
     try {
@@ -106,11 +110,35 @@ export function servir(porta = 4195, base = "/protecin-site", pasta = "dist") {
     }
     res.writeHead(status, { "Content-Type": tipo, "Accept-Ranges": "bytes", "Cache-Control": "no-cache" });
     res.end(corpo);
-  });
+  };
+}
+
+function ouvir(servidor, porta) {
   return new Promise((ok, erro) => {
     servidor.once("error", erro);
     servidor.listen(porta, "127.0.0.1", () => ok(servidor));
   });
+}
+
+export function servir(porta = 4195, base = "/protecin-site", pasta = "dist") {
+  return ouvir(createServer(manipulador(base, pasta)), porta);
+}
+
+/**
+ * O mesmo site em HTTPS e HTTP/2, como o GitHub Pages responde. Certificado próprio em scratch/cert (o navegador da
+ * medição usa --ignore-certificate-errors). Serve também para medir sem o antivírus da máquina, que abre o HTTP local
+ * (tira o gzip do HTML e injeta um script de 180 KB) e não toca nesta conexão.
+ */
+export function servirH2(porta = 4195, base = "/protecin-site", pasta = "dist") {
+  const dirCert = path.resolve("scratch", "cert");
+  const key = path.join(dirCert, "key.pem");
+  const cert = path.join(dirCert, "crt.pem");
+  if (!existsSync(cert)) {
+    mkdirSync(dirCert, { recursive: true });
+    const openssl = ["C:/Program Files/Git/usr/bin/openssl.exe", "/usr/bin/openssl"].find((c) => existsSync(c)) ?? "openssl";
+    execFileSync(openssl, ["req", "-x509", "-newkey", "rsa:2048", "-nodes", "-keyout", key, "-out", cert, "-days", "365", "-subj", "/CN=localhost", "-addext", "subjectAltName=DNS:localhost,IP:127.0.0.1"], { stdio: "ignore" });
+  }
+  return ouvir(createSecureServer({ key: readFileSync(key), cert: readFileSync(cert), allowHTTP1: true }, manipulador(base, pasta)), porta);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

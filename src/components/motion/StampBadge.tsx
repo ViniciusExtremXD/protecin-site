@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { DUR, EASE_OUT, VIEWPORT, ease } from "./tokens";
 
 const ESCONDIDO = { opacity: 0, scale: 1.04, rotate: 0 };

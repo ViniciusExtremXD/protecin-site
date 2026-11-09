@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
-import { AnimatePresence, motion, useAnimationControls, useInView, type Variants } from "framer-motion";
+import { AnimatePresence, m as motion, useAnimationControls, useInView, type Variants } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, CircleAlert } from "lucide-react";
 import { COMPANY, FORM, SERVICOS, SETORES_FORM } from "../../../data/site";
 import { DUR, EASE_IN, EASE_OUT, VIEWPORT, ease } from "../../../components/motion/tokens";

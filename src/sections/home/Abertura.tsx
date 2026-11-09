@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { cubicBezier, motion, useMotionValue, useMotionValueEvent, useTransform, type MotionValue } from "framer-motion";
+import { cubicBezier, m as motion, useMotionValue, useMotionValueEvent, useTransform, type MotionValue } from "framer-motion";
 import { Phone } from "lucide-react";
 import { COMPANY, HERO, UI } from "../../data/site";
 import { IMAGENS } from "../../data/imagens.gen";
@@ -30,7 +30,7 @@ const ROTULO_VIDEO = `${UI.imagemIlustrativa}: ${IMAGENS["hero-poster"].alt}`;
 // Entradas próprias do hero (só sob html.motion-full; sem JS aparecem paradas no estado final).
 // A gota fica invisível até a posição estar medida (data-pronto): ver o comentário do encaixe.
 const CSS = `
-@keyframes ab-sobe12{from{opacity:0;transform:translate3d(0,12px,0)}}
+@keyframes ab-sobe12{from{transform:translate3d(0,12px,0)}}
 @keyframes ab-cinquenta{from{color:#F3EFE9;transform:scale(.94)}}
 .ab-cinquenta{display:inline-block;transform-origin:50% 60%}
 html.motion-full .ab-sobe12{animation:ab-sobe12 var(--dur,500ms) cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--t0) + var(--d,0ms))}

@@ -1,5 +1,5 @@
 import { useRef, type CSSProperties } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { m as motion, useScroll, useTransform } from "framer-motion";
 import { PAGE_HEROES, UI, linhasTexto } from "../../data/site";
 import { Link } from "../../lib/router";
 import { SplitLines } from "../motion/SplitLines";

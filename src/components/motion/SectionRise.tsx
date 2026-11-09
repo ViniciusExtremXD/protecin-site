@@ -1,5 +1,5 @@
 import { useRef, type ReactNode } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { m as motion, useScroll, useTransform } from "framer-motion";
 import { Rule } from "./Rule";
 
 /**

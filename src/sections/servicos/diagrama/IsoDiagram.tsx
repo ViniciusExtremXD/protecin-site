@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
-import { motion, useTransform, type MotionValue } from "framer-motion";
+import { m as motion, useTransform, type MotionValue } from "framer-motion";
 import { DIAGRAMA } from "../../../data/site";
 import { DrawPath, EASE_OUT, ease } from "../../../components/motion";
 import { BICOS, LAJES, PAREDES, PICTOS, TRACOS, VIEWBOX_CENA, VIEWBOX_COMPACTO, vb, type CorTraco, type Picto, type Traco } from "./iso";

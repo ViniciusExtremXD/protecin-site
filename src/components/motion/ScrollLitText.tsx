@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { m as motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 
 type Offset = NonNullable<Parameters<typeof useScroll>[0]>["offset"];
 

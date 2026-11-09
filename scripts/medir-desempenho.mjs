@@ -6,11 +6,16 @@
  * Rolagem (CPU desacelerada, padrão 4x): roda do mouse no desktop, scrollBy no celular, intervalo entre quadros
  * e custo do navegador (estilo, layout, script).
  *
- * Uso: node scripts/medir-desempenho.mjs [url] [--cpu 4] [--mobile] [--reduzido] [--4g] [--gpu] [--saida <pasta>]
+ * Uso: node scripts/medir-desempenho.mjs [url] [--cpu 4] [--mobile] [--reduzido] [--4g] [--gpu] [--h2] [--so-carga] [--dist <pasta>] [--saida <pasta>]
  *   --4g: a carga roda com rede e CPU do Lighthouse mobile (150 ms de RTT, 1,6 Mbps, CPU 4x) para estimar o LCP
  *   sem url: serve dist/ em http://127.0.0.1:4195/protecin-site/ e mede a home (o site anima sempre; --reduzido só
  *   emula prefers-reduced-motion: reduce, que não muda nada)
- *   → <saida, padrão verificacao>/desempenho[-mobile][-reduzido][-4g].json e resumo no console
+ *   --h2: serve em HTTPS e HTTP/2, como o GitHub Pages. É o número que vale para o visitante: no HTTP local o antivírus
+ *   desta máquina tira o gzip do HTML (232 KB em vez de 32 KB) e injeta um script próprio de 180 KB. Sem --h2 o script
+ *   mede como sempre mediu, com esse custo por cima.
+ *   --so-carga: só a carga, sem a rolagem. --dist: serve outra pasta (ex.: a cópia de um build anterior).
+ *   heroVisivelMs: quando o hero aparece de fato (a capa do preloader sai por inteiro), que o LCP não enxerga.
+ *   → <saida, padrão verificacao>/desempenho[-mobile][-reduzido][-4g][-h2].json e resumo no console
  */
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -25,14 +30,17 @@ const cpu = Number(args.includes("--cpu") ? args[args.indexOf("--cpu") + 1] : 4)
 const mobile = args.includes("--mobile");
 const reduzido = args.includes("--reduzido");
 const rede4g = args.includes("--4g");
+const h2 = args.includes("--h2");
+const soCarga = args.includes("--so-carga");
 const SAIDA = args.includes("--saida") ? args[args.indexOf("--saida") + 1] : "verificacao";
+const DIST = args.includes("--dist") ? args[args.indexOf("--dist") + 1] : "dist";
 const ehAntivirus = (u = "") => /kaspersky-labs\.com|\.scr\.kaspersky/.test(u);
 let url = args.find((a) => a.startsWith("http"));
 let servidor = null;
 if (!url) {
-  const { servir } = await import(pathToFileURL(path.resolve("scripts/servir-estatico.mjs")).href);
-  servidor = await servir(4195, "/protecin-site", path.resolve("dist"));
-  url = "http://127.0.0.1:4195/protecin-site/";
+  const { servir, servirH2 } = await import(pathToFileURL(path.resolve("scripts/servir-estatico.mjs")).href);
+  servidor = await (h2 ? servirH2 : servir)(4195, "/protecin-site", path.resolve(DIST));
+  url = `${h2 ? "https" : "http"}://127.0.0.1:4195/protecin-site/`;
 }
 
 const CHROMES = [
@@ -49,9 +57,11 @@ async function main() {
     executablePath: CHROMES.find((c) => existsSync(c)),
     headless: true,
     userDataDir: perfil,
+    acceptInsecureCerts: h2,
     args: [
       "--hide-scrollbars",
       "--force-color-profile=srgb",
+      ...(h2 ? ["--ignore-certificate-errors"] : []),
       ...(args.includes("--gpu") ? ["--enable-gpu", "--use-angle=d3d11", "--ignore-gpu-blocklist", "--enable-gpu-rasterization"] : []),
     ],
   });
@@ -108,6 +118,16 @@ async function main() {
         for (const e of l.getEntries()) window.__tbt += Math.max(0, e.duration - 50);
         window.__longas += l.getEntries().length;
       }).observe({ type: "longtask", buffered: true });
+      // fim da saída do preloader, pela linha do tempo da animação (roda no compositor, mesmo com o JS ocupando a
+      // thread principal); sem preloader na tela vale o primeiro quadro
+      window.__capaSai = 0;
+      const ver = () => {
+        const capa = document.querySelector(".pt-preloader");
+        const a = capa?.getAnimations().find((x) => x.animationName === "pre-sai" && x.startTime !== null);
+        if (a) window.__capaSai = a.startTime + a.effect.getComputedTiming().endTime;
+        if (!window.__capaSai && !(document.documentElement && document.documentElement.classList.contains("motion-up"))) requestAnimationFrame(ver);
+      };
+      requestAnimationFrame(ver);
     });
     await page.goto(url, { waitUntil: "networkidle2", timeout: 120000 });
     await new Promise((r) => setTimeout(r, 2500));
@@ -117,10 +137,28 @@ async function main() {
       cls: window.__cls,
       tbt: window.__tbt,
       fcp: performance.getEntriesByName("first-contentful-paint")[0]?.startTime ?? 0,
+      capaSai: window.__capaSai,
+      subiu: 0,
     }));
     await Promise.all(pendentes);
     const bytesCarga = bytes;
     if (rede4g) await cdp.send("Network.emulateNetworkConditions", { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
+    if (soCarga) {
+      const curto = {
+        url,
+        fcpMs: Math.round(carga.fcp),
+        lcpMs: Math.round(carga.lcp),
+        heroVisivelMs: Math.round(Math.max(carga.fcp, carga.capaSai)),
+        tbtMs: Math.round(carga.tbt),
+        lcpElemento: carga.lcpEl,
+        clsCarga: +carga.cls.toFixed(4),
+        primeiraCargaKB: Math.round(bytesCarga / 1024),
+      };
+      await mkdir(SAIDA, { recursive: true });
+      await writeFile(path.join(SAIDA, `carga${mobile ? "-mobile" : ""}${rede4g ? "-4g" : ""}${h2 ? "-h2" : ""}.json`), JSON.stringify(curto, null, 2));
+      console.log(curto);
+      return;
+    }
 
     await cdp.send("Emulation.setCPUThrottlingRate", { rate: cpu });
     const antes = Object.fromEntries((await cdp.send("Performance.getMetrics")).metrics.map((m) => [m.name, m.value]));
@@ -163,6 +201,7 @@ async function main() {
       cargaComo: rede4g ? "4G simulado do Lighthouse (150 ms, 1,6 Mbps, CPU 4x)" : "rede local, CPU sem desaceleração",
       fcpMs: Math.round(carga.fcp),
       lcpMs: Math.round(carga.lcp),
+      heroVisivelMs: Math.round(Math.max(carga.fcp, carga.capaSai)),
       tbtMs: Math.round(carga.tbt),
       lcpElemento: carga.lcpEl,
       clsCarga: +carga.cls.toFixed(4),
@@ -185,7 +224,7 @@ async function main() {
       tarefasLongas: fim.longas,
     };
     await mkdir(SAIDA, { recursive: true });
-    await writeFile(path.join(SAIDA, `desempenho${mobile ? "-mobile" : ""}${reduzido ? "-reduzido" : ""}${rede4g ? "-4g" : ""}.json`), JSON.stringify(resultado, null, 2));
+    await writeFile(path.join(SAIDA, `desempenho${mobile ? "-mobile" : ""}${reduzido ? "-reduzido" : ""}${rede4g ? "-4g" : ""}${h2 ? "-h2" : ""}.json`), JSON.stringify(resultado, null, 2));
     console.log(resultado);
   } finally {
     await nav.close();

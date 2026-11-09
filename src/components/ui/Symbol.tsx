@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { motion, useInView, type MotionStyle } from "framer-motion";
+import { m as motion, useInView, type MotionStyle } from "framer-motion";
 import { EASE_IN_OUT, EASE_OUT, VIEWPORT, ease } from "../motion/tokens";
 
 export type ParteSimbolo = "tl" | "tr" | "bl" | "br" | "gota";

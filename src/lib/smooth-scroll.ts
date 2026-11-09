@@ -1,11 +1,11 @@
-import Lenis from "lenis";
+import type Lenis from "lenis";
 
 /*
  * Rolagem suave (Lenis, padrão do Extin Seven). Instância única, lerp 0.11, RAF próprio.
  * O movimento fica sempre ligado (AJUSTES-SOBRIEDADE §1): o Lenis suaviza a roda do mouse mesmo com
  * prefers-reduced-motion: reduce no sistema (respectReducedMotion: false; sem isso o Lenis 1.3 força lerp 1 e torna
  * as rolagens programadas instantâneas). Em aparelho só de toque ele não é criado (a rolagem do dedo é nativa de
- * qualquer forma): as âncoras usam o scroll suave do navegador.
+ * qualquer forma), nem baixado: as âncoras usam o scroll suave do navegador.
  */
 let lenis: Lenis | null = null;
 
@@ -20,20 +20,44 @@ const soToque = () => typeof window !== "undefined" && !!window.matchMedia?.("(h
 
 export function initSmoothScroll(): () => void {
   if (lenis || soToque()) return () => {};
-  lenis = new Lenis({ lerp: 0.11, smoothWheel: true, wheelMultiplier: 0.95, respectReducedMotion: false });
-  // o preloader ou o menu podem ter travado a página antes do Lenis existir
-  if (document.documentElement.style.overflow === "hidden") lenis.stop();
+  let cancelado = false;
   let frame = 0;
-  const raf = (time: number) => {
-    lenis?.raf(time);
-    frame = requestAnimationFrame(raf);
-  };
-  frame = requestAnimationFrame(raf);
+  import("lenis")
+    .then(({ default: Lenis }) => {
+      if (cancelado) return;
+      lenis = new Lenis({ lerp: 0.11, smoothWheel: true, wheelMultiplier: 0.95, respectReducedMotion: false });
+      // o preloader ou o menu podem ter travado a página antes do Lenis existir
+      if (document.documentElement.style.overflow === "hidden") lenis.stop();
+      const raf = (time: number) => {
+        lenis?.raf(time);
+        frame = requestAnimationFrame(raf);
+      };
+      frame = requestAnimationFrame(raf);
+    })
+    .catch(() => {}); // sem o arquivo do Lenis a roda do mouse fica nativa, sem prejuízo de leitura
   return () => {
+    cancelado = true;
     cancelAnimationFrame(frame);
     lenis?.destroy();
     lenis = null;
   };
+}
+
+/**
+ * As seções abaixo da dobra usam content-visibility: auto e, antes de renderizar, medem uma altura estimada (styles.css).
+ * Antes de rolar até uma âncora, todas passam a medir a altura real: sem isso a seção de destino mudaria de lugar no
+ * meio da rolagem, conforme as anteriores renderizam. O router devolve a economia na troca de rota.
+ */
+function medirSecoes(): void {
+  const h = document.documentElement;
+  if (h.classList.contains("cv-solto")) return;
+  h.classList.add("cv-solto");
+  void document.body.offsetHeight;
+  lenis?.resize();
+}
+
+export function voltarEstimativaSecoes(): void {
+  document.documentElement.classList.remove("cv-solto");
 }
 
 function alvoDe(hash: string): HTMLElement | 0 | null {
@@ -48,6 +72,7 @@ function alvoDe(hash: string): HTMLElement | 0 | null {
 export function scrollToHash(hash: string): void {
   const target = alvoDe(hash);
   if (target === null) return;
+  if (target !== 0) medirSecoes();
   if (lenis) {
     // o Lenis 1.3 já desconta o scroll-padding-top (e o scroll-margin) do alvo: sem offset extra
     lenis.scrollTo(target, { duration: 1.4 });

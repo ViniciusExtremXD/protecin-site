@@ -37,7 +37,7 @@ export function CaixaEscalada({
       const novo = fit === "largura" ? Math.min(max, largura / w) : Math.min(max, largura / w, altura / h);
       setK((atual) => (atual !== null && Math.abs(atual - novo) < 0.001 ? atual : novo));
     };
-    medir();
+    // só o observer, sem medir ao montar: ler a largura aqui forçaria o layout da seção, que content-visibility adiou
     const ro = new ResizeObserver(medir);
     ro.observe(el);
     return () => ro.disconnect();

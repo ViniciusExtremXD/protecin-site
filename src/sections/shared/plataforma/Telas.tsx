@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { motion, useTransform, type MotionValue } from "framer-motion";
+import { m as motion, useTransform, type MotionValue } from "framer-motion";
 import { Bell, FileCheck2, FileText, Mail, MapPin, RefreshCw, ScanLine, Search, WifiOff } from "lucide-react";
 import { PLATAFORMA } from "../../../data/site";
 import { Odometer, Reel, variantesPreset } from "../../../components/motion";

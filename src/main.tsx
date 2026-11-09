@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, startTransition } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import App from "./App";
 import "./styles.css";
@@ -15,5 +15,7 @@ const app = (
 );
 
 // O build pré-renderiza cada rota (scripts/prerender.mjs); o servidor de desenvolvimento parte da raiz vazia.
-if (raiz.hasChildNodes()) hydrateRoot(raiz, app);
+// A hidratação é a árvore inteira de uma vez, mas em transição: o React divide o trabalho em fatias e o navegador pinta
+// e responde entre elas, em vez de ficar uma tarefa só de mais de 1 s no celular.
+if (raiz.hasChildNodes()) startTransition(() => void hydrateRoot(raiz, app));
 else createRoot(raiz).render(app);

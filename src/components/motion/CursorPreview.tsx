@@ -1,6 +1,6 @@
 import { useEffect, useState, type RefObject } from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
+import { AnimatePresence, m as motion, useMotionValue, useSpring } from "framer-motion";
 import type { ImagemId } from "../../data/imagens.gen";
 import { useFinePointer } from "../../lib/media";
 import { Img } from "../ui/Img";

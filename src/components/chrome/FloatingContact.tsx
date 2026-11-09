@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { AnimatePresence, m as motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Phone } from "lucide-react";
 import { UI } from "../../data/site";
 import { useIsDesktop } from "../../lib/media";

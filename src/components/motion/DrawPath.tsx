@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
+import { m as motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import { EASE_IN_OUT, VIEWPORT, ease } from "./tokens";
 
 export interface DrawPathProps {

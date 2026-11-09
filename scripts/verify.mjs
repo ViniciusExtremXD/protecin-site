@@ -116,7 +116,7 @@ const NOMES = {
   "AC-04": "toda figure com crédito; nenhum arquivo proibido em public/img",
   "AC-05": "espaços reservados só com ?proposta=1 (e os 4 aparecem)",
   "AC-06": "cobertura de animação ≥ 98%",
-  "AC-07": "nada invisível depois de rolar (os dois modos)",
+  "AC-07": "nada invisível na tela depois de rolar (os dois modos)",
   "AC-08": "cenas fixadas: cada elemento ≥ 0,9 em alguma amostra",
   "AC-09": "entradas: ≥ 5 valores e 200 a 900 ms",
   "AC-10": "sem JS e com animation:none: nada invisível, H1 e CTA na tela",
@@ -246,6 +246,53 @@ async function varrer(page, passoPct = 0.6, pausa = 140) {
   await espera(900);
 }
 
+/**
+ * AC-07 e AC-10: nada pode continuar invisível (opacidade < 0,1) com o elemento NA TELA.
+ *
+ * A varredura só serve para disparar as entradas e o lazy: ela salta 0,6 tela a cada 140 ms e, com a máquina ocupada,
+ * um elemento pode entrar e sair da tela entre dois quadros sem o IntersectionObserver vê-lo. Um elemento que ficou
+ * para trás assim ainda não falhou; falha o que continua invisível depois de ser levado ao centro da tela e ficar lá
+ * pelo menos 2 s e 30 quadros (com a máquina ocupada espera os quadros, até 8 s). Devolve as falhas, quantos a
+ * varredura pulou e o maior tempo de revelação.
+ */
+async function invisiveisNaTela(page) {
+  return page.evaluate(async () => {
+    const pt = window.__pt;
+    const conta = (el) => !el.closest('[aria-hidden="true"], [data-pin-stage][data-pin="on"], [role="dialog"]') && !(el.tagName === "VIDEO" && !el.classList.contains("is-playing"));
+    const pulados = pt.alvos().filter(conta).filter((el) => pt.opac(el) < 0.1);
+    const falhas = [];
+    let piorMs = 0;
+    for (const el of pulados) {
+      if (pt.opac(el) >= 0.1) continue; // revelou junto com um vizinho
+      if (falhas.length >= 10) {
+        falhas.push(pt.descr(el)); // a página já falhou: o resto entra na lista sem esperar
+        continue;
+      }
+      el.scrollIntoView({ block: "center" });
+      const t0 = performance.now();
+      let quadros = 0;
+      let revelou = false;
+      for (;;) {
+        await new Promise((r) => requestAnimationFrame(r));
+        quadros++;
+        const ms = performance.now() - t0;
+        if (pt.opac(el) >= 0.1) {
+          revelou = true;
+          piorMs = Math.max(piorMs, Math.round(ms));
+          break;
+        }
+        if ((ms >= 2000 && quadros >= 30) || ms >= 8000) break;
+      }
+      if (!revelou) {
+        const b = el.getBoundingClientRect();
+        const naTela = b.bottom > 0 && b.top < innerHeight && b.right > 0 && b.left < innerWidth;
+        falhas.push(`${pt.descr(el)}${naTela ? "" : " (nem chega à tela)"}`);
+      }
+    }
+    return { falhas, pulados: pulados.length, piorMs };
+  });
+}
+
 // Funções de auditoria injetadas na página.
 const AUDITORIA = `
 window.__pt = {
@@ -340,6 +387,15 @@ if (!URL_EXTERNA) {
     });
   }
   registrar("AC-02", achados.length === 0, `nome do banco em: ${achados.map((p) => path.relative(RAIZ, p)).join(", ")}`);
+  // AC-25: `motion` importado direto traz de volta ao bundle os recursos de layout e drag (o site usa `m as motion`)
+  const motionDireto = [];
+  andar(path.join(RAIZ, "src"), (p, n) => {
+    if (!/\.tsx?$/.test(n)) return;
+    for (const m of readFileSync(p, "utf8").matchAll(/import \{([^}]*)\} from "framer-motion"/g)) {
+      if (/(^|[\s,])motion([\s,]|$)/.test(m[1].replace(/\bm as motion\b/g, ""))) motionDireto.push(path.relative(RAIZ, p));
+    }
+  });
+  registrar("AC-25", motionDireto.length === 0, `motion importado direto de framer-motion em: ${motionDireto.join(", ")}`);
   for (const n of readdirSync(path.join(RAIZ, "public", "img"))) registrar("AC-04", !ARQUIVOS_PROIBIDOS.some((re) => re.test(n)), `arquivo proibido em public/img: ${n}`);
 }
 
@@ -425,24 +481,11 @@ for (const tela of TELAS) {
         registrar("AC-11", brasas === 0, `${rot}: ${brasas} canvas de brasas`);
       }
 
-      // AC-QA-ALTURA: comprimento da página (depois de rolar: lazy e cenas já ligadas)
-      if (tela.width === 1440 || tela.width === 390) {
-        const altura = await page.evaluate(() => document.documentElement.scrollHeight);
-        const teto = TETO_ALTURA[r.page]?.[tela.width === 1440 ? 0 : 1];
-        relatorio.medidas[`altura ${tela.nome} ${modo} ${r.rota}`] = altura;
-        if (teto) registrar("AC-QA-ALTURA", altura <= teto, `${rot}: scrollHeight ${altura} px (teto ${teto})`);
-      }
-
-      // AC-07: nada invisível depois de rolar (fora das cenas fixadas, que o AC-08 cobre)
-      const invisiveis = await page.evaluate(() =>
-        window.__pt
-          .alvos()
-          .filter((el) => !el.closest('[aria-hidden="true"], [data-pin-stage][data-pin="on"], [role="dialog"]'))
-          .filter((el) => !(el.tagName === "VIDEO" && !el.classList.contains("is-playing")))
-          .filter((el) => window.__pt.opac(el) < 0.1)
-          .map((el) => window.__pt.descr(el)),
-      );
+      // AC-07: nada invisível na tela depois de rolar (fora das cenas fixadas, que o AC-08 cobre)
+      const ac07 = await invisiveisNaTela(page);
+      const invisiveis = ac07.falhas;
       registrar("AC-07", invisiveis.length === 0, invisiveis.length ? `${rot}: ${invisiveis.length} invisíveis: ${[...new Set(invisiveis)].slice(0, 6).join(" | ")}` : "");
+      if (ac07.pulados) nota("AC-07", `${rot}: a varredura pulou ${ac07.pulados}; revelados ao entrar na tela (pior ${ac07.piorMs} ms)`);
 
       // AC-06: cobertura (os dois modos animam igual: mede no full)
       if (modo === "full") {
@@ -494,9 +537,21 @@ for (const tela of TELAS) {
         registrar("AC-23", toque.textos.length === 0, toque.textos.length ? `${rot}: texto < 13px: ${toque.textos.slice(0, 5).join(" | ")}` : "");
       }
 
+      // AC-QA-ALTURA: comprimento da página (depois de rolar: lazy e cenas já ligadas). Por último, com todas as seções
+      // medidas de verdade (html.cv-solto): com content-visibility, a que a varredura não renderizou vale pela estimativa
+      if (tela.width === 1440 || tela.width === 390) {
+        const altura = await page.evaluate(() => {
+          document.documentElement.classList.add("cv-solto");
+          return document.documentElement.scrollHeight;
+        });
+        const teto = TETO_ALTURA[r.page]?.[tela.width === 1440 ? 0 : 1];
+        relatorio.medidas[`altura ${tela.nome} ${modo} ${r.rota}`] = altura;
+        if (teto) registrar("AC-QA-ALTURA", altura <= teto, `${rot}: scrollHeight ${altura} px (teto ${teto})`);
+      }
+
       registrar("CONSOLE", consoleMsgs.length === 0, consoleMsgs.length ? `${rot}: ${[...new Set(consoleMsgs)].slice(0, 4).join(" | ")}` : "");
       registrar("CONSOLE", falhas.length === 0, falhas.length ? `${rot}: requisições com falha: ${[...new Set(falhas)].slice(0, 4).join(" | ")}` : "");
-      log(`  ${rot.padEnd(42)} ${((Date.now() - inicio) / 1000).toFixed(1)}s  console ${consoleMsgs.length}  invisíveis ${invisiveis.length}`);
+      log(`  ${rot.padEnd(42)} ${((Date.now() - inicio) / 1000).toFixed(1)}s  console ${consoleMsgs.length}  invisíveis ${invisiveis.length}${ac07.pulados ? ` (${ac07.pulados} só ao entrar na tela)` : ""}`);
       await ctx.close();
     }
   }
@@ -658,6 +713,9 @@ log("\n# Sem JS e animation:none (AC-10)");
 async function checarLeitura(page, rot, nome) {
   await page.evaluate(AUDITORIA);
   const r = await page.evaluate(() => {
+    // o teste de recorte compara o elemento com as caixas em volta: vale a altura real da seção, não a estimativa de
+    // content-visibility (a seção com overflow-clip mediria menos que o conteúdo só enquanto não renderizou)
+    document.documentElement.classList.add("cv-solto");
     const esc = [];
     for (const el of window.__pt.alvos()) {
       if (el.closest('[aria-hidden="true"], [data-motion="fita"], .pt-preloader')) continue;
@@ -736,14 +794,8 @@ for (const tela of [T1440, T390]) {
       registrar("AC-10", topo.h1ok, `${tela.nome} anim-none ${r.rota}: H1 fora da tela ou invisível`);
       if (!SEM_CTA_OBRIGATORIO.has(r.nome)) registrar("AC-10", topo.ctaOk, `${tela.nome} anim-none ${r.rota}: CTA de orçamento fora da 1ª tela`);
       await varrer(page, 0.6, 120);
-      const inv = await page.evaluate(() =>
-        window.__pt
-          .alvos()
-          .filter((el) => !el.closest('[aria-hidden="true"], [data-pin-stage][data-pin="on"], [role="dialog"]'))
-          .filter((el) => !(el.tagName === "VIDEO" && !el.classList.contains("is-playing")))
-          .filter((el) => window.__pt.opac(el) < 0.1)
-          .map((el) => window.__pt.descr(el)),
-      );
+      const { falhas: inv, pulados: puladosAnim, piorMs: piorAnim } = await invisiveisNaTela(page);
+      if (puladosAnim) nota("AC-10", `${tela.nome} anim-none ${r.rota}: a varredura pulou ${puladosAnim}; revelados ao entrar na tela (pior ${piorAnim} ms)`);
       registrar("AC-10", inv.length === 0, inv.length ? `${tela.nome} anim-none ${r.rota}: ${inv.length} invisíveis depois de rolar: ${[...new Set(inv)].slice(0, 6).join(" | ")}` : "");
       const res = { esc: inv, ...topo };
       registrar("CONSOLE", consoleMsgs.length === 0, consoleMsgs.length ? `${tela.nome} anim-none ${r.rota}: ${consoleMsgs.slice(0, 3).join(" | ")}` : "");

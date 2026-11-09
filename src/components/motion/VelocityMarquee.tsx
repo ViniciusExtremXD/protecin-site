@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react";
-import { motion, useMotionValue, useScroll, useSpring, useTransform, useVelocity } from "framer-motion";
+import { m as motion, useMotionValue, useScroll, useSpring, useTransform, useVelocity } from "framer-motion";
 
 export interface VelocityMarqueeProps {
   baseVelocity?: number; // -1.2 (% da faixa por segundo; negativo corre para a esquerda)

@@ -1,5 +1,5 @@
 import { useRef, type PointerEvent, type ReactNode } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { m as motion, useMotionValue, useSpring } from "framer-motion";
 import { IMA_MAX, SPRING } from "./tokens";
 
 /**

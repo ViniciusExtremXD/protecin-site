@@ -25,6 +25,20 @@ html.intro {
 html:not(.intro) {
   --t0: 80ms;
 }
+/* Seções abaixo da dobra: o navegador só calcula o layout delas quando chegam perto da tela. O 1º layout da home levava
+   cerca de 2 s no celular (CPU 4x) e adiava a primeira pintura. Não vale para a seção de abertura nem para cena fixada
+   ligada. A altura estimada só vale antes de a seção renderizar; html.cv-solto: ver medirSecoes (smooth-scroll.ts). */
+html:not(.cv-solto) main > :not(:first-child):not([data-pin="on"]):not(:has([data-pin="on"])),
+html:not(.cv-solto) #root > footer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1150px; /* altura média das seções no celular */
+}
+@media (min-width: 1024px) {
+  html:not(.cv-solto) main > :not(:first-child):not([data-pin="on"]):not(:has([data-pin="on"])),
+  html:not(.cv-solto) #root > footer {
+    contain-intrinsic-size: auto 850px; /* idem no desktop */
+  }
+}
 
 @layer base {
   html {
@@ -241,15 +255,15 @@ html:not(.intro) {
    aparecem paradas. Keyframes com valores literais. Rodada de sobriedade: subida de 16 a 24 px, sem rotação
    em título e sem escala acima de 1,06 em texto.
    ========================================================================== */
+/* Sem opacidade: o texto do hero sai na primeira pintura e só desliza até o lugar. Começar em opacity: 0 fazia o Chrome só
+   contar o texto como pintado (LCP) quando a thread principal repintava, depois da hidratação. */
 @keyframes e-sobe {
   from {
-    opacity: 0;
     transform: translate3d(0, 20px, 0);
   }
 }
 @keyframes e-linha {
   from {
-    opacity: 0;
     transform: translate3d(0, 24px, 0);
   }
 }

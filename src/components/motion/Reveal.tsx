@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode } from "react";
-import { motion, type Variants } from "framer-motion";
+import { m as motion, type Variants } from "framer-motion";
 import { DESLOCAMENTO, DUR, EASE_OUT, STAGGER, VIEWPORT, ease, limitarY, type Preset } from "./tokens";
 
 type RevealTag = "div" | "li" | "p" | "span" | "section" | "article" | "figure" | "header" | "ul" | "ol";

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
+import { m as motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import { SPRING } from "./tokens";
 
 export interface ReelProps {

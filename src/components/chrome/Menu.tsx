@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m as motion } from "framer-motion";
 import { Mail, Phone, X } from "lucide-react";
 import { COMPANY, MENU, UI } from "../../data/site";
 import { Link, usePath } from "../../lib/router";

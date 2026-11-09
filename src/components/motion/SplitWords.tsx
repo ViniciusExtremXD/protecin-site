@@ -1,5 +1,5 @@
 import { Fragment, useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { m as motion, useInView } from "framer-motion";
 import { DESLOCAMENTO, DUR, EASE_OUT, STAGGER, VIEWPORT, ease } from "./tokens";
 
 export interface SplitWordsProps {

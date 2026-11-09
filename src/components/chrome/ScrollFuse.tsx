@@ -1,4 +1,4 @@
-import { motion, useScroll, useSpring } from "framer-motion";
+import { m as motion, useScroll, useSpring } from "framer-motion";
 
 /**
  * Progresso de leitura: linha de 2 px no topo, brasa-500 a 80%, com scaleX = progresso da página.

@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState, type CSSProperties } from "react";
-import { motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { m as motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Menu as MenuIcone } from "lucide-react";
 import { NAV, UI } from "../../data/site";
 import { Link, usePath } from "../../lib/router";
@@ -61,9 +61,10 @@ export function Nav() {
                           <TextRoll text={l.label} />
                           {ativo && (
                             <motion.span
-                              layoutId="nav-ativo"
                               aria-hidden
                               className="absolute bottom-0.5 left-1/2 -ml-[3px] h-1.5 w-1.5 rounded-full bg-brasa-400"
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
                               transition={{ type: "spring", ...SPRING.pilula }}
                             />
                           )}

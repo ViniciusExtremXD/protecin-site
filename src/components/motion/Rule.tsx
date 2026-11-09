@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { DUR, EASE_OUT, VIEWPORT, ease } from "./tokens";
 
 /** Régua de 1 px que se estende a partir da origem (scaleX/scaleY 0 → 1, 800 ms). Cor padrão noite-600. */
