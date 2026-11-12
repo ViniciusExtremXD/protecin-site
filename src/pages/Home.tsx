@@ -9,14 +9,15 @@ import Escala from "../sections/home/Escala";
 import Servicos from "../sections/home/Servicos";
 import Orcamento from "../sections/shared/Orcamento";
 
-/** Espaço reservado de logos de clientes (só no modo proposta), numa faixa escura entre H2 e H3. */
-function ReservadoClientes() {
+/** Espaços reservados (só no modo proposta), numa faixa escura: logos de clientes depois da Credibilidade e fotos de
+ * obras depois da Escala (antes ficavam no "Na prática", que saiu da home na rodada de conversão). */
+function Reservado({ id }: { id: "clientes" | "obras" }) {
   const proposta = useProposalMode();
   if (!proposta) return null;
   return (
     <div className="bg-noite-950 pt-20 lg:pt-28">
       <Container>
-        <ReservedSlot id="clientes" />
+        <ReservedSlot id={id} aspect={id === "obras" ? "16/6" : undefined} />
       </Container>
     </div>
   );
@@ -33,8 +34,9 @@ export default function Home() {
       <Abertura />
       <Servicos />
       <Credibilidade />
-      <ReservadoClientes />
+      <Reservado id="clientes" />
       <Escala />
+      <Reservado id="obras" />
       <ComoFunciona />
       <Orcamento variant="home" />
       <Mapa variant="home" />
