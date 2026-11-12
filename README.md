@@ -1,6 +1,6 @@
 # Protecin — site novo (proposta de redesign)
 
-Site estático pré-renderizado da Protecin, com motion design: React 18 + Vite 5 + TypeScript + Tailwind 3 + framer-motion 11 + Lenis. A especificação completa está em `referencia/design-final.md`; os ajustes de QA em `qa/AJUSTES-DESIGN.md` valem por cima dela, os da rodada de sobriedade (`qa/AJUSTES-SOBRIEDADE.md`) valem por cima de tudo, e a régua de aceite é `qa/REGUA-SITE-NOVO.md`.
+Site estático pré-renderizado da Protecin, com motion design: React 18 + Vite 5 + TypeScript + Tailwind 3 + framer-motion 11 + Lenis. A especificação completa está em `referencia/design-final.md`; os ajustes de QA em `qa/AJUSTES-DESIGN.md` valem por cima dela, os da rodada de sobriedade (`qa/AJUSTES-SOBRIEDADE.md`) valem por cima deles, os da rodada de conversão (`qa/AJUSTES-CONVERSAO.md`) valem por cima de tudo, e a régua de aceite é `qa/REGUA-SITE-NOVO.md`.
 
 - **Prévia:** https://viniciusextremxd.github.io/protecin-site/ (espaços reservados: `?proposta=1`)
 - **Publicação:** `DEPLOY.md` · **Rastreamento (GTM/Ads):** `TRACKING.md` · **Pendências:** `PENDENCIAS.md`

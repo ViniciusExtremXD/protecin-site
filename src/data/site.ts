@@ -24,7 +24,7 @@ export type LeadChannel = "whatsapp" | "phone" | "email";
 export type LeadLocation =
   | "nav" | "menu" | "hero" | "servicos" | "plataforma" | "historia" | "orcamento" | "formulario" | "rodape"
   | "botao_flutuante" | "barra_mobile" | "pagina_institucional" | "pagina_servicos" | "pagina_clientes"
-  | "pagina_catalogo" | "pagina_app" | "pagina_contato" | "faixa_cta" | "avcb" | "pagina_404";
+  | "pagina_catalogo" | "pagina_app" | "pagina_contato" | "faixa_cta" | "avcb" | "pagina_404" | "como_funciona";
 export type IconeId =
   | "wrench" | "drafting-compass" | "clipboard-check" | "list-checks" | "settings-2" | "shield-alert"
   | "fire-extinguisher" | "signpost" | "headset" | "monitor-cog" | "shield-check" | "hard-hat"
@@ -190,16 +190,20 @@ export const WA = {
 
 /** Rótulos numerados das seções da home (as páginas internas recomeçam em "01"). */
 export const SECOES = {
-  escala: { index: "01", label: "Escala" },
+  // home na rodada de conversão (qa/AJUSTES-CONVERSAO.md): serviços primeiro, prova, como funciona, orçamento e mapa
+  servicos: { index: "01", label: "Serviços" },
   credibilidade: { index: "02", label: "Credibilidade" },
-  servicos: { index: "03", label: "Serviços" },
+  escala: { index: "03", label: "Escala" },
+  comoFunciona: { index: "04", label: "Como funciona" },
+  orcamento: { index: "05", label: "Orçamento" },
+  mapa: { index: "06", label: "Onde estamos" },
+  // seções que saíram da home (continuam nas páginas internas com o índice próprio de cada página)
   naPratica: { index: "04", label: "Na prática" },
   plataforma: { index: "05", label: "Plataforma" },
   diferenciais: { index: "06", label: "Por que a Protecin" },
   historia: { index: "07", label: "50 anos" },
   setores: { index: "08", label: "Setores" },
   compromisso: { index: "09", label: "Compromisso" },
-  orcamento: { index: "10", label: "Orçamento" },
 } as const;
 
 // ---------------------------------------------------------------- H0 abertura (§9 H0; §2.1 Hero)
@@ -211,7 +215,7 @@ export const HERO = {
     destaque: ["50"],
   } satisfies Titulo,
   paragrafo:
-    "Referência em engenharia e proteção técnica contra incêndio, a Protecin oferece soluções em inspeção e manutenção de equipamentos com foco em segurança, conformidade e atendimento sob medida.",
+    "Projetos com ART, AVCB, instalação, inspeção e manutenção de sistemas contra incêndio para empresas, com atendimento sob medida e conformidade com as normas.",
   manifesto: "Protegemos seu maior patrimônio: *a vida.*",
   apoio:
     "Desde 1976, a Protecin oferece soluções técnicas em prevenção e combate a incêndios, protegendo vidas e patrimônios com tecnologia, equipe especializada e estrutura sólida.",
@@ -793,6 +797,28 @@ export const APP_HERO = {
 } as const;
 
 // ---------------------------------------------------------------- H10 orçamento e /contato/ (§2.7)
+// ---------------------------------------------------------------- home: como funciona (rodada de conversão)
+/** Três passos do pedido à entrega. Só fatos do site atual: visita e proposta (Contato), ART e AVCB (Projetos e
+ * Documentação), ordens de serviço e vistorias na plataforma própria desde 2021. */
+export const COMO_FUNCIONA = {
+  h2: "Do pedido à entrega",
+  texto: "Você diz o que precisa, a equipe técnica avalia o local e a Protecin executa e entrega a documentação.",
+  passos: [
+    {
+      numero: "01", titulo: "Conte o que você precisa", icone: "messages-square",
+      texto: "Pelo formulário, pelo WhatsApp ou pelo telefone. Se ainda não sabe qual serviço, a equipe orienta.",
+    },
+    {
+      numero: "02", titulo: "Visita técnica e proposta", icone: "clipboard-check",
+      texto: "A equipe técnica e comercial avalia o local e monta uma proposta sob medida para a sua empresa.",
+    },
+    {
+      numero: "03", titulo: "Execução com documentação", icone: "file-check",
+      texto: "Projetos com ART, laudos e renovação de AVCB, com ordens de serviço e vistorias acompanhadas na plataforma Protecin.",
+    },
+  ] as { numero: string; titulo: string; texto: string; icone: IconeId }[],
+} as const;
+
 export const CONTATO = {
   label: "Orçamento",
   letreiro: "SOLICITAR ORÇAMENTO",

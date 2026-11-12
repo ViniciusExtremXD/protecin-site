@@ -77,7 +77,7 @@ const SEM_CTA_OBRIGATORIO = new Set(["creditos", "404"]);
 
 const LEAD_LOCATIONS = new Set([
   "nav", "menu", "hero", "servicos", "plataforma", "historia", "orcamento", "formulario", "rodape", "botao_flutuante", "barra_mobile",
-  "pagina_institucional", "pagina_servicos", "pagina_clientes", "pagina_catalogo", "pagina_app", "pagina_contato", "faixa_cta", "avcb", "pagina_404",
+  "pagina_institucional", "pagina_servicos", "pagina_clientes", "pagina_catalogo", "pagina_app", "pagina_contato", "faixa_cta", "avcb", "pagina_404", "como_funciona",
 ]);
 const NOME_BANCO = Buffer.from("YnJhZGVzY28=", "base64").toString();
 const PROIBIDAS = [NOME_BANCO, "gratuito", "transformando o setor", "elevar o padrão", "jornada", "sinergia", "parceiro de confiança", "no coração de", "o futuro da segurança", "soluções inovadoras de ponta", "excelência incomparável"];
@@ -170,7 +170,7 @@ const ehAntivirus = (u = "") => /kaspersky-labs\.com|\.scr\.kaspersky/.test(u);
 // Teto do comprimento das páginas (AJUSTES-SOBRIEDADE §2): [1440×900, 390×844]. "Demais" = o que tinham na prévia
 // publicada antes da rodada (28/10/2026), arredondado para cima.
 const TETO_ALTURA = {
-  home: [13000, 15000],
+  home: [9000, 11000], // rodada de conversão (qa/AJUSTES-CONVERSAO.md): 7.127 / 9.054 em 12/11/2026
   servicos: [9000, 11000],
   institucional: [7500, 9500],
   app: [7500, 9500],

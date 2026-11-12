@@ -1,17 +1,13 @@
 import { Container } from "../components/layout/Container";
 import { ReservedSlot } from "../components/ui/ReservedSlot";
 import { useProposalMode } from "../lib/motion-pref";
+import Mapa from "../sections/contato/Mapa";
 import Abertura from "../sections/home/Abertura";
+import ComoFunciona from "../sections/home/ComoFunciona";
 import Credibilidade from "../sections/home/Credibilidade";
-import Diferenciais from "../sections/home/Diferenciais";
 import Escala from "../sections/home/Escala";
 import Servicos from "../sections/home/Servicos";
-import Setores from "../sections/home/Setores";
-import Compromisso from "../sections/shared/Compromisso";
-import Historia from "../sections/shared/Historia";
-import NaPratica from "../sections/shared/NaPratica";
 import Orcamento from "../sections/shared/Orcamento";
-import Plataforma from "../sections/shared/Plataforma";
 
 /** Espaço reservado de logos de clientes (só no modo proposta), numa faixa escura entre H2 e H3. */
 function ReservadoClientes() {
@@ -26,22 +22,22 @@ function ReservadoClientes() {
   );
 }
 
-/** Home `/` (design-final §8 e §9): H0 a H10, com o espaço reservado de clientes depois da Credibilidade. */
+/**
+ * Home `/` na rodada de conversão (qa/AJUSTES-CONVERSAO.md, por cima de design-final §8 e §9): o que a Protecin faz
+ * logo depois da Abertura, a prova (autorizações e números), como funciona, o orçamento e o mapa. História, Kids ONG,
+ * Plataforma e Setores ficam nas páginas Institucional, Nosso App e Nossos Clientes.
+ */
 export default function Home() {
   return (
     <>
       <Abertura />
-      <Escala />
+      <Servicos />
       <Credibilidade />
       <ReservadoClientes />
-      <Servicos />
-      <NaPratica />
-      <Plataforma variant="home" />
-      <Diferenciais />
-      <Historia variant="home" />
-      <Setores />
-      <Compromisso variant="home" />
+      <Escala />
+      <ComoFunciona />
       <Orcamento variant="home" />
+      <Mapa variant="home" />
     </>
   );
 }

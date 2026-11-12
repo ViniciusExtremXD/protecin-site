@@ -19,8 +19,8 @@ import { PARTES } from "../../components/ui/Symbol";
  *  - fixado (data-pin="on"): palco de 100svh com camadas absolutas; o símbolo nasce no centro e desliza até o encaixe;
  *  - estático (SSR, sem JS, tela baixa): hero de 100svh com o poster e, abaixo, o símbolo montado (gota com o poster
  *    dentro) e o manifesto aceso, em fluxo normal.
- * Altura total: 200vh no desktop (1 tela de rolagem presa) e 150vh no celular (0,5 tela). Teto da sobriedade §2:
- * 1,2 tela no desktop e 0,6 no celular.
+ * Altura total: 160vh no desktop (0,6 tela de rolagem presa) e 130vh no celular (0,3 tela), encurtada na rodada de
+ * conversão para os serviços chegarem antes. Teto da sobriedade §2: 1,2 tela no desktop e 0,6 no celular.
  */
 
 const curva = cubicBezier(EASE_OUT[0], EASE_OUT[1], EASE_OUT[2], EASE_OUT[3]);
@@ -323,7 +323,7 @@ function Cena() {
 /** H0 da home (`#topo`). Sem props. */
 export default function Abertura() {
   return (
-    <PinStage id="topo" mode="sempre" heightClassName="h-[150vh] lg:h-[200vh]" className="group/pin grain bg-noite-950">
+    <PinStage id="topo" mode="sempre" heightClassName="h-[130vh] lg:h-[160vh]" className="group/pin grain bg-noite-950">
       <Cena />
     </PinStage>
   );

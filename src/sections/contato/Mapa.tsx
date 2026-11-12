@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { ArrowUpRight, MapPin } from "lucide-react";
-import { COMPANY, CONTATO } from "../../data/site";
+import { COMPANY, CONTATO, SECOES } from "../../data/site";
 import { Reveal } from "../../components/motion/Reveal";
 import { TextRoll } from "../../components/motion/TextRoll";
 import { Container } from "../../components/layout/Container";
@@ -14,6 +14,9 @@ import { H2 } from "../shared/historia/estilo";
  * carga: a fachada (quadriculado discreto, o símbolo como pino e o endereço) só troca pelo iframe do Google Maps
  * quando o visitante clica em "Carregar mapa" (pushEvent "map_load"). "Como chegar" abre as rotas em outra aba
  * (map_directions_click).
+ * Na home (variant "home", rodada de conversão): fecha a página antes do rodapé, com o rótulo "06 — Onde estamos", e o
+ * iframe carrega sozinho quando a seção chega perto da tela (ainda nada na carga da página); o botão continua como
+ * reserva para quem chegar antes do observador.
  * Fora da rodada 1: anel pulsando, carimbo do pino, cortina do iframe e a sombra vermelha do botão.
  */
 
@@ -23,15 +26,39 @@ const GRADE: CSSProperties = {
   backgroundPosition: "center",
 };
 
-export default function Mapa() {
+export interface MapaProps {
+  /** "contato" (padrão): fachada com "Carregar mapa". "home": carrega sozinho perto da tela. */
+  variant?: "contato" | "home";
+}
+
+export default function Mapa({ variant = "contato" }: MapaProps = {}) {
+  const home = variant === "home";
   const [carregado, setCarregado] = useState(false);
   const iframe = useRef<HTMLIFrameElement>(null);
+  const secao = useRef<HTMLElement>(null);
+  const automatico = useRef(false);
   const e = COMPANY.endereco;
   const complemento = `${e.bairro}, CEP ${e.cep}, ${e.cidade} - ${e.uf}`;
 
   useEffect(() => {
-    if (carregado) iframe.current?.focus({ preventScroll: true });
+    if (carregado && !automatico.current) iframe.current?.focus({ preventScroll: true });
   }, [carregado]);
+
+  // home: troca a fachada pelo iframe quando a seção fica a 600 px da tela
+  useEffect(() => {
+    if (!home || carregado || !secao.current || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      (entradas) => {
+        if (!entradas.some((e) => e.isIntersecting)) return;
+        automatico.current = true;
+        setCarregado(true);
+        io.disconnect();
+      },
+      { rootMargin: "600px 0px" },
+    );
+    io.observe(secao.current);
+    return () => io.disconnect();
+  }, [home, carregado]);
 
   const carregar = () => {
     setCarregado(true);
@@ -39,11 +66,16 @@ export default function Mapa() {
   };
 
   return (
-    <section id="mapa" data-section="contato-mapa" className="relative bg-noite-950 py-16 text-papel-50 md:py-24 lg:py-28">
+    <section
+      ref={secao}
+      id="mapa"
+      data-section={home ? "H6" : "contato-mapa"}
+      className={`relative bg-noite-950 py-16 text-papel-50 md:py-24 ${home ? "border-t border-noite-700" : "lg:py-28"}`}
+    >
       <Container>
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <SectionLabel index="02" label={CONTATO.canais.endereco} />
+            <SectionLabel index={home ? SECOES.mapa.index : "02"} label={home ? SECOES.mapa.label : CONTATO.canais.endereco} />
             <Reveal y={20} delay={0.06}>
               <h2 className={`${H2} mt-4 text-papel-50 lg:mt-5`}>{e.rua}</h2>
               <p className="mt-3 text-[17px] leading-snug text-papel-300 lg:text-[18px]">{complemento}</p>

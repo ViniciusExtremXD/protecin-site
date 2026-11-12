@@ -51,6 +51,7 @@ dataLayer.push({ event: "lead_click", lead_channel, lead_location, lead_detail, 
 | `menu` | rodapé do menu em tela cheia | — |
 | `hero` | abertura da home (WhatsApp e telefone) | — |
 | `servicos` | cartões de serviço da home | slug do serviço |
+| `como_funciona` | seção "Como funciona" da home (orçamento e WhatsApp) | — |
 | `plataforma` | seção Plataforma | — |
 | `historia` | painel 2026 da linha do tempo | — (`institucional` na página Institucional) |
 | `orcamento` | canais da seção Orçamento | — |
