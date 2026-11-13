@@ -226,10 +226,10 @@ export const HERO = {
 // ---------------------------------------------------------------- H1 escala (§1.2)
 export const NUMEROS: { valor: string; rotulo: string; ariaLabel: string; titulo?: boolean }[] = [
   { valor: "20.000+", rotulo: "clientes atendidos", ariaLabel: "Mais de 20.000 clientes atendidos", titulo: true },
-  { valor: "50", rotulo: "anos de experiência (desde 1976)", ariaLabel: "50 anos de experiência" },
-  { valor: "3M+", rotulo: "equipamentos manutenidos", ariaLabel: "Mais de 3 milhões de equipamentos manutenidos" },
+  { valor: "50", rotulo: "anos de experiência", ariaLabel: "50 anos de experiência" },
+  { valor: "3M+", rotulo: "manutenções realizadas", ariaLabel: "Mais de 3 milhões de manutenções realizadas" },
   { valor: "5M+", rotulo: "inspeções realizadas", ariaLabel: "Mais de 5 milhões de inspeções realizadas" },
-  { valor: "250+", rotulo: "obras de médio e grande porte realizadas", ariaLabel: "Mais de 250 obras de médio e grande porte realizadas" },
+  { valor: "250+", rotulo: "obras de médio e grande porte", ariaLabel: "Mais de 250 obras de médio e grande porte realizadas" },
 ];
 
 // ---------------------------------------------------------------- H2 credibilidade (§2.1 Compromisso; §1.4)
@@ -397,7 +397,7 @@ export const NA_PRATICA = {
   cilindros: {
     imagem: "obra-cilindros-supressao" as ImagemId,
     numero: "250+",
-    rotulo: "obras de médio e grande porte realizadas",
+    rotulo: "obras de médio e grande porte",
     legenda: "Bateria de cilindros de sistema fixo de supressão.",
     chamadas: [
       { x: 72.5, y: 80, rotulo: "Cilindros numerados" },
