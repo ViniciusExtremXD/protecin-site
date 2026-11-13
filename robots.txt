@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://protecin.com.br/sitemap.xml
